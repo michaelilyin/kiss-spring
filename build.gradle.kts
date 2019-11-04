@@ -1,20 +1,13 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+allprojects {
+  group = "ru.kiss"
+  version = "1.0-SNAPSHOT"
 
-plugins {
-    kotlin("jvm") version "1.3.41"
-}
-
-group = "net.kiss"
-version = "1.0-SNAPSHOT"
-
-repositories {
+  repositories {
+    jcenter()
     mavenCentral()
-}
+  }
 
-dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    apply {
+        from("$rootDir/versions.gradle.kts")
+    }
 }
