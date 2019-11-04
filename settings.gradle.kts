@@ -1,0 +1,2 @@
+rootProject.name = "kiss-spring"
+
