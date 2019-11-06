@@ -1,18 +1,31 @@
 package net.kiss.starter.graphql.builder
 
 import graphql.schema.DataFetchingEnvironment
+import kotlin.reflect.KClass
 
 
-class FetcherBuilder<T>(
-  val type: String
+class FetcherBuilder(
+  private val type: String
 ) {
   private val fetchers = mutableListOf<FetcherInfo<*>>()
 
-  fun fetch(field: String, fetcher: suspend (env: DataFetchingEnvironment) -> T) {
-    fetchers.add(FetcherInfo (
+  fun <T : Any> fetch(field: String, result: KClass<T>, fetcher: suspend (env: DataFetchingEnvironment) -> T) {
+    addFetcher(field, fetcher)
+  }
+
+  fun <T : Any> fetchNullable(field: String, result: KClass<T>, fetcher: suspend (env: DataFetchingEnvironment) -> T?) {
+    addFetcher(field, fetcher)
+  }
+
+  fun <T : Any> fetchList(field: String, result: KClass<T>, fetcher: suspend (env: DataFetchingEnvironment) -> List<T>) {
+    addFetcher(field, fetcher)
+  }
+
+  private fun <T : Any> addFetcher(field: String, fetcher: suspend (env: DataFetchingEnvironment) -> T?) {
+    fetchers.add(FetcherInfo(
       field = field,
       fetcher = fetcher
-    ))
+      ))
   }
 
   fun build() = FetchersInfo(
@@ -31,15 +44,15 @@ data class FetchersInfo(
   val fetchers: List<FetcherInfo<*>>
 )
 
-inline fun <R> rootFetcher(init: FetcherBuilder<R>.() -> Unit): FetchersInfo {
-  val fetcher = FetcherBuilder<R>("Query")
+inline fun rootFetcher(init: FetcherBuilder.() -> Unit): FetchersInfo {
+  val fetcher = FetcherBuilder("Query")
   fetcher.init()
   return fetcher.build()
 }
 
-inline fun <reified T : Any, R> fetcher(init: FetcherBuilder<R>.() -> Unit): FetchersInfo {
+inline fun <reified T : Any> fetcher(init: FetcherBuilder.() -> Unit): FetchersInfo {
   val name = T::class.simpleName ?: throw IllegalArgumentException("Fetch class should be explicit")
-  val fetcher = FetcherBuilder<R>(name)
+  val fetcher = FetcherBuilder(name)
   fetcher.init()
   return fetcher.build()
 }

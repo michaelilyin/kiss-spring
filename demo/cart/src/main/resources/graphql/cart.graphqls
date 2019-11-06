@@ -1,0 +1,7 @@
+type Cart {
+  id: ID!
+}
+
+extend type Query {
+  cart(id: ID!): Cart
+}

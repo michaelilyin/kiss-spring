@@ -6,5 +6,6 @@ include(
     ":starters:service-starter",
     ":starters:graphql-starter",
 
-    ":demo:users"
+    ":demo:users",
+    ":demo:cart"
 );

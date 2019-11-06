@@ -29,16 +29,16 @@ class UserFetchers {
   )
 
   @Bean
-  fun usersFetcher() = rootFetcher<List<User>> {
-    fetch("users") {
+  fun usersFetcher() = rootFetcher {
+    fetchList("users", User::class) {
       logger.info { "Fetch users" }
       users
     }
   }
 
   @Bean
-  fun userRolesFetcher() = fetcher<User, List<Role>> {
-    fetch("roles") {
+  fun userRolesFetcher() = fetcher<User> {
+    fetchList("roles", Role::class) {
       val user = it.getSource<User>()
       logger.info { "Fetch roles for user ${user.id}" }
 
