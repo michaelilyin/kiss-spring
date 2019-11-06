@@ -1,2 +1,6 @@
-scalar Date
-scalar DateTime
+#scalar Date
+#scalar DateTime
+
+type Query {
+
+}

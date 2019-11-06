@@ -1,8 +1,14 @@
+type Role {
+  id: ID!
+  name: String!
+}
+
 type User {
   id: ID!
   username: String!
+  roles: [Role!]!
 }
 
-type Query {
+extend type Query {
   users: [User!]!
 }
