@@ -1,0 +1,14 @@
+{
+  "name": "gateway",
+  "dependencies": {
+    "@apollo/gateway": "^0.8.1",
+    "apollo-server": "^2.8.1",
+    "graphql": "^14.4.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  },
+  "scripts": {
+    "start": "nodemon index.js"
+  }
+}

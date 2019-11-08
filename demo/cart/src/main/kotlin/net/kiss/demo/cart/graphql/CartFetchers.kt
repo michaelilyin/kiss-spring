@@ -1,7 +1,7 @@
 package net.kiss.demo.cart.graphql
 
 import net.kiss.demo.cart.model.Cart
-import net.kiss.starter.graphql.builder.rootFetcher
+import net.kiss.starter.graphql.builder.buildFetchers
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -17,11 +17,15 @@ class CartFetchers {
   private val cartById = carts.groupBy { it.id }
 
   @Bean
-  fun cartFetcher() = rootFetcher {
-    fetchNullable("cart", Cart::class) {
-      val cartId = it.getArgument<String>("id").toLong()
+  fun cartFetchers() = buildFetchers {
+    query {
+      fetch<Cart?>("cart") {
+        returning {
+          val cartId = it.getArgument<String>("id").toLong()
 
-      cartById[cartId]?.first()
+          cartById[cartId]?.first()
+        }
+      }
     }
   }
 }

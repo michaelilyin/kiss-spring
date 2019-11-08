@@ -1,5 +1,7 @@
 package net.kiss.starter.graphql
 
+import com.apollographql.federation.graphqljava.Federation
+import com.apollographql.federation.graphqljava._Entity
 import graphql.GraphQL
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
@@ -13,22 +15,27 @@ import graphql.schema.GraphQLSchema
 import graphql.schema.idl.SchemaParser
 import graphql.schema.idl.TypeDefinitionRegistry
 import graphql.schema.idl.TypeRuntimeWiring.newTypeWiring
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import net.kiss.starter.graphql.builder.FetchersInfo
+import mu.KotlinLogging
+import net.kiss.starter.graphql.builder.FetchersGroup
+import net.kiss.starter.graphql.builder.TypeFetchers
+import java.lang.IllegalArgumentException
 
 
 @Configuration
 @ComponentScan(basePackageClasses = [GraphQLAutoConfiguration::class])
 class GraphQLAutoConfiguration {
+  private val logger = KotlinLogging.logger {  }
+
   @Bean
   fun graphQl(
     applicationContext: ApplicationContext,
-    fetchers: List<FetchersInfo>): GraphQL {
+    fetchers: List<FetchersGroup>): GraphQL {
     // see https://www.graphql-java.com/tutorials/getting-started-with-spring-boot/
     val sdl = lookupSDL(applicationContext)
-    val schema = buildSchema(sdl, fetchers)
+
+    val isFederation = true
+    val schema = if (isFederation) buildFederatedSchema(sdl, fetchers) else buildSchema(sdl, fetchers)
 
     return GraphQL.newGraphQL(schema).build()
   }
@@ -36,14 +43,16 @@ class GraphQLAutoConfiguration {
   private fun lookupSDL(applicationContext: ApplicationContext): String {
     val resources = applicationContext.getResources("classpath*:**/*.graphqls")
 
-    return resources.joinToString("\n") { parseResource(it) }
+    return resources.asSequence()
+      .filter { !(it.filename?.contains("federation.graphqls") ?: false) }
+      .joinToString("\n") { parseResource(it) }
   }
 
   private fun parseResource(resource: Resource): String {
     return InputStreamReader(resource.inputStream).use { it.readText() }
   }
 
-  private fun buildSchema(sdl: String, fetchers: List<FetchersInfo>): GraphQLSchema {
+  private fun buildSchema(sdl: String, fetchers: List<FetchersGroup>): GraphQLSchema {
     val typeRegistry = buildTypeRegistry(sdl)
     val runtimeWiring = buildWiring(fetchers)
 
@@ -55,18 +64,22 @@ class GraphQLAutoConfiguration {
     return parser.parse(sdl)
   }
 
-  private fun buildWiring(fetchers: List<FetchersInfo>): RuntimeWiring {
+  private fun buildWiring(fetchers: List<FetchersGroup>): RuntimeWiring {
     val wiring = RuntimeWiring.newRuntimeWiring()
 
-    val typeMap = fetchers.groupBy { it.type }
+    val typeMap = fetchers.asSequence()
+      .flatMap { it.typeFetchers.values.asSequence() }
+      .flatMap { it.asSequence() }
+      .groupBy { it.type }
+
     typeMap.forEach { typeFetchers ->
       val typeWiring = newTypeWiring(typeFetchers.key)
 
       typeFetchers.value.asSequence()
-        .flatMap { it.fetchers.asSequence() }
+        .flatMap { it.fieldFetchers.asSequence() }
         .forEach { fetcher ->
           typeWiring.dataFetcher(fetcher.field) { env ->
-              runBlocking { fetcher.fetcher(env) } // TODO: implement more better approach than run blocking
+            runBlocking { fetcher.fetcher(env) } // TODO: implement more better approach than run blocking
           }
         }
 
@@ -74,5 +87,32 @@ class GraphQLAutoConfiguration {
     }
 
     return wiring.build()
+  }
+
+  private fun buildFederatedSchema(sdl: String, fetchers: List<FetchersGroup>): GraphQLSchema {
+
+    val typeMap = fetchers.asSequence()
+      .flatMap { it.typeFetchers.values.asSequence() }
+      .flatMap { it.asSequence() }
+      .groupBy { it.type }
+
+    return Federation.transform(sdl)
+      .fetchEntities { env ->
+        val entityArg = env.getArgument<List<Map<String, Any>>>(_Entity.argumentName)
+        runBlocking {
+          entityArg.map { args ->
+            logger.info { "Request!" }
+            val type = args["__typename"] as? String ?: throw IllegalArgumentException()
+            val typeFetchers = typeMap[type]
+            null
+          }
+        }
+      }
+      .resolveEntityType { env ->
+        val obj = env.getObject<Any>()
+        val name = obj.javaClass.simpleName
+        env.schema.getObjectType(name)
+      }
+      .build()
   }
 }

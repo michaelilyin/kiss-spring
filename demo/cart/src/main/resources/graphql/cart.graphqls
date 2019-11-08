@@ -2,6 +2,11 @@ type Cart {
   id: ID!
 }
 
+extend type User @key(fields: "id") {
+  id: ID! @external
+  cart: Cart
+}
+
 extend type Query {
   cart(id: ID!): Cart
 }

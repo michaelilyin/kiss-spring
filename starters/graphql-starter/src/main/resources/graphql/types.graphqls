@@ -1,6 +1,10 @@
 #scalar Date
 #scalar DateTime
 
-type Query {
+type _Service {
+  sdl: String
+}
 
+type Query {
+  _service: _Service!
 }

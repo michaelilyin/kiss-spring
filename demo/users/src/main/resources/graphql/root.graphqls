@@ -3,7 +3,7 @@ type Role {
   name: String!
 }
 
-type User {
+type User @key(fields: ["id"]) {
   id: ID!
   username: String!
   roles: [Role!]!

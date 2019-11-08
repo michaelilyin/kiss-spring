@@ -1,16 +1,11 @@
 package net.kiss.demo.users.graphql
 
-import mu.KLogger
-import mu.KLogging
 import mu.KotlinLogging
 import net.kiss.demo.users.model.Role
 import net.kiss.demo.users.model.User
-import net.kiss.starter.graphql.builder.FetcherInfo
-import net.kiss.starter.graphql.builder.fetcher
-import net.kiss.starter.graphql.builder.rootFetcher
+import net.kiss.starter.graphql.builder.buildFetchers
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import java.lang.IllegalArgumentException
 
 @Configuration
 class UserFetchers {
@@ -19,7 +14,7 @@ class UserFetchers {
   val users = listOf(
     User(1, "gandalf"),
     User(2, "frodo"),
-    User(2, "aragorn")
+    User(3, "aragorn")
   )
 
   val roles = mapOf(
@@ -29,21 +24,35 @@ class UserFetchers {
   )
 
   @Bean
-  fun usersFetcher() = rootFetcher {
-    fetchList("users", User::class) {
-      logger.info { "Fetch users" }
-      users
+  fun userFetchers() = buildFetchers {
+    query {
+      fetch<User?>("user") {
+        returning {
+          val id = it.getArgument<Long>("id").toLong()
+          logger.info { "Fetch user by $id" }
+          users.find { it.id == id }
+        }
+      }
+
+      fetch<List<User>>("users") {
+        returning {
+          logger.info { "Fetch users" }
+          users
+        }
+      }
+    }
+
+    entity<User> {
+      fetch<List<Role>>("roles") {
+        returning {
+          val user = it.getSource<User>()
+          logger.info { "Fetch roles for user ${user.id}" }
+
+          val userRoles = roles[user.id]
+          userRoles ?: emptyList()
+        }
+      }
     }
   }
 
-  @Bean
-  fun userRolesFetcher() = fetcher<User> {
-    fetchList("roles", Role::class) {
-      val user = it.getSource<User>()
-      logger.info { "Fetch roles for user ${user.id}" }
-
-      val userRoles = roles[user.id]
-      userRoles ?: emptyList()
-    }
-  }
 }
