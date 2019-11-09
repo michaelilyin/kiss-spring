@@ -1,43 +1,28 @@
 package net.kiss.demo.cart.graphql
 
-import mu.KotlinLogging
 import net.kiss.demo.cart.model.Cart
-import net.kiss.demo.cart.model.User
+import net.kiss.demo.cart.model.external.User
+import net.kiss.demo.cart.service.CartService
 import net.kiss.starter.graphql.builder.buildFetchers
+import net.kiss.starter.graphql.builder.getIdArgAsLong
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import java.lang.IllegalArgumentException
 
 @Configuration
 class CartFetchersConfig {
 
-  private val logger = KotlinLogging.logger {}
-
-  private val carts = listOf(
-    Cart(1, 1),
-    Cart(2, 2),
-    Cart(3, 3)
-  )
-
-  private val cartById = carts.groupBy { it.id }
-
   @Bean
-  fun cartFetchers() = buildFetchers {
+  fun cartFetchers(cartService: CartService) = buildFetchers {
     query {
       fetch<Cart?>("cart") {
-        returning {
-          val cartId = it.getArgument<String>("id").toLong()
-
-          cartById[cartId]?.first()
-        }
+        returning { cartService.findCartById(it.getIdArgAsLong()) }
       }
     }
 
     entity<Cart> {
-      resolve { arg ->
-        val id = arg["id"] as? String ?: throw IllegalArgumentException()
-        cartById[id.toLong()]?.first()
-      }
+      resolve { cartService.findCartById(it.getIdArgAsLong()) }
+
       fetch<User>("user") {
         returning {
           val cart = it.getSource<Cart>();
@@ -47,16 +32,12 @@ class CartFetchersConfig {
     }
 
     entity<User> {
-      resolve {
-        User(
-          id = (it["id"] as String).toLong()
-        )
-      }
+      resolve { User(it.getIdArgAsLong()) }
+
       fetch<Cart?>("cart") {
         returning {
-          logger.info { "Resolve cart for user" }
           val user = it.getSource<User>()
-          carts.first { it.userId == user.id }
+          cartService.findCartByUserId(user.id)
         }
       }
     }
