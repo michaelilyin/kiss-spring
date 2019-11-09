@@ -1,10 +1,11 @@
-type Cart {
+type Cart @key(fields: "id") {
   id: ID!
+  user: User!
 }
 
-extend type User @key(fields: "id") {
+type User @key(fields: "id") @extends {
   id: ID! @external
-  cart: Cart
+  cart: Cart @requires(fields: "id")
 }
 
 extend type Query {

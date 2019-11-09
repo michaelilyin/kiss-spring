@@ -96,19 +96,23 @@ class GraphQLAutoConfiguration {
       .flatMap { it.asSequence() }
       .groupBy { it.type }
 
-    return Federation.transform(sdl)
+    val wiring = buildWiring(fetchers)
+
+    return Federation.transform(sdl, wiring)
       .fetchEntities { env ->
         val entityArg = env.getArgument<List<Map<String, Any>>>(_Entity.argumentName)
         runBlocking {
           entityArg.map { args ->
-            logger.info { "Request!" }
+            logger.info { "Fetch entity with args $args" }
             val type = args["__typename"] as? String ?: throw IllegalArgumentException()
-            val typeFetchers = typeMap[type]
-            null
+            val typeFetchers = typeMap[type] ?: return@map null
+            val resolver = typeFetchers.find { it.resolver != null } ?: return@map null
+            resolver.resolver?.invoke(args)
           }
         }
       }
       .resolveEntityType { env ->
+        logger.info { "type request!" }
         val obj = env.getObject<Any>()
         val name = obj.javaClass.simpleName
         env.schema.getObjectType(name)

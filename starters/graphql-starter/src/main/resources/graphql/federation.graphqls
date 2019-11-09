@@ -1,10 +1,15 @@
 scalar _Any
 scalar _FieldSet
 
+type _Service {
+  sdl: String
+}
+
 # a union of all types that use the @key directive
 union _Entity
 
 extend type Query {
+  _service: _Service!
   _entities(representations: [_Any!]!): [_Entity]!
 }
 

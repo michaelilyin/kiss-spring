@@ -6,9 +6,10 @@ import net.kiss.demo.users.model.User
 import net.kiss.starter.graphql.builder.buildFetchers
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import java.lang.IllegalArgumentException
 
 @Configuration
-class UserFetchers {
+class UserFetchersConfig {
   val logger = KotlinLogging.logger {  }
 
   val users = listOf(
@@ -28,7 +29,7 @@ class UserFetchers {
     query {
       fetch<User?>("user") {
         returning {
-          val id = it.getArgument<Long>("id").toLong()
+          val id = it.getArgument<String>("id").toLong()
           logger.info { "Fetch user by $id" }
           users.find { it.id == id }
         }
@@ -43,6 +44,11 @@ class UserFetchers {
     }
 
     entity<User> {
+      resolve { arg ->
+        val id = arg["id"] as? String ?: throw IllegalArgumentException()
+        users.find { it.id == id.toLong() }
+      }
+
       fetch<List<Role>>("roles") {
         returning {
           val user = it.getSource<User>()
