@@ -9,7 +9,20 @@ type User @key(fields: "id") {
   roles: [Role!]!
 }
 
+input UserCreateInput {
+  username: String!
+}
+
 extend type Query {
   users: [User!]!
   user(id: ID!): User
+}
+
+type UserMutationContext @key(fields: "id") {
+  id: ID!
+}
+
+extend type Mutation {
+  createUser(user: UserCreateInput!): User!
+  user(id: ID!): UserMutationContext
 }

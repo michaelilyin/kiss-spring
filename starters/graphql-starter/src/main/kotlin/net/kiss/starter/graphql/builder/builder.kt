@@ -23,7 +23,7 @@ class FieldFetcherBuilder<T>(
 
   private lateinit var fetcher: suspend (env: DataFetchingEnvironment) -> T
 
-  fun returning(fetcher: suspend (env: DataFetchingEnvironment) -> T) {
+  fun invoke(fetcher: suspend (env: DataFetchingEnvironment) -> T) {
     this.fetcher = fetcher
   }
 
@@ -32,19 +32,13 @@ class FieldFetcherBuilder<T>(
   }
 }
 
-class TypeFetchersBuilder<E>(
+open class TypeFetchersBuilder<E>(
   private val type: String
 ) {
   private val fieldFetchers = mutableListOf<FieldFetcher<*>>()
   private var resolver: (suspend (env: Map<String, Any>) -> E?)? = null
 
-  fun <T : Any?> fetch(field: String, init: FieldFetcherBuilder<T>.() -> Unit) {
-    val fieldFetcherBuilder = FieldFetcherBuilder<T>(field)
-    fieldFetcherBuilder.init()
-    buildFieldFetcher(fieldFetcherBuilder)
-  }
-
-  private fun <T : Any?> buildFieldFetcher(fieldFetcherBuilder: FieldFetcherBuilder<T>) {
+  protected fun <T : Any?> buildFieldFetcher(fieldFetcherBuilder: FieldFetcherBuilder<T>) {
     val fieldFetcher = fieldFetcherBuilder.build()
     fieldFetchers.add(fieldFetcher)
   }
@@ -60,18 +54,37 @@ class TypeFetchersBuilder<E>(
   )
 }
 
+class TypeFetchersQueryBuilder<E>(type: String)
+  : TypeFetchersBuilder<E>(type) {
+
+  fun <T : Any?> fetch(field: String, init: FieldFetcherBuilder<T>.() -> Unit) {
+    val fieldFetcherBuilder = FieldFetcherBuilder<T>(field)
+    fieldFetcherBuilder.init()
+    buildFieldFetcher(fieldFetcherBuilder)
+  }
+}
+
+class TypeFetchersMutationBuilder<E>(type: String)
+  : TypeFetchersBuilder<E>(type) {
+  fun <T : Any?> mutate(field: String, init: FieldFetcherBuilder<T>.() -> Unit) {
+    val fieldFetcherBuilder = FieldFetcherBuilder<T>(field)
+    fieldFetcherBuilder.init()
+    buildFieldFetcher(fieldFetcherBuilder)
+  }
+}
+
 class FetchersGroupBuilder {
   private val typeBuilders = mutableMapOf<String, MutableList<TypeFetchers<*>>>()
 
-  inline fun query(init: TypeFetchersBuilder<Any>.() -> Unit) {
-    val typeFetchersBuilder = TypeFetchersBuilder<Any>("Query")
+  inline fun query(init: TypeFetchersQueryBuilder<Any>.() -> Unit) {
+    val typeFetchersBuilder = TypeFetchersQueryBuilder<Any>("Query")
     typeFetchersBuilder.init()
     buildTypeFetcher(typeFetchersBuilder)
   }
 
-  inline fun <reified T : Any> entity(init: TypeFetchersBuilder<T>.() -> Unit) {
+  inline fun <reified T : Any> entity(init: TypeFetchersQueryBuilder<T>.() -> Unit) {
     val name = T::class.simpleName ?: throw IllegalArgumentException("Fetch class should be explicit")
-    val typeFetchersBuilder = TypeFetchersBuilder<T>(name)
+    val typeFetchersBuilder = TypeFetchersQueryBuilder<T>(name)
     typeFetchersBuilder.init()
     buildTypeFetcher(typeFetchersBuilder)
   }
@@ -87,6 +100,12 @@ class FetchersGroupBuilder {
       .flatMap { it.asSequence() }
       .groupBy { it.type }
     return FetchersGroup(typeFetchers)
+  }
+
+  fun mutation(init: TypeFetchersMutationBuilder<Any>.() -> Unit) {
+    val typeFetchersBuilder = TypeFetchersMutationBuilder<Any>("Mutation")
+    typeFetchersBuilder.init()
+    buildTypeFetcher(typeFetchersBuilder)
   }
 }
 

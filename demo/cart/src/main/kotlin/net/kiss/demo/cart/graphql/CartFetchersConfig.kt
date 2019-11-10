@@ -2,10 +2,10 @@ package net.kiss.demo.cart.graphql
 
 import net.kiss.demo.cart.model.Cart
 import net.kiss.demo.cart.model.external.User
+import net.kiss.demo.cart.model.external.UserMutationContext
 import net.kiss.demo.cart.service.CartService
 import net.kiss.starter.graphql.builder.buildFetchers
 import net.kiss.starter.graphql.builder.getIdArgAsLong
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -16,7 +16,7 @@ class CartFetchersConfig {
   fun cartFetchers(cartService: CartService) = buildFetchers {
     query {
       fetch<Cart?>("cart") {
-        returning { cartService.findCartById(it.getIdArgAsLong()) }
+        invoke { cartService.findCartById(it.getIdArgAsLong()) }
       }
     }
 
@@ -24,7 +24,7 @@ class CartFetchersConfig {
       resolve { cartService.findCartById(it.getIdArgAsLong()) }
 
       fetch<User>("user") {
-        returning {
+        invoke {
           val cart = it.getSource<Cart>();
           User(cart.userId)
         }
@@ -35,9 +35,20 @@ class CartFetchersConfig {
       resolve { User(it.getIdArgAsLong()) }
 
       fetch<Cart?>("cart") {
-        returning {
+        invoke {
           val user = it.getSource<User>()
           cartService.findCartByUserId(user.id)
+        }
+      }
+    }
+
+    entity<UserMutationContext> {
+      resolve { UserMutationContext(it.getIdArgAsLong()) }
+
+      fetch<Cart>("createCart") {
+        invoke {
+          val user = it.getSource<UserMutationContext>()
+          cartService.createCart(user.id)
         }
       }
     }
