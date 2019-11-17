@@ -16,6 +16,7 @@ import graphql.schema.idl.SchemaParser
 import graphql.schema.idl.TypeDefinitionRegistry
 import graphql.schema.idl.TypeRuntimeWiring.newTypeWiring
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.slf4j.MDCContext
 import mu.KotlinLogging
 import net.kiss.starter.graphql.builder.FetchersGroup
 import net.kiss.starter.graphql.builder.TypeFetchers
@@ -79,7 +80,7 @@ class GraphQLAutoConfiguration {
         .flatMap { it.fieldFetchers.asSequence() }
         .forEach { fetcher ->
           typeWiring.dataFetcher(fetcher.field) { env ->
-            runBlocking { fetcher.fetcher(env) } // TODO: implement more better approach than run blocking
+            runBlocking(MDCContext()) { fetcher.fetcher(env) } // TODO: implement more better approach than run blocking
           }
         }
 
@@ -101,7 +102,7 @@ class GraphQLAutoConfiguration {
     return Federation.transform(sdl, wiring)
       .fetchEntities { env ->
         val entityArg = env.getArgument<List<Map<String, Any>>>(_Entity.argumentName)
-        runBlocking {
+        runBlocking(MDCContext()) {
           entityArg.map { args ->
             logger.info { "Fetch entity with args $args" }
             val type = args["__typename"] as? String ?: throw IllegalArgumentException()

@@ -2,39 +2,33 @@ package net.kiss.demo.users.service.impl
 
 import mu.KotlinLogging
 import net.kiss.demo.users.model.User
-import net.kiss.demo.users.model.UserCreateInput
+import net.kiss.demo.users.model.UserCreate
+import net.kiss.demo.users.model.toEntity
+import net.kiss.demo.users.model.toModel
+import net.kiss.demo.users.repository.UserRepository
 import net.kiss.demo.users.service.UserService
+import net.kiss.starter.service.utils.orNull
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.concurrent.atomic.AtomicLong
 
 @Service
-class UserServiceImpl : UserService {
+class UserServiceImpl @Autowired constructor(
+  private val userRepository: UserRepository
+) : UserService {
   val logger = KotlinLogging.logger {  }
 
-  final val ID = AtomicLong(0)
-  final val USERS = mutableListOf(
-    User(ID.incrementAndGet(), "gandalf"),
-    User(ID.incrementAndGet(), "frodo"),
-    User(ID.incrementAndGet(), "aragorn")
-  )
-
   override fun findUserById(id: Long): User? {
-    logger.info { "Find user by id $id" }
-    return USERS.find { it.id == id }
+    val entity = userRepository.findById(id)
+    return entity.map { it.toModel() }.orNull()
   }
 
-  override fun createUser(input: UserCreateInput): User {
-    logger.info { "Create new user from $input" }
-    val user = User(
-      id = ID.incrementAndGet(),
-      username = input.username
-    )
-    USERS.add(user)
-    return user
+  override fun createUser(input: UserCreate): User {
+    val entity = input.toEntity()
+    return userRepository.save(entity).toModel()
   }
 
   override fun getUsers(): List<User> {
-    logger.info { "Get users" }
-    return USERS
+    val users = userRepository.findAll()
+    return users.map { it.toModel() }
   }
 }

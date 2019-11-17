@@ -1,6 +1,8 @@
 package net.kiss.demo.users.model
 
-data class UserCreateInput(
+import net.kiss.demo.users.entity.UserEntity
+
+data class UserCreate(
   val username: String
 ) {
   constructor(map: Map<String, Any>) : this(
@@ -9,3 +11,8 @@ data class UserCreateInput(
 
   }
 }
+
+fun UserCreate.toEntity() = UserEntity(
+  id = null,
+  username = username
+)

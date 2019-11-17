@@ -1,2 +1,8 @@
+spring:
+  datasource:
+    username: ${AUTH_USERNAME:demo}
+    password: ${AUTH_PASSWORD:secret}
+    url: ${AUTH_DB:jdbc:postgresql://localhost:5432/kiss-demo?currentSchema=users}
+
 server:
   port: 6010

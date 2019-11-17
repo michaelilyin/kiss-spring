@@ -8,7 +8,7 @@ type User @key(fields: "id") @extends {
   cart: Cart @requires(fields: "id")
 }
 
-type UserMutationContext @key(fields: "id") @extends {
+type UserMutation @key(fields: "id") @extends {
   id: ID! @external
   createCart: Cart! @requires(fields: "id")
 }

@@ -2,7 +2,7 @@ package net.kiss.demo.users.graphql
 
 import net.kiss.demo.users.model.Role
 import net.kiss.demo.users.model.User
-import net.kiss.demo.users.model.UserCreateInput
+import net.kiss.demo.users.model.UserCreate
 import net.kiss.demo.users.service.RoleService
 import net.kiss.demo.users.service.UserService
 import net.kiss.starter.graphql.builder.buildFetchers
@@ -32,7 +32,7 @@ class UserFetchersConfig {
       }
       mutate<User>("createUser") {
         invoke {
-          val input = UserCreateInput(it.getArgument<Map<String, Any>>("user"))
+          val input = UserCreate(it.getArgument<Map<String, Any>>("user"))
           userService.createUser(input)
         }
       }

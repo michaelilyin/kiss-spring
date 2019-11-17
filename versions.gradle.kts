@@ -1,10 +1,14 @@
 @file:Suppress("UNUSED_VARIABLE")
 
 allprojects {
-    apply {
-        from("$rootDir/buildSrc/build-versions.gradle.kts")
-    }
+  apply {
+    from("$rootDir/buildSrc/build-versions.gradle.kts")
+  }
 
-    val kotlinLoggingVer by extra("1.6.24")
-    val springDataVer by extra("2.1.8.RELEASE")
+  val springVer by extra("5.1.5.RELEASE")
+  val springDataVer by extra("2.1.8.RELEASE")
+  val junitVer by extra("5.3.2")
+  val fakerVer by extra("0.17.2")
+  val kotlinLoggingVer by extra("1.6.24")
+  val testcontainersVer by extra("1.11.3")
 }

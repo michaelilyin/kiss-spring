@@ -7,7 +7,7 @@ allprojects {
     mavenCentral()
   }
 
-    apply {
-        from("$rootDir/versions.gradle.kts")
-    }
+  apply {
+    from("$rootDir/versions.gradle.kts")
+  }
 }
