@@ -1,0 +1,8 @@
+type Role {
+  id: ID!
+  name: String!
+}
+
+extend type User {
+  roles: [Role!]!
+}

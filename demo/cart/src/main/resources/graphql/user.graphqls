@@ -1,0 +1,11 @@
+type User @key(fields: "id") @extends {
+  id: ID! @external
+}
+
+type UserMutationContext @key(fields: "id") @extends {
+  id: ID! @external
+}
+
+extend type Cart {
+  user: User!
+}

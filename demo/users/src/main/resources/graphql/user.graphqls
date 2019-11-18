@@ -1,15 +1,14 @@
-type Role {
-  id: ID!
-  name: String!
-}
-
 type User @key(fields: "id") {
   id: ID!
   username: String!
-  roles: [Role!]!
 }
 
 input UserCreate {
+  username: String!
+}
+
+type UserMutation @key(fields: "id") {
+  id: ID!
   username: String!
 }
 
@@ -18,11 +17,7 @@ extend type Query {
   user(id: ID!): User
 }
 
-type UserMutation @key(fields: "id") {
-  id: ID!
-}
-
 extend type Mutation {
   createUser(user: UserCreate!): User!
-  user(id: ID!): UserMutationContext
+  user(id: ID!): UserMutation
 }

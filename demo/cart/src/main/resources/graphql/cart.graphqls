@@ -1,15 +1,12 @@
 type Cart @key(fields: "id") {
   id: ID!
-  user: User!
 }
 
-type User @key(fields: "id") @extends {
-  id: ID! @external
+extend type User {
   cart: Cart @requires(fields: "id")
 }
 
-type UserMutation @key(fields: "id") @extends {
-  id: ID! @external
+extend type UserMutation @key(fields: "id") @extends {
   createCart: Cart! @requires(fields: "id")
 }
 

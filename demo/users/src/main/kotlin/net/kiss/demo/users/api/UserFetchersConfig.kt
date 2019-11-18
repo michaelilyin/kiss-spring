@@ -1,5 +1,6 @@
-package net.kiss.demo.users.graphql
+package net.kiss.demo.users.api
 
+import net.kiss.demo.users.handler.UserHandler
 import net.kiss.demo.users.model.Role
 import net.kiss.demo.users.model.User
 import net.kiss.demo.users.model.UserCreate
@@ -7,6 +8,7 @@ import net.kiss.demo.users.service.RoleService
 import net.kiss.demo.users.service.UserService
 import net.kiss.starter.graphql.builder.buildFetchers
 import net.kiss.starter.graphql.builder.getIdArgAsLong
+import net.kiss.starter.graphql.dsl.graphql
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -14,7 +16,7 @@ import org.springframework.context.annotation.Configuration
 class UserFetchersConfig {
 
   @Bean
-  fun userFetchers(userService: UserService,
+  fun userFetchersDeprecated(userService: UserService,
                    roleService: RoleService) = buildFetchers {
     query {
       fetch<User?>("user") {
@@ -46,6 +48,33 @@ class UserFetchersConfig {
           val user = it.getSource<User>()
           roleService.getUserRoles(user.id)
         }
+      }
+    }
+  }
+
+  @Bean
+  fun userFetchers(userHandler: UserHandler) = graphql {
+    query {
+      field<User?>("user") {
+        fetch(userHandler::findUser)
+      }
+
+      field<List<User>>("users") {
+        fetch(userHandler::getUsers)
+      }
+    }
+
+    mutation {
+      nestedMutationContext("user", userHandler::findUser)
+
+      action<User>("createUser") {
+        execute(userHandler::createUser)
+      }
+    }
+
+    type<User> {
+      federate {
+        resolve(userHandler::resolveUsers)
       }
     }
   }
