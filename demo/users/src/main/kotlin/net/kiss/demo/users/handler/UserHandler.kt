@@ -1,9 +1,8 @@
 package net.kiss.demo.users.handler
 
 import net.kiss.demo.users.model.User
-import net.kiss.starter.graphql.dsl.FederationRequest
-import net.kiss.starter.graphql.dsl.GraphQLRequest
-import org.springframework.stereotype.Component
+import net.kiss.starter.graphql.dsl.data.FederationRequest
+import net.kiss.starter.graphql.dsl.data.GraphQLRequest
 
 interface UserHandler {
   fun resolveUsers(req: FederationRequest<Any>): List<User>

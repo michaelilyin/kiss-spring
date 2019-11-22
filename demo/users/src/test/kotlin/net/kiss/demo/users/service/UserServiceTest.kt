@@ -3,12 +3,9 @@ package net.kiss.demo.users.service
 import net.kiss.demo.users.helpers.entity.UserEntityHelper
 import net.kiss.demo.users.helpers.model.UserHelper
 import net.kiss.demo.users.entity.UserEntity
-import net.kiss.demo.users.model.User
 import net.kiss.demo.users.repository.UserRepository
 import net.kiss.demo.users.service.impl.UserServiceImpl
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.atIndex
-import org.assertj.core.data.Index
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.argThat
 import org.mockito.BDDMockito.given
@@ -61,6 +58,19 @@ class UserServiceTest @Autowired constructor(
       .willReturn(listOf(user1, user2))
 
     val users = userService.getUsers()
+    assertThat(users).extracting("username")
+      .containsExactly(user1.username, user2.username)
+  }
+
+  @Test
+  fun `should return all users by ids`() {
+    val user1 = UserEntityHelper.userEntity()
+    val user2 = UserEntityHelper.userEntity()
+    val ids = listOf(user1.id!!, user2.id!!)
+    given(userRepository.findAllById(ids))
+      .willReturn(listOf(user1, user2))
+
+    val users = userService.getAllById(ids)
     assertThat(users).extracting("username")
       .containsExactly(user1.username, user2.username)
   }

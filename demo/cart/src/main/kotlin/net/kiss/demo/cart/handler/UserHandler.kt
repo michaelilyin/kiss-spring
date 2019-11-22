@@ -1,10 +1,9 @@
 package net.kiss.demo.cart.handler
 
-import net.kiss.demo.cart.model.Cart
 import net.kiss.demo.cart.model.external.User
 import net.kiss.demo.cart.model.external.UserMutation
-import net.kiss.starter.graphql.dsl.FederationRequest
-import net.kiss.starter.graphql.dsl.GraphQLRequest
+import net.kiss.starter.graphql.dsl.data.FederationRequest
+import net.kiss.starter.graphql.dsl.data.GraphQLRequest
 
 interface UserHandler {
   fun stubUserForCart(req: GraphQLRequest): User
