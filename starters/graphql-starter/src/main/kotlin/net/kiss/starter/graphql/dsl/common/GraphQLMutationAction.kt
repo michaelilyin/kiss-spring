@@ -6,7 +6,7 @@ open class GraphQLMutationAction<T, F>(
   val action: String,
   private val parent: GraphQLMutation<T>
 ) {
-  lateinit var fetcher: (GraphQLRequest) -> F
+  lateinit var fetcher: suspend (GraphQLRequest) -> F
     get
     protected set
 }

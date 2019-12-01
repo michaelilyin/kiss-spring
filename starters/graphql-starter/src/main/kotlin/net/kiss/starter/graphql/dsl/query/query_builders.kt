@@ -6,13 +6,14 @@ import net.kiss.starter.graphql.dsl.common.GraphQLObjectField
 import net.kiss.starter.graphql.dsl.common.GraphQLQuery
 import net.kiss.starter.graphql.dsl.data.GraphQLRequest
 import net.kiss.starter.graphql.dsl.types.GraphQLLocalType
+import java.lang.IllegalArgumentException
 
 @GraphQLMarker
 class Field<T, F>(
   field: String,
   parent: LocalQuery<T>
 ) : GraphQLObjectField<T, F>(field, parent) {
-  fun fetch(resolve: (GraphQLRequest) -> F) {
+  fun fetch(resolve: suspend (GraphQLRequest) -> F) {
     fetcher = resolve
   }
 }
@@ -22,7 +23,7 @@ class ForeignField<T, F>(
   field: String,
   parent: LocalQuery<T>
 ) : GraphQLObjectField<T, F>(field, parent) {
-  fun buildFederationRequest(resolve: (GraphQLRequest) -> F) {
+  fun buildFederationRequest(resolve: suspend (GraphQLRequest) -> F) {
     fetcher = resolve
   }
 }

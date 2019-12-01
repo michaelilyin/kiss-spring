@@ -7,7 +7,7 @@ import net.kiss.starter.graphql.dsl.types.GraphQLForeignType
 
 @GraphQLMarker
 class ForeignFederation<T>(parent: GraphQLForeignType<T>): GraphQLFederation<T>(parent) {
-  fun resolve(resolve: (FederationRequest<*>) -> List<T>) {
+  fun resolve(resolve: suspend (FederationRequest) -> List<T>) {
     resolver = resolve
   }
 }

@@ -22,13 +22,13 @@ class UserFetchersConfig {
 
     foreignType<User> {
       federate {
-        accept(userHandler::stubUsers)
+        resolve(userHandler::stubUsers)
       }
     }
 
     foreignType<UserMutation> {
       federate {
-        accept(userHandler::stubUserMutations)
+        resolve(userHandler::stubUserMutations)
       }
     }
   }

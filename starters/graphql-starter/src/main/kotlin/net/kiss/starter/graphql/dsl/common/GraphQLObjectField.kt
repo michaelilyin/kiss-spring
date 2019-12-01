@@ -6,7 +6,7 @@ abstract class GraphQLObjectField<T, F>(
   val field: String,
   private val parent: GraphQLQuery<T>
 ) {
-  lateinit var fetcher: (GraphQLRequest) -> F
+  lateinit var fetcher: suspend (GraphQLRequest) -> F
     get
     protected set
 }

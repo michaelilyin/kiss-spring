@@ -9,29 +9,31 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.Resource
 import java.io.InputStreamReader
-import graphql.schema.idl.RuntimeWiring
-import graphql.schema.idl.SchemaGenerator
 import graphql.schema.GraphQLSchema
-import graphql.schema.idl.SchemaParser
-import graphql.schema.idl.TypeDefinitionRegistry
+import graphql.schema.idl.*
+import graphql.schema.idl.RuntimeWiring.newRuntimeWiring
 import graphql.schema.idl.TypeRuntimeWiring.newTypeWiring
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
 import mu.KotlinLogging
 import net.kiss.starter.graphql.builder.FetchersGroup
-import net.kiss.starter.graphql.builder.TypeFetchers
-import java.lang.IllegalArgumentException
+import net.kiss.starter.graphql.config.WiringBuilder
+import net.kiss.starter.graphql.dsl.common.GraphQLObjectField
+import net.kiss.starter.graphql.dsl.data.GraphQLRequest
+import kotlin.IllegalArgumentException
+import net.kiss.starter.graphql.dsl.GraphQL as DGraphQL
 
 
 @Configuration
 @ComponentScan(basePackageClasses = [GraphQLAutoConfiguration::class])
 class GraphQLAutoConfiguration {
-  private val logger = KotlinLogging.logger {  }
+  private val logger = KotlinLogging.logger { }
 
   @Bean
   fun graphQl(
     applicationContext: ApplicationContext,
-    fetchers: List<FetchersGroup>): GraphQL {
+    fetchers: List<DGraphQL>
+  ): GraphQL {
     // see https://www.graphql-java.com/tutorials/getting-started-with-spring-boot/
     val sdl = lookupSDL(applicationContext)
 
@@ -53,9 +55,10 @@ class GraphQLAutoConfiguration {
     return InputStreamReader(resource.inputStream).use { it.readText() }
   }
 
-  private fun buildSchema(sdl: String, fetchers: List<FetchersGroup>): GraphQLSchema {
+  private fun buildSchema(sdl: String, fetchers: List<DGraphQL>): GraphQLSchema {
     val typeRegistry = buildTypeRegistry(sdl)
-    val runtimeWiring = buildWiring(fetchers)
+    val wiringBuilder = WiringBuilder(fetchers)
+    val runtimeWiring = wiringBuilder.buildRuntimeWiring()
 
     return SchemaGenerator().makeExecutableSchema(typeRegistry, runtimeWiring)
   }
@@ -65,55 +68,13 @@ class GraphQLAutoConfiguration {
     return parser.parse(sdl)
   }
 
-  private fun buildWiring(fetchers: List<FetchersGroup>): RuntimeWiring {
-    val wiring = RuntimeWiring.newRuntimeWiring()
+  private fun buildFederatedSchema(sdl: String, fetchers: List<DGraphQL>): GraphQLSchema {
+    val wiringBuilder = WiringBuilder(fetchers)
+    val runtimeWiring = wiringBuilder.buildRuntimeWiring()
 
-    val typeMap = fetchers.asSequence()
-      .flatMap { it.typeFetchers.values.asSequence() }
-      .flatMap { it.asSequence() }
-      .groupBy { it.type }
-
-    typeMap.forEach { typeFetchers ->
-      val typeWiring = newTypeWiring(typeFetchers.key)
-
-      typeFetchers.value.asSequence()
-        .flatMap { it.fieldFetchers.asSequence() }
-        .forEach { fetcher ->
-          typeWiring.dataFetcher(fetcher.field) { env ->
-            runBlocking(MDCContext()) { fetcher.fetcher(env) } // TODO: implement more better approach than run blocking
-          }
-        }
-
-      wiring.type(typeWiring)
-    }
-
-    return wiring.build()
-  }
-
-  private fun buildFederatedSchema(sdl: String, fetchers: List<FetchersGroup>): GraphQLSchema {
-
-    val typeMap = fetchers.asSequence()
-      .flatMap { it.typeFetchers.values.asSequence() }
-      .flatMap { it.asSequence() }
-      .groupBy { it.type }
-
-    val wiring = buildWiring(fetchers)
-
-    return Federation.transform(sdl, wiring)
-      .fetchEntities { env ->
-        val entityArg = env.getArgument<List<Map<String, Any>>>(_Entity.argumentName)
-        runBlocking(MDCContext()) {
-          entityArg.map { args ->
-            logger.info { "Fetch entity with args $args" }
-            val type = args["__typename"] as? String ?: throw IllegalArgumentException()
-            val typeFetchers = typeMap[type] ?: return@map null
-            val resolver = typeFetchers.find { it.resolver != null } ?: return@map null
-            resolver.resolver?.invoke(args)
-          }
-        }
-      }
+    return Federation.transform(sdl, runtimeWiring)
+      .fetchEntities(wiringBuilder.buildFederationFetcher())
       .resolveEntityType { env ->
-        logger.info { "type request!" }
         val obj = env.getObject<Any>()
         val name = obj.javaClass.simpleName
         env.schema.getObjectType(name)

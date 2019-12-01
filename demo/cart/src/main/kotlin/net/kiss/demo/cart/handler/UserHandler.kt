@@ -6,7 +6,7 @@ import net.kiss.starter.graphql.dsl.data.FederationRequest
 import net.kiss.starter.graphql.dsl.data.GraphQLRequest
 
 interface UserHandler {
-  fun stubUserForCart(req: GraphQLRequest): User
-  fun stubUsers(req: FederationRequest<Any>): List<User>
-  fun stubUserMutations(req: FederationRequest<Any>): List<UserMutation>
+  suspend fun stubUserForCart(req: GraphQLRequest): User
+  suspend fun stubUsers(req: FederationRequest): List<User>
+  suspend fun stubUserMutations(req: FederationRequest): List<UserMutation>
 }

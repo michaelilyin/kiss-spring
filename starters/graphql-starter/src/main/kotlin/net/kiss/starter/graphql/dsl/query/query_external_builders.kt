@@ -12,7 +12,7 @@ class LocalField<T, F>(
   field: String,
   parent: ForeignQuery<T>
 ) : GraphQLObjectField<T, F>(field, parent) {
-  fun fetch(resolve: (GraphQLRequest) -> F) {
+  fun fetch(resolve: suspend (GraphQLRequest) -> F) {
     fetcher = resolve
   }
 }

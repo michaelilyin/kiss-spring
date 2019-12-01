@@ -11,7 +11,7 @@ import net.kiss.starter.graphql.dsl.types.GraphQLForeignType
 class LocalAction<T, F>(field: String, parent: ForeignMutation<T>) : GraphQLMutationAction<T, F>(
   field, parent
 ) {
-  fun execute(resolve: (GraphQLRequest) -> F) {
+  fun execute(resolve: suspend (GraphQLRequest) -> F) {
     fetcher = resolve
   }
 }

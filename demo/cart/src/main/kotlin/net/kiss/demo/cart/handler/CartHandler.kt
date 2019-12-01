@@ -5,8 +5,8 @@ import net.kiss.starter.graphql.dsl.data.FederationRequest
 import net.kiss.starter.graphql.dsl.data.GraphQLRequest
 
 interface CartHandler {
-  fun resolveCarts(req: FederationRequest<*>): List<Cart>
-  fun findCart(req: GraphQLRequest): Cart?
-  fun findUserCart(req: GraphQLRequest): Cart?
-  fun createCart(req: GraphQLRequest): Cart
+  suspend fun resolveCarts(req: FederationRequest): List<Cart>
+  suspend fun findCart(req: GraphQLRequest): Cart?
+  suspend fun findUserCart(req: GraphQLRequest): Cart?
+  suspend fun createCart(req: GraphQLRequest): Cart
 }

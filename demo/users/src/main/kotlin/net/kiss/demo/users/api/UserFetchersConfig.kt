@@ -16,43 +16,6 @@ import org.springframework.context.annotation.Configuration
 class UserFetchersConfig {
 
   @Bean
-  fun userFetchersDeprecated(userService: UserService,
-                   roleService: RoleService) = buildFetchers {
-    query {
-      fetch<User?>("user") {
-        invoke { userService.findUserById(it.getIdArgAsLong()) }
-      }
-
-      fetch<List<User>>("users") {
-        invoke { userService.getUsers() }
-      }
-    }
-
-    mutation {
-      mutate<User?>("user") {
-        invoke { userService.findUserById(it.getIdArgAsLong()) }
-      }
-      mutate<User>("createUser") {
-        invoke {
-          val input = UserCreate(it.getArgument<Map<String, Any>>("user"))
-          userService.createUser(input)
-        }
-      }
-    }
-
-    entity<User> {
-      resolve { userService.findUserById(it.getIdArgAsLong()) }
-
-      fetch<List<Role>>("roles") {
-        invoke {
-          val user = it.getSource<User>()
-          roleService.getUserRoles(user.id)
-        }
-      }
-    }
-  }
-
-  @Bean
   fun userFetchers(userHandler: UserHandler) = graphql {
     query {
       field<User?>("user") {

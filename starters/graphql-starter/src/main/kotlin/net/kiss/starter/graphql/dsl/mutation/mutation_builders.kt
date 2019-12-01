@@ -11,7 +11,7 @@ import net.kiss.starter.graphql.dsl.types.GraphQLLocalType
 class Action<T, F>(field: String, parent: LocalMutation<T>) : GraphQLMutationAction<T, F>(
   field, parent
 ) {
-  fun execute(resolve: (GraphQLRequest) -> F) {
+  fun execute(resolve: suspend (GraphQLRequest) -> F) {
     fetcher = resolve
   }
 }
@@ -22,7 +22,7 @@ class LocalMutation<T>(parent: GraphQLLocalType<T>) : GraphQLMutation<T>(parent)
 // TODO: maybe needed
 //  }
 
-  fun <R> nestedMutationContext(field: String, resolve: (GraphQLRequest) -> R) {
+  fun <R> nestedMutationContext(field: String, resolve: suspend (GraphQLRequest) -> R) {
     val context = Action<T, R>(field, this)
     context.execute(resolve)
 

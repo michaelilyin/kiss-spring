@@ -4,5 +4,5 @@ import net.kiss.demo.users.model.Role
 import net.kiss.starter.graphql.dsl.data.GraphQLRequest
 
 interface RoleHandler {
-  fun getUserRoles(req: GraphQLRequest): List<Role>
+  suspend fun getUserRoles(req: GraphQLRequest): List<Role>
 }

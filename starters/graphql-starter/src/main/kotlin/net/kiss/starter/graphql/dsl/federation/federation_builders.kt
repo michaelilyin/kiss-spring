@@ -7,7 +7,7 @@ import net.kiss.starter.graphql.dsl.types.GraphQLLocalType
 
 @GraphQLMarker
 class LocalFederation<T>(parent: GraphQLLocalType<T>): GraphQLFederation<T>(parent) {
-  fun <Q : Any> resolve(resolve: (FederationRequest<Q>) -> List<T>) {
+  fun resolve(resolve: suspend (FederationRequest) -> List<T>) {
     resolver = resolve
   }
 }

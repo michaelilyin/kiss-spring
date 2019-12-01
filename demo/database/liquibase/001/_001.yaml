@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: 001-startup-schema.sql
+      relativeToChangelogFile: true

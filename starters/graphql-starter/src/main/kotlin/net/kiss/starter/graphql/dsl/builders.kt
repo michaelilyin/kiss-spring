@@ -17,8 +17,7 @@ class GraphQL {
   @RootQueryKeyword
   fun query(init: LocalQuery<Any>.() -> Unit) {
     val typeContext = GraphQLLocalType<Any>(QUERY, this)
-    val context = LocalQuery(typeContext)
-    context.init()
+    typeContext.query(init)
 
     addType(typeContext)
   }
@@ -26,23 +25,23 @@ class GraphQL {
   @RootQueryKeyword
   fun mutation(init: LocalMutation<Any>.() -> Unit) {
     val typeContext = GraphQLLocalType<Any>(MUTATION, this)
-    val context = LocalMutation(typeContext)
-    context.init()
-
+    typeContext.mutation(init)
     addType(typeContext)
   }
 
   @TypeKeyword
-  inline fun <reified T : Any> type(typename: String? = null,
-                                    noinline init: GraphQLLocalType<T>.() -> Unit
+  inline fun <reified T : Any> type(
+    typename: String? = null,
+    noinline init: GraphQLLocalType<T>.() -> Unit
   ) {
     type(typename, T::class, init)
   }
 
   @TypeKeyword
-  fun <T : Any> type(typename: String? = null,
-                     type: KClass<T>,
-                     init: GraphQLLocalType<T>.() -> Unit
+  fun <T : Any> type(
+    typename: String? = null,
+    type: KClass<T>,
+    init: GraphQLLocalType<T>.() -> Unit
   ) {
     val name = typename ?: getFromClass(type)
     val context = GraphQLLocalType<T>(name, this)
@@ -52,10 +51,19 @@ class GraphQL {
   }
 
   @TypeKeyword
-  inline fun <reified T : Any> foreignType(typename: String? = null,
-                                           noinline init: GraphQLForeignType<T>.() -> Unit
+  inline fun <reified T : Any> foreignType(
+    typename: String? = null,
+    noinline init: GraphQLForeignType<T>.() -> Unit
   ) {
-    val name = typename ?: getFromClass(T::class)
+    foreignType(typename, T::class, init)
+  }
+
+  fun <T : Any> foreignType(
+    typename: String?,
+    type: KClass<T>,
+    init: GraphQLForeignType<T>.() -> Unit
+  ) {
+    val name = typename ?: getFromClass(type)
     val context = GraphQLForeignType<T>(name, this)
     context.init()
 
@@ -68,7 +76,7 @@ class GraphQL {
     types[typeContext.typename] = typeContext
   }
 
-  fun <T : Any> getFromClass(type: KClass<T>): String {
+  private fun <T : Any> getFromClass(type: KClass<T>): String {
     return type.simpleName ?: throw IllegalArgumentException()
   }
 }
