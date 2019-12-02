@@ -31,8 +31,8 @@ class GraphQLLocalType<T>(
   }
 
   @QueryKeyword
-  infix fun federate(init: LocalFederation<T>.() -> Unit) {
-    val context = LocalFederation(this)
+  infix fun <K> federate(init: LocalFederation<K, T>.() -> Unit) {
+    val context = LocalFederation<K, T>(this)
     context.init()
 
     addFederation(context)

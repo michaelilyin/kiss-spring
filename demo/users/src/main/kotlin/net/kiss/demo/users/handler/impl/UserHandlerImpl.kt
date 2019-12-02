@@ -5,8 +5,10 @@ import net.kiss.demo.users.model.User
 import net.kiss.demo.users.model.UserCreate
 import net.kiss.demo.users.service.UserService
 import net.kiss.starter.graphql.dsl.data.FederationRequest
+import net.kiss.starter.graphql.dsl.data.FederationResponse
 import net.kiss.starter.graphql.dsl.data.GraphQLRequest
 import net.kiss.starter.graphql.infra.GraphQLHandler
+import net.kiss.starter.graphql.model.LongID
 import org.springframework.beans.factory.annotation.Autowired
 
 @GraphQLHandler
@@ -29,9 +31,12 @@ class UserHandlerImpl @Autowired constructor(
     return userService.createUser(user)
   }
 
-  override suspend fun resolveUsers(req: FederationRequest): List<User> {
-    val args = req.mapArgs<Long>("id")
+  override suspend fun resolveUsers(req: FederationRequest<LongID>): FederationResponse<LongID, User> {
+    val ids = req.items.map { it.key.id }
+    val users = userService.resolveById(ids)
+      .groupBy { LongID(it.id) }
+      .mapValues { it.value.first() }
 
-    return userService.getAllById(args)
+    return FederationResponse(req, users)
   }
 }

@@ -1,15 +1,15 @@
 package net.kiss.starter.graphql.dsl.data
 
-import graphql.schema.DataFetchingEnvironment
-import net.kiss.starter.graphql.config.FederationRequestItem
 import net.kiss.starter.graphql.config.FederationRequestResult
 
 class FederationResponse<K, T>(
-  val forRequest: FederationRequest<K>,
+  val request: FederationRequest<K>,
   val itemsMap: Map<K, T>
 ) {
-  val items: List<T>
+  val items: List<FederationRequestResult<T?>>
     get() {
-      return forRequest
+      return request.items.asSequence()
+        .map { FederationRequestResult(it.index, itemsMap[it.key]) }
+        .toList()
     }
 }

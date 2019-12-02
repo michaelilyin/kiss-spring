@@ -7,6 +7,6 @@ interface UserService {
   fun findUserById(id: Long): User?
   fun getUsers(): List<User>
   fun createUser(input: UserCreate): User
-  fun getAllById(args: List<Long>): List<User>
+  fun resolveById(args: List<Long>): List<User>
 
 }

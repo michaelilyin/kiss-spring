@@ -27,7 +27,7 @@ class UserServiceImpl @Autowired constructor(
     return userRepository.save(entity).toModel()
   }
 
-  override fun getAllById(args: List<Long>): List<User> {
+  override fun resolveById(args: List<Long>): List<User> {
     return userRepository.findAllById(args).map { it.toModel() }
   }
 

@@ -4,10 +4,10 @@ import graphql.schema.DataFetchingEnvironment
 import net.kiss.starter.graphql.config.FederationRequestItem
 
 class FederationRequest<T>(
-  private val env: List<FederationRequestItem>
+  val items: List<FederationRequestItem<T>>
 ) {
   companion object {
-    fun <T> from(env: List<FederationRequestItem>): FederationRequest<T> {
+    fun <T> from(env: List<FederationRequestItem<T>>): FederationRequest<T> {
       return FederationRequest(env)
     }
   }

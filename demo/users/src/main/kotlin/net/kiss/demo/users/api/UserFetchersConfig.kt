@@ -9,6 +9,7 @@ import net.kiss.demo.users.service.UserService
 import net.kiss.starter.graphql.builder.buildFetchers
 import net.kiss.starter.graphql.builder.getIdArgAsLong
 import net.kiss.starter.graphql.dsl.graphql
+import net.kiss.starter.graphql.model.LongID
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -36,7 +37,7 @@ class UserFetchersConfig {
     }
 
     type<User> {
-      federate {
+      federate<LongID> {
         resolve(userHandler::resolveUsers)
       }
     }
