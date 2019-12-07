@@ -16,7 +16,7 @@ class GraphQL {
 
   @RootQueryKeyword
   fun query(init: LocalQuery<Any>.() -> Unit) {
-    val typeContext = GraphQLLocalType<Any>(QUERY, this)
+    val typeContext = GraphQLLocalType(QUERY, Any::class, this)
     typeContext.query(init)
 
     addType(typeContext)
@@ -24,7 +24,7 @@ class GraphQL {
 
   @RootQueryKeyword
   fun mutation(init: LocalMutation<Any>.() -> Unit) {
-    val typeContext = GraphQLLocalType<Any>(MUTATION, this)
+    val typeContext = GraphQLLocalType(MUTATION, Any::class, this)
     typeContext.mutation(init)
     addType(typeContext)
   }
@@ -44,7 +44,7 @@ class GraphQL {
     init: GraphQLLocalType<T>.() -> Unit
   ) {
     val name = typename ?: getFromClass(type)
-    val context = GraphQLLocalType<T>(name, this)
+    val context = GraphQLLocalType(name, type, this)
     context.init()
 
     addType(context)
@@ -64,14 +64,14 @@ class GraphQL {
     init: GraphQLForeignType<T>.() -> Unit
   ) {
     val name = typename ?: getFromClass(type)
-    val context = GraphQLForeignType<T>(name, this)
+    val context = GraphQLForeignType<T>(name, type, this)
     context.init()
 
     if (foreignTypes.containsKey(context.typename)) throw IllegalStateException("Should contain only one foreign type definition")
     foreignTypes[context.typename] = context
   }
 
-  private fun <T> addType(typeContext: GraphQLLocalType<T>) {
+  private fun <T : Any> addType(typeContext: GraphQLLocalType<T>) {
     if (types.containsKey(typeContext.typename)) throw IllegalStateException("Should contain only one type definition")
     types[typeContext.typename] = typeContext
   }

@@ -1,26 +1,19 @@
 package net.kiss.starter.graphql
 
 import com.apollographql.federation.graphqljava.Federation
-import com.apollographql.federation.graphqljava._Entity
 import graphql.GraphQL
+import graphql.schema.GraphQLSchema
+import graphql.schema.idl.SchemaGenerator
+import graphql.schema.idl.SchemaParser
+import graphql.schema.idl.TypeDefinitionRegistry
+import mu.KotlinLogging
+import net.kiss.starter.graphql.config.WiringBuilder
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.Resource
 import java.io.InputStreamReader
-import graphql.schema.GraphQLSchema
-import graphql.schema.idl.*
-import graphql.schema.idl.RuntimeWiring.newRuntimeWiring
-import graphql.schema.idl.TypeRuntimeWiring.newTypeWiring
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.slf4j.MDCContext
-import mu.KotlinLogging
-import net.kiss.starter.graphql.builder.FetchersGroup
-import net.kiss.starter.graphql.config.WiringBuilder
-import net.kiss.starter.graphql.dsl.common.GraphQLObjectField
-import net.kiss.starter.graphql.dsl.data.GraphQLRequest
-import kotlin.IllegalArgumentException
 import net.kiss.starter.graphql.dsl.GraphQL as DGraphQL
 
 

@@ -1,17 +1,51 @@
 package net.kiss.starter.graphql.dsl.data
 
-import graphql.schema.DataFetchingEnvironment
-import net.kiss.starter.graphql.config.FederationRequestItem
+import kotlin.reflect.KClass
+import kotlin.reflect.KParameter
+import kotlin.reflect.full.primaryConstructor
 
-class FederationRequest<T>(
-  val items: List<FederationRequestItem<T>>
+data class FederationRequestItem<KEY : Any>(
+  internal val index: Int,
+  internal val data: Map<String, Any>
 ) {
-  companion object {
-    fun <T> from(env: List<FederationRequestItem<T>>): FederationRequest<T> {
-      return FederationRequest(env)
+  internal fun asKey(type: KClass<KEY>): KEY {
+    val constructor = type.primaryConstructor ?: throw IllegalArgumentException()
+    val params = mutableMapOf<KParameter, Any?>()
+    constructor.parameters.forEach {
+      params[it] = data[it.name]
     }
+
+    return constructor.callBy(params)
   }
-  fun <D> mapArgs(name: String): List<D> {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+}
+
+data class FederationRequestResult<T>(
+  val index: Int,
+  val result: T
+)
+
+class FederationRequest<KEY : Any>(
+  private val keyType: KClass<KEY>,
+  val items: List<FederationRequestItem<KEY>>
+) {
+  val keys: List<KEY>
+    get() {
+      return items.map { it.asKey(keyType) }
+    }
+
+  internal fun <TYPE> toResponse(response: Collection<TYPE>, keyExtractor: (TYPE) -> KEY): FederationResponse<TYPE> {
+    val responseMap = response.groupBy(keyExtractor)
+      .mapValues { it.value.first() }
+
+    val responseItems = items.map { FederationRequestResult(it.index, responseMap[it.asKey(keyType)]) }
+
+    return FederationResponse(responseItems)
   }
+}
+
+fun <T, K : Any> Collection<T>.toFederationResponse(
+  request: FederationRequest<K>,
+  keyExtractor: (T) -> K
+): FederationResponse<T> {
+  return request.toResponse(this, keyExtractor)
 }

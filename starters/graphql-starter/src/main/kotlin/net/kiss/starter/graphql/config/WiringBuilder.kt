@@ -21,7 +21,7 @@ class WiringBuilder(private val fetchers: List<GraphQL>) {
   private val mutations = mutableSetOf<String>()
   private val fields = mutableMapOf<String, MutableSet<String>>()
   private val wirings = mutableMapOf<String, TypeRuntimeWiring.Builder>()
-  private val federation = mutableMapOf<String, GraphQLFederation<*>>()
+  private val federation = mutableMapOf<String, GraphQLFederation<*, *>>()
 
   private val logger = KotlinLogging.logger {}
 
@@ -78,7 +78,7 @@ class WiringBuilder(private val fetchers: List<GraphQL>) {
       if (typeFields.contains(name)) {
         throw IllegalArgumentException()
       }
-      wiring.dataFetcher(name, FetcherProxy(field.fetcher))
+      wiring.dataFetcher(name, FetcherProxy(field))
       typeFields.add(name)
     }
 
@@ -98,14 +98,14 @@ class WiringBuilder(private val fetchers: List<GraphQL>) {
       if (typeFields.contains(name)) {
         throw java.lang.IllegalArgumentException()
       }
-      wiring.dataFetcher(name, FetcherProxy(field.fetcher))
+      wiring.dataFetcher(name, MutationProxy(field))
       typeFields.add(name)
     }
 
     mutations.add(type)
   }
 
-  private fun addFederation(type: String, typeFederation: GraphQLFederation<*>) {
+  private fun addFederation(type: String, typeFederation: GraphQLFederation<*, *>) {
     if (federation.containsKey(type)) {
       throw IllegalArgumentException()
     }
@@ -115,18 +115,6 @@ class WiringBuilder(private val fetchers: List<GraphQL>) {
 
   fun buildFederationFetcher(): DataFetcher<*> {
     return FederationFetcherProxy(federation.toMap())
-//    return { env ->
-//      val entityArg = env.getArgument<List<Map<String, Any>>>(_Entity.argumentName)
-//      runBlocking(MDCContext()) {
-//        entityArg.map { args ->
-//          logger.info { "Fetch entity with args $args" }
-//          val type = args["__typename"] as? String ?: throw IllegalArgumentException()
-//          val typeFetchers = typeMap[type] ?: return@map null
-//          val resolver = typeFetchers.find { it.resolver != null } ?: return@map null
-//          resolver.resolver?.invoke(args)
-//        }
-//      }
-//    }
   }
 
   private fun getTypeWiring(type: String) = wirings.computeIfAbsent(type) { newTypeWiring(type) }

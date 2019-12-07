@@ -6,20 +6,26 @@ import net.kiss.starter.graphql.dsl.common.GraphQLMutation
 import net.kiss.starter.graphql.dsl.common.GraphQLMutationAction
 import net.kiss.starter.graphql.dsl.data.GraphQLRequest
 import net.kiss.starter.graphql.dsl.types.GraphQLForeignType
+import kotlin.reflect.KClass
 
 @GraphQLMarker
-class LocalAction<T, F>(field: String, parent: ForeignMutation<T>) : GraphQLMutationAction<T, F>(
-  field, parent
+class LocalAction<T : Any, I : Any, F>(
+  field: String,
+  inputType: KClass<I>,
+  parent: ForeignMutation<T>
+) : GraphQLMutationAction<T, I, F>(
+  field, parent.type, inputType, parent
 ) {
-  fun execute(resolve: suspend (GraphQLRequest) -> F) {
+  fun execute(resolve: suspend (GraphQLRequest<T, I>) -> F) {
     fetcher = resolve
   }
 }
 
 @GraphQLMarker
-class ForeignMutation<T>(parent: GraphQLForeignType<T>) : GraphQLMutation<T>(
-  parent
-) {
+class ForeignMutation<T : Any>(
+  type: KClass<T>,
+  parent: GraphQLForeignType<T>
+) : GraphQLMutation<T>(type, parent) {
 //  fun <A> federate(resolve: (A) -> List<T>) {
 // TODO: maybe needed
 //  }
@@ -29,8 +35,13 @@ class ForeignMutation<T>(parent: GraphQLForeignType<T>) : GraphQLMutation<T>(
 //  }
 
   @ActionKeyword
-  fun <F> localAction(field: String, init: LocalAction<T, F>.() -> Unit) {
-    val context = LocalAction<T, F>(field, this)
+  inline fun <reified I: Any, F> localAction(field: String, noinline init: LocalAction<T, I, F>.() -> Unit) {
+    localAction(field, I::class, init)
+  }
+
+  @ActionKeyword
+  fun <I : Any, F> localAction(field: String, inputType: KClass<I>, init: LocalAction<T, I, F>.() -> Unit) {
+    val context = LocalAction<T, I, F>(field, inputType, this)
     context.init()
 
     addFieldMutation(field, context)

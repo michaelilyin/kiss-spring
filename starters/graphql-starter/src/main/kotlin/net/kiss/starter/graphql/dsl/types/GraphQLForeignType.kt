@@ -7,15 +7,17 @@ import net.kiss.starter.graphql.dsl.common.GraphQLType
 import net.kiss.starter.graphql.dsl.federation.ForeignFederation
 import net.kiss.starter.graphql.dsl.mutation.ForeignMutation
 import net.kiss.starter.graphql.dsl.query.ForeignQuery
+import kotlin.reflect.KClass
 
 @GraphQLMarker
-class GraphQLForeignType<T>(
+class GraphQLForeignType<T: Any>(
   typename: String,
+  type: KClass<T>,
   parent: GraphQL
-) : GraphQLType<T>(typename, parent) {
+) : GraphQLType<T>(typename, type, parent) {
   @QueryKeyword
   infix fun query(init: ForeignQuery<T>.() -> Unit) {
-    val context = ForeignQuery(this)
+    val context = ForeignQuery(type,this)
     context.init()
 
     addQuery(context)
@@ -23,15 +25,20 @@ class GraphQLForeignType<T>(
 
   @QueryKeyword
   infix fun mutation(init: ForeignMutation<T>.() -> Unit) {
-    val context = ForeignMutation<T>(this)
+    val context = ForeignMutation<T>(type, this)
     context.init()
 
     addMutation(context)
   }
 
   @QueryKeyword
-  infix fun federate(init: ForeignFederation<T>.() -> Unit) {
-    val context = ForeignFederation(this)
+  inline fun <reified K: Any> federate(noinline init: ForeignFederation<K, T>.() -> Unit) {
+    federate(K::class, init)
+  }
+
+  @QueryKeyword
+  fun <K: Any> federate(keyType: KClass<K>, init: ForeignFederation<K, T>.() -> Unit) {
+    val context = ForeignFederation(keyType, this)
     context.init()
 
     addFederation(context)

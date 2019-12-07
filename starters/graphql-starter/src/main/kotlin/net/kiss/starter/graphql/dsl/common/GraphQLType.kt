@@ -2,11 +2,12 @@ package net.kiss.starter.graphql.dsl.common
 
 import net.kiss.starter.graphql.dsl.*
 import net.kiss.starter.graphql.dsl.federation.LocalFederation
-import net.kiss.starter.graphql.dsl.mutation.LocalMutation
 import java.lang.IllegalStateException
+import kotlin.reflect.KClass
 
-open class GraphQLType<T>(
+open class GraphQLType<T: Any>(
   val typename: String,
+  val type: KClass<T>,
   protected val parent: GraphQL
 ) {
   var query: GraphQLQuery<T>? = null
@@ -17,7 +18,7 @@ open class GraphQLType<T>(
     get
     private set
 
-  var federation: GraphQLFederation<T>? = null
+  var federation: GraphQLFederation<*, T>? = null
     get
     private set
 
@@ -35,7 +36,7 @@ open class GraphQLType<T>(
     mutation = context
   }
 
-  protected fun addFederation(context: GraphQLFederation<T>) {
+  protected fun <K: Any> addFederation(context: GraphQLFederation<K, T>) {
     if (federation != null) throw IllegalStateException("Can not use federation definition twice in one type definition")
 
     federation = context

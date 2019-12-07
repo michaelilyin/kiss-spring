@@ -1,11 +1,14 @@
 package net.kiss.starter.graphql.dsl.common
 
-open class GraphQLQuery<T>(
+import kotlin.reflect.KClass
+
+open class GraphQLQuery<T: Any>(
+  val type: KClass<T>,
   val parent: GraphQLType<T>
 ) {
-  val fields = mutableMapOf<String, GraphQLObjectField<T, *>>()
+  val fields = mutableMapOf<String, GraphQLObjectField<T, *, *>>()
 
-  protected fun <F> addField(field: String, context: GraphQLObjectField<T, F>) {
+  protected fun <K : Any, F> addField(field: String, context: GraphQLObjectField<T, K, F>) {
     if (fields.containsKey(field)) throw IllegalArgumentException()
     fields[field] = context
   }

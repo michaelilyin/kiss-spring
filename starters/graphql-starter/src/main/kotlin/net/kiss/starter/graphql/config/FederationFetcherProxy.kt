@@ -10,26 +10,13 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
 import net.kiss.starter.graphql.dsl.common.GraphQLFederation
 import net.kiss.starter.graphql.dsl.data.FederationRequest
+import net.kiss.starter.graphql.dsl.data.FederationRequestItem
 import net.kiss.starter.graphql.dsl.data.FederationResponse
 import java.lang.IllegalStateException
-
-data class FederationRequestItem<T>(
-  val index: Int,
-  val data: Map<String, Any>
-) {
-  val key: T
-    get() {
-      TODO()
-    }
-}
-
-data class FederationRequestResult<T>(
-  val index: Int,
-  val result: T
-)
+import kotlin.reflect.KClass
 
 class FederationFetcherProxy(
-  private val resolvers: Map<String, GraphQLFederation<*>>
+  private val resolvers: Map<String, GraphQLFederation<*, *>>
 ) : DataFetcher<Any> {
   override fun get(env: DataFetchingEnvironment): Any {
     val request = env.getArgument<List<Map<String, Any>>>(_Entity.argumentName)
@@ -38,7 +25,13 @@ class FederationFetcherProxy(
       return@runBlocking request.asSequence()
         .mapIndexed { i, data -> FederationRequestItem<Any>(i, data) }
         .groupBy { it.data["__typename"] }
-        .map { async { callResolver(it) } }
+        .map {
+          async {
+            val resolver = resolvers[it.key] ?: throw IllegalStateException()
+            @Suppress("UNCHECKED_CAST")
+            callResolver(resolver as GraphQLFederation<Any, Any>, it.value)
+          }
+        }
         .flatMap { it.await().items }
         .sortedBy { it.index }
         .map { it.result }
@@ -46,11 +39,8 @@ class FederationFetcherProxy(
   }
 
   private suspend fun callResolver(
-    item: Map.Entry<Any?, List<FederationRequestItem<Any>>>
-  ): FederationResponse<Any, out Any?> {
-    val resolver = resolvers[item.key] ?: throw IllegalStateException()
-    val reqItems = item.value
-
-    return resolver.resolver(FederationRequest.from(reqItems))
+    resolver: GraphQLFederation<Any, Any>, items: List<FederationRequestItem<Any>>
+  ): FederationResponse<*> {
+    return resolver.resolver.invoke(FederationRequest(resolver.keyType, items))
   }
 }

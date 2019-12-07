@@ -2,24 +2,27 @@ package net.kiss.starter.graphql.dsl.data
 
 import graphql.schema.DataFetchingEnvironment
 import kotlin.reflect.KClass
+import kotlin.reflect.KParameter
+import kotlin.reflect.full.primaryConstructor
 
-class GraphQLRequest (
+class GraphQLRequest<C: Any, A: Any> (
+  private val argType: KClass<A>,
   private val env: DataFetchingEnvironment
 ) {
-  companion object {
-    fun from(env: DataFetchingEnvironment): GraphQLRequest {
-      return GraphQLRequest(env)
+  val arg: A
+    get() {
+      val constructor = argType.primaryConstructor ?: throw IllegalArgumentException()
+      val params = mutableMapOf<KParameter, Any?>()
+      constructor.parameters.forEach {
+        params[it] = env.arguments[it.name]
+      }
+
+      return constructor.callBy(params)
     }
-  }
 
-  fun hasArg(name: String): Boolean = env.containsArgument(name)
-
-  inline fun <reified T : Any> arg(name: String): T {
-    return arg(name, T::class)
-  }
-
-  fun <T : Any> arg(name: String, type: KClass<T>): T {
-    TODO()
-  }
+  val context: C
+    get() {
+      return env.getContext<C>()
+    }
 
 }

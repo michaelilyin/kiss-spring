@@ -5,9 +5,9 @@ import net.kiss.demo.cart.model.Cart
 import net.kiss.demo.cart.model.external.User
 import net.kiss.demo.cart.model.external.UserMutation
 import net.kiss.demo.cart.service.CartService
-import net.kiss.starter.graphql.builder.buildFetchers
-import net.kiss.starter.graphql.builder.getIdArgAsLong
+import net.kiss.starter.graphql.dsl.data.toFederationResponse
 import net.kiss.starter.graphql.dsl.graphql
+import net.kiss.starter.graphql.model.LongID
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -15,73 +15,40 @@ import org.springframework.context.annotation.Configuration
 class CartFetchersConfig {
 
   @Bean
-  fun cartFetchersDeprecated(cartService: CartService) = buildFetchers {
+  fun cartFetchers(cartService: CartService) = graphql {
     query {
-      fetch<Cart?>("cart") {
-        invoke { cartService.findCartById(it.getIdArgAsLong()) }
-      }
-    }
-
-    entity<Cart> {
-      resolve { cartService.findCartById(it.getIdArgAsLong()) }
-
-      fetch<User>("user") {
-        invoke {
-          val cart = it.getSource<Cart>();
-          User(cart.userId)
+      field<LongID, Cart?>("cart") {
+        fetch {
+          cartService.findCartById(it.arg.id)
         }
-      }
-    }
-
-    entity<User> {
-      resolve { User(it.getIdArgAsLong()) }
-
-      fetch<Cart?>("cart") {
-        invoke {
-          val user = it.getSource<User>()
-          cartService.findCartByUserId(user.id)
-        }
-      }
-    }
-
-    entity<UserMutation> {
-      resolve { UserMutation(it.getIdArgAsLong()) }
-
-      fetch<Cart>("createCart") {
-        invoke {
-          val user = it.getSource<UserMutation>()
-          cartService.createCart(user.id)
-        }
-      }
-    }
-  }
-
-  @Bean
-  fun cartFetchers(cartHandler: CartHandler) = graphql {
-    query {
-      field<Cart?>("cart") {
-        fetch(cartHandler::findCart)
       }
     }
 
     type<Cart> {
-      federate {
-        resolve(cartHandler::resolveCarts)
+      federate<LongID> {
+        resolve {
+          val carts = cartService.getCartsByIds(it.keys.map { it.id })
+          carts.toFederationResponse(it) { LongID(it.id) }
+        }
       }
     }
 
     foreignType<User> {
       query {
-        localField<Cart?>("cart") {
-          fetch(cartHandler::findUserCart)
+        localField<Unit, Cart?>("cart") {
+          fetch {
+            cartService.findCartByUserId(it.context.id)
+          }
         }
       }
     }
 
     foreignType<UserMutation> {
       mutation {
-        localAction<Cart>("createCart") {
-          execute(cartHandler::createCart)
+        localAction<Unit, Cart>("createCart") {
+          execute {
+            cartService.createCart(it.context.id)
+          }
         }
       }
     }

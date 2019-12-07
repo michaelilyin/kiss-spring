@@ -7,42 +7,56 @@ import net.kiss.starter.graphql.dsl.common.GraphQLQuery
 import net.kiss.starter.graphql.dsl.data.GraphQLRequest
 import net.kiss.starter.graphql.dsl.types.GraphQLLocalType
 import java.lang.IllegalArgumentException
+import kotlin.reflect.KClass
 
 @GraphQLMarker
-class Field<T, F>(
+class Field<T : Any, A : Any, F>(
   field: String,
+  argType: KClass<A>,
   parent: LocalQuery<T>
-) : GraphQLObjectField<T, F>(field, parent) {
-  fun fetch(resolve: suspend (GraphQLRequest) -> F) {
+) : GraphQLObjectField<T, A, F>(field, parent.type, argType, parent) {
+  fun fetch(resolve: suspend (GraphQLRequest<T, A>) -> F) {
     fetcher = resolve
   }
 }
 
 @GraphQLMarker
-class ForeignField<T, F>(
+class ForeignField<T: Any, A : Any, F>(
   field: String,
+  argType: KClass<A>,
   parent: LocalQuery<T>
-) : GraphQLObjectField<T, F>(field, parent) {
-  fun buildFederationRequest(resolve: suspend (GraphQLRequest) -> F) {
+) : GraphQLObjectField<T, A, F>(field, parent.type, argType, parent) {
+  fun buildFederationRequest(resolve: suspend (GraphQLRequest<T, A>) -> F) {
     fetcher = resolve
   }
 }
 
 @GraphQLMarker
-class LocalQuery<T>(
+class LocalQuery<T : Any>(
+  type: KClass<T>,
   parent: GraphQLLocalType<T>
-) : GraphQLQuery<T>(parent) {
+) : GraphQLQuery<T>(type, parent) {
   @FieldKeyword
-  fun <F> field(field: String, init: Field<T, F>.() -> Unit) {
-    val context = Field<T, F>(field, this)
+  inline fun <reified K : Any, F> field(field: String, noinline init: Field<T, K, F>.() -> Unit) {
+    field(field, K::class, init)
+  }
+
+  @FieldKeyword
+  fun <K : Any, F> field(field: String, arg: KClass<K>, init: Field<T, K, F>.() -> Unit) {
+    val context = Field<T, K, F>(field, arg, this)
     context.init()
 
     addField(field, context)
   }
 
   @FieldKeyword
-  fun <F> foreignField(field: String, init: ForeignField<T, F>.() -> Unit) {
-    val context = ForeignField<T, F>(field, this)
+  inline fun <reified K : Any, F> foreignField(field: String, noinline init: ForeignField<T, K, F>.() -> Unit) {
+    foreignField(field, K::class, init)
+  }
+
+  @FieldKeyword
+  fun <K : Any, F> foreignField(field: String, arg: KClass<K>, init: ForeignField<T, K, F>.() -> Unit) {
+    val context = ForeignField<T, K, F>(field, arg, this)
     context.init()
 
     addField(field, context)

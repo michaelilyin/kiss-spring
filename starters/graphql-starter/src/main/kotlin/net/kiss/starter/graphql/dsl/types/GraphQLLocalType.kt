@@ -7,16 +7,18 @@ import net.kiss.starter.graphql.dsl.common.GraphQLType
 import net.kiss.starter.graphql.dsl.federation.LocalFederation
 import net.kiss.starter.graphql.dsl.mutation.LocalMutation
 import net.kiss.starter.graphql.dsl.query.LocalQuery
+import kotlin.reflect.KClass
 
 @GraphQLMarker
-class GraphQLLocalType<T>(
+class GraphQLLocalType<T: Any>(
   typename: String,
+  type: KClass<T>,
   parent: GraphQL
-) : GraphQLType<T>(typename, parent) {
+) : GraphQLType<T>(typename, type, parent) {
 
   @QueryKeyword
   infix fun query(init: LocalQuery<T>.() -> Unit) {
-    val context = LocalQuery(this)
+    val context = LocalQuery(type, this)
     context.init()
 
     addQuery(context)
@@ -24,15 +26,20 @@ class GraphQLLocalType<T>(
 
   @QueryKeyword
   infix fun mutation(init: LocalMutation<T>.() -> Unit) {
-    val context = LocalMutation(this)
+    val context = LocalMutation(type, this)
     context.init()
 
     addMutation(context)
   }
 
   @QueryKeyword
-  infix fun <K> federate(init: LocalFederation<K, T>.() -> Unit) {
-    val context = LocalFederation<K, T>(this)
+  inline fun <reified K: Any> federate(noinline init: LocalFederation<K, T>.() -> Unit) {
+    federate(K::class, init)
+  }
+
+  @QueryKeyword
+  fun <K : Any> federate(keyType: KClass<K>, init: LocalFederation<K, T>.() -> Unit) {
+    val context = LocalFederation(keyType, this)
     context.init()
 
     addFederation(context)

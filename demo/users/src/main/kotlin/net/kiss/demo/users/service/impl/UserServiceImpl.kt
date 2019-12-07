@@ -17,21 +17,21 @@ class UserServiceImpl @Autowired constructor(
 ) : UserService {
   val logger = KotlinLogging.logger {  }
 
-  override fun findUserById(id: Long): User? {
+  override suspend fun findUserById(id: Long): User? {
     val entity = userRepository.findById(id)
     return entity.map { it.toModel() }.orNull()
   }
 
-  override fun createUser(input: UserCreate): User {
+  override suspend fun createUser(input: UserCreate): User {
     val entity = input.toEntity()
     return userRepository.save(entity).toModel()
   }
 
-  override fun resolveById(args: List<Long>): List<User> {
+  override suspend fun resolveById(args: List<Long>): List<User> {
     return userRepository.findAllById(args).map { it.toModel() }
   }
 
-  override fun getUsers(): List<User> {
+  override suspend fun getUsers(): List<User> {
     val users = userRepository.findAll()
     return users.map { it.toModel() }
   }

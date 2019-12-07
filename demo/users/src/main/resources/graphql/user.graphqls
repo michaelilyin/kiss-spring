@@ -18,6 +18,6 @@ extend type Query {
 }
 
 extend type Mutation {
-  createUser(user: UserCreate!): User!
+  createUser(input: UserCreate!): User!
   user(id: ID!): UserMutation
 }
