@@ -1,40 +1,46 @@
 package net.kiss.demo.cart.service.impl
 
 import mu.KotlinLogging
+import net.kiss.demo.cart.entity.CartEntity
 import net.kiss.demo.cart.model.Cart
+import net.kiss.demo.cart.model.toModel
+import net.kiss.demo.cart.repository.CartRepository
 import net.kiss.demo.cart.service.CartService
+import net.kiss.starter.service.utils.orNull
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.concurrent.atomic.AtomicLong
 
 @Service
-class CartServiceImpl : CartService {
+class CartServiceImpl @Autowired constructor(
+  private val cartRepository: CartRepository
+) : CartService {
   private val logger = KotlinLogging.logger {}
 
-  private final val ID = AtomicLong(0)
-
-  private final val CARTS = mutableListOf(
-    Cart(ID.incrementAndGet(), 1),
-    Cart(ID.incrementAndGet(), 2),
-    Cart(ID.incrementAndGet(), 3)
-  )
-
-  private val BY_ID = CARTS.groupBy { it.id }
-  override fun findCartById(id: Long): Cart? {
-    return BY_ID[id]?.first()
+  override fun findCartById(id: String): Cart? {
+    val cart = cartRepository.findById(id).orNull()
+    return cart?.toModel()
   }
 
   override fun findCartByUserId(userId: Long): Cart? {
-    return CARTS.first { it.userId == userId }
+    val cart = cartRepository.findByUserId(userId).orNull()
+    return cart?.toModel()
   }
 
-  override fun createCart(id: Long): Cart {
-    val cart = Cart(ID.incrementAndGet(), id)
-    CARTS.add(cart)
-    return cart
+  override fun createCartForUser(userId: Long): Cart {
+    val cart = CartEntity(
+      id = null,
+      userId = userId
+    )
+
+    val saved = cartRepository.save(cart)
+
+    return saved.toModel()
   }
 
-  override fun getCartsByIds(ids: List<Long>): List<Cart> {
-    val set = setOf(*ids.toTypedArray())
-    return CARTS.filter { set.contains(it.id) }
+  override fun getCartsByIds(ids: List<String>): List<Cart> {
+    val carts = cartRepository.findAllById(ids)
+
+    return carts.map { it.toModel() }
   }
 }

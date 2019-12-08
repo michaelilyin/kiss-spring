@@ -6,3 +6,5 @@ target
 *.iml
 *.iws
 node_modules
+
+bin/

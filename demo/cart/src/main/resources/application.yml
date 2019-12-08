@@ -1,3 +1,10 @@
+spring:
+  data:
+    mongodb:
+      password: secret
+      username: demo
+      database: kiss-demo
+
 server:
   port: 6011
 logging:

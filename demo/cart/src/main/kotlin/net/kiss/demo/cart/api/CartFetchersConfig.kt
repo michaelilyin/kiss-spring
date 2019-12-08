@@ -6,7 +6,7 @@ import net.kiss.demo.cart.model.external.UserMutation
 import net.kiss.demo.cart.service.CartService
 import net.kiss.starter.graphql.dsl.data.toFederationResponse
 import net.kiss.starter.graphql.dsl.graphql
-import net.kiss.starter.graphql.model.LongID
+import net.kiss.starter.graphql.model.StringID
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -16,7 +16,7 @@ class CartFetchersConfig {
   @Bean
   fun cartFetchers(cartService: CartService) = graphql {
     query {
-      field<LongID, Cart?>("cart") {
+      field<StringID, Cart?>("cart") {
         fetch {
           cartService.findCartById(it.arg.id)
         }
@@ -24,10 +24,10 @@ class CartFetchersConfig {
     }
 
     type<Cart> {
-      federate<LongID> {
+      federate<StringID> {
         resolve {
           val carts = cartService.getCartsByIds(it.keys.map { it.id })
-          carts.toFederationResponse(it) { LongID(it.id) }
+          carts.toFederationResponse(it) { StringID(it.id) }
         }
       }
     }
@@ -46,7 +46,7 @@ class CartFetchersConfig {
       mutation {
         localAction<Unit, Cart>("createCart") {
           execute {
-            cartService.createCart(it.source.id)
+            cartService.createCartForUser(it.source.id)
           }
         }
       }
