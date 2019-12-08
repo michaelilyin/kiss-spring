@@ -13,6 +13,10 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class UserFetchersConfig {
 
+  data class UserInput(
+    override val input: UserCreate
+  ) : SimpleInput<UserCreate>
+
   @Bean
   fun userFetchers(userService: UserService) = graphql {
     query {
@@ -34,7 +38,7 @@ class UserFetchersConfig {
         userService.findUserById(it.arg.id) ?: throw IllegalArgumentException()
       }
 
-      action<SimpleInput<UserCreate>, User>("createUser") {
+      action<UserInput, User>("createUser") {
         execute {
           userService.createUser(it.arg.input)
         }

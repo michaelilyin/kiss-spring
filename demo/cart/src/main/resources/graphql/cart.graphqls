@@ -6,8 +6,8 @@ extend type User {
   cart: Cart @requires(fields: "id")
 }
 
-extend type UserMutation @key(fields: "id") @extends {
-  createCart: Cart! @requires(fields: "id")
+extend type UserMutation {
+  createCart: Cart!
 }
 
 extend type Query {

@@ -10,11 +10,11 @@ open class GraphQLFederation<K : Any, T: Any>(
   protected val parent: GraphQLType<T>
 ) {
 
-  lateinit var resolver: suspend (FederationRequest<K>) -> FederationResponse<T>
+  lateinit var resolver: suspend (FederationRequest<K>) -> FederationResponse<*>
     get
     protected set
 
-  fun addResolver(resolver: suspend (FederationRequest<K>) -> FederationResponse<T>) {
+  fun addResolver(resolver: suspend (FederationRequest<K>) -> FederationResponse<*>) {
     this.resolver = resolver
   }
 }

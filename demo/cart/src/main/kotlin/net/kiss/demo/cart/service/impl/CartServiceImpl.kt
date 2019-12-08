@@ -32,4 +32,9 @@ class CartServiceImpl : CartService {
     CARTS.add(cart)
     return cart
   }
+
+  override fun getCartsByIds(ids: List<Long>): List<Cart> {
+    val set = setOf(*ids.toTypedArray())
+    return CARTS.filter { set.contains(it.id) }
+  }
 }

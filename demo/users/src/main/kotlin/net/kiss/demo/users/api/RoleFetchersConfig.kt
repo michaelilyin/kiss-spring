@@ -15,7 +15,7 @@ class RoleFetchersConfig {
       query {
         field<Unit, List<Role>>("roles") {
           fetch {
-            roleService.getUserRoles(it.context.id)
+            roleService.getUserRoles(it.source.id)
           }
         }
       }

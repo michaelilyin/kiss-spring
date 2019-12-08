@@ -1,6 +1,7 @@
 package net.kiss.starter.graphql.config
 
 import com.apollographql.federation.graphqljava._Entity
+import com.fasterxml.jackson.databind.ObjectMapper
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import graphql.schema.idl.RuntimeWiring
@@ -16,7 +17,10 @@ import net.kiss.starter.graphql.dsl.common.GraphQLType
 import net.kiss.starter.graphql.dsl.types.GraphQLLocalType
 import kotlin.IllegalArgumentException
 
-class WiringBuilder(private val fetchers: List<GraphQL>) {
+class WiringBuilder(
+  private val fetchers: List<GraphQL>,
+  private val mapper: ObjectMapper
+) {
   private val queries = mutableSetOf<String>()
   private val mutations = mutableSetOf<String>()
   private val fields = mutableMapOf<String, MutableSet<String>>()
@@ -78,7 +82,7 @@ class WiringBuilder(private val fetchers: List<GraphQL>) {
       if (typeFields.contains(name)) {
         throw IllegalArgumentException()
       }
-      wiring.dataFetcher(name, FetcherProxy(field))
+      wiring.dataFetcher(name, FetcherProxy(field, mapper))
       typeFields.add(name)
     }
 
@@ -98,7 +102,7 @@ class WiringBuilder(private val fetchers: List<GraphQL>) {
       if (typeFields.contains(name)) {
         throw java.lang.IllegalArgumentException()
       }
-      wiring.dataFetcher(name, MutationProxy(field))
+      wiring.dataFetcher(name, MutationProxy(field, mapper))
       typeFields.add(name)
     }
 
@@ -114,7 +118,7 @@ class WiringBuilder(private val fetchers: List<GraphQL>) {
   }
 
   fun buildFederationFetcher(): DataFetcher<*> {
-    return FederationFetcherProxy(federation.toMap())
+    return FederationFetcherProxy(federation.toMap(), mapper)
   }
 
   private fun getTypeWiring(type: String) = wirings.computeIfAbsent(type) { newTypeWiring(type) }

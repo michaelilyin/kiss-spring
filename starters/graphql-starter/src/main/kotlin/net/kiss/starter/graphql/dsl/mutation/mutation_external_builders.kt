@@ -16,6 +16,7 @@ class LocalAction<T : Any, I : Any, F>(
 ) : GraphQLMutationAction<T, I, F>(
   field, parent.type, inputType, parent
 ) {
+  @ActionKeyword
   fun execute(resolve: suspend (GraphQLRequest<T, I>) -> F) {
     fetcher = resolve
   }

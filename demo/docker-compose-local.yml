@@ -20,8 +20,8 @@ services:
     build:
       context: database
     environment:
-      LIQUIBASE_URL: jdbc:postgresql://postgres:5432/backend
-      LIQUIBASE_USERNAME: backend
+      LIQUIBASE_URL: jdbc:postgresql://postgres:5432/kiss-demo
+      LIQUIBASE_USERNAME: demo
       LIQUIBASE_PASSWORD: secret
       LIQUIBASE_CHANGELOG: /liquibase/changelog.yaml
     restart: on-failure

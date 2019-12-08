@@ -2,7 +2,7 @@ type User @key(fields: "id") @extends {
   id: ID! @external
 }
 
-type UserMutationContext @key(fields: "id") @extends {
+type UserMutation @key(fields: "id") @extends {
   id: ID! @external
 }
 

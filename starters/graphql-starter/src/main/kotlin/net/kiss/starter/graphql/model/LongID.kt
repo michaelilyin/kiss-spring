@@ -1,4 +1,4 @@
 package net.kiss.starter.graphql.model
 
-class LongID(val id: Long) {
+data class LongID(val id: Long) {
 }

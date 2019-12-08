@@ -22,14 +22,14 @@ class Slf4jMDCFilter : WebFilter {
   override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
     val start = System.currentTimeMillis()
 
-    val reqToken = exchange.request.headers.get("REQ")?.first()
+    val reqToken = exchange.request.headers.get("x-req-trace")?.first()
     val token = if (reqToken.isNullOrEmpty()) {
       UUID.randomUUID().toString().toUpperCase().replace("-", "");
     } else {
       reqToken
     }
     MDC.put("TOKEN", token)
-    exchange.response.headers.add("RES", token)
+    exchange.response.headers.add("x-req-trace", token)
 
     val path = exchange.request.uri.path
     val method = exchange.request.methodValue

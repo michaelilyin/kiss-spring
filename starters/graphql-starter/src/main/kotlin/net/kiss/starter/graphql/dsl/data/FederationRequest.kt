@@ -1,21 +1,17 @@
 package net.kiss.starter.graphql.dsl.data
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.primaryConstructor
 
 data class FederationRequestItem<KEY : Any>(
   internal val index: Int,
-  internal val data: Map<String, Any>
+  internal val data: Map<String, Any>,
+  private val mapper: ObjectMapper
 ) {
   internal fun asKey(type: KClass<KEY>): KEY {
-    val constructor = type.primaryConstructor ?: throw IllegalArgumentException()
-    val params = mutableMapOf<KParameter, Any?>()
-    constructor.parameters.forEach {
-      params[it] = data[it.name]
-    }
-
-    return constructor.callBy(params)
+    return mapper.convertValue<KEY>(data, type.javaObjectType)
   }
 }
 
@@ -26,12 +22,11 @@ data class FederationRequestResult<T>(
 
 class FederationRequest<KEY : Any>(
   private val keyType: KClass<KEY>,
-  val items: List<FederationRequestItem<KEY>>
+  private val items: List<FederationRequestItem<KEY>>
 ) {
-  val keys: List<KEY>
-    get() {
-      return items.map { it.asKey(keyType) }
-    }
+  val keys by lazy {
+    items.map { it.asKey(keyType) }
+  }
 
   internal fun <TYPE> toResponse(response: Collection<TYPE>, keyExtractor: (TYPE) -> KEY): FederationResponse<TYPE> {
     val responseMap = response.groupBy(keyExtractor)

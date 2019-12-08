@@ -1,5 +1,6 @@
 package net.kiss.starter.graphql.dsl.query
 
+import net.kiss.starter.graphql.dsl.ActionKeyword
 import net.kiss.starter.graphql.dsl.FieldKeyword
 import net.kiss.starter.graphql.dsl.GraphQLMarker
 import net.kiss.starter.graphql.dsl.common.GraphQLObjectField
@@ -14,6 +15,7 @@ class LocalField<T : Any, A : Any, F>(
   argType: KClass<A>,
   parent: ForeignQuery<T>
 ) : GraphQLObjectField<T, A, F>(field, parent.type, argType, parent) {
+  @ActionKeyword
   fun fetch(resolve: suspend (GraphQLRequest<T, A>) -> F) {
     fetcher = resolve
   }

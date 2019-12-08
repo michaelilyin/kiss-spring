@@ -1,6 +1,7 @@
 package net.kiss.starter.graphql
 
 import com.apollographql.federation.graphqljava.Federation
+import com.fasterxml.jackson.databind.ObjectMapper
 import graphql.GraphQL
 import graphql.schema.GraphQLSchema
 import graphql.schema.idl.SchemaGenerator
@@ -8,6 +9,7 @@ import graphql.schema.idl.SchemaParser
 import graphql.schema.idl.TypeDefinitionRegistry
 import mu.KotlinLogging
 import net.kiss.starter.graphql.config.WiringBuilder
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
@@ -19,7 +21,9 @@ import net.kiss.starter.graphql.dsl.GraphQL as DGraphQL
 
 @Configuration
 @ComponentScan(basePackageClasses = [GraphQLAutoConfiguration::class])
-class GraphQLAutoConfiguration {
+class GraphQLAutoConfiguration @Autowired constructor(
+  private val mapper: ObjectMapper
+) {
   private val logger = KotlinLogging.logger { }
 
   @Bean
@@ -33,7 +37,8 @@ class GraphQLAutoConfiguration {
     val isFederation = true
     val schema = if (isFederation) buildFederatedSchema(sdl, fetchers) else buildSchema(sdl, fetchers)
 
-    return GraphQL.newGraphQL(schema).build()
+    return GraphQL.newGraphQL(schema)
+      .build()
   }
 
   private fun lookupSDL(applicationContext: ApplicationContext): String {
@@ -50,7 +55,7 @@ class GraphQLAutoConfiguration {
 
   private fun buildSchema(sdl: String, fetchers: List<DGraphQL>): GraphQLSchema {
     val typeRegistry = buildTypeRegistry(sdl)
-    val wiringBuilder = WiringBuilder(fetchers)
+    val wiringBuilder = WiringBuilder(fetchers, mapper)
     val runtimeWiring = wiringBuilder.buildRuntimeWiring()
 
     return SchemaGenerator().makeExecutableSchema(typeRegistry, runtimeWiring)
@@ -62,15 +67,21 @@ class GraphQLAutoConfiguration {
   }
 
   private fun buildFederatedSchema(sdl: String, fetchers: List<DGraphQL>): GraphQLSchema {
-    val wiringBuilder = WiringBuilder(fetchers)
+    val wiringBuilder = WiringBuilder(fetchers, mapper)
     val runtimeWiring = wiringBuilder.buildRuntimeWiring()
 
     return Federation.transform(sdl, runtimeWiring)
       .fetchEntities(wiringBuilder.buildFederationFetcher())
       .resolveEntityType { env ->
         val obj = env.getObject<Any>()
-        val name = obj.javaClass.simpleName
-        env.schema.getObjectType(name)
+        val typename = if (obj is Map<*, *> && obj.containsKey("__typename")) {
+          obj["__typename"] as String
+        } else {
+          obj.javaClass.simpleName
+        }
+
+        logger.info { "Resolve Entity type for ${env.field.name} and object $typename" }
+        env.schema.getObjectType(typename)
       }
       .build()
   }
