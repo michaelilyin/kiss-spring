@@ -23,11 +23,11 @@ class UserFetchersConfig {
     }
 
     foreignType<User> {
-      federateAsIs()
+      convertToFederationRequest()
     }
 
     foreignType<UserMutation> {
-      federateAsIs()
+      convertToFederationRequest()
     }
   }
 }

@@ -3,10 +3,14 @@ rootProject.name = "kiss-spring"
 includeBuild("buildSrc")
 
 include(
-    ":starters:service-starter",
-    ":starters:graphql-starter",
-    ":starters:test-starter",
+  ":starters:commons:auth-api",
 
-    ":demo:users",
-    ":demo:cart"
+  ":starters:service-starter",
+  ":starters:resource-service-starter",
+  ":starters:graphql-starter",
+  ":starters:test-starter",
+
+  ":demo:auth",
+  ":demo:users",
+  ":demo:cart"
 );

@@ -31,20 +31,19 @@ class GraphQL {
 
   @TypeKeyword
   inline fun <reified T : Any> type(
-    typename: String? = null,
+    typename: String = getFromClass(T::class),
     noinline init: GraphQLLocalType<T>.() -> Unit
   ) {
-    type(typename, T::class, init)
+    type(T::class, typename, init)
   }
 
   @TypeKeyword
   fun <T : Any> type(
-    typename: String? = null,
     type: KClass<T>,
+    typename: String = getFromClass(type),
     init: GraphQLLocalType<T>.() -> Unit
   ) {
-    val name = typename ?: getFromClass(type)
-    val context = GraphQLLocalType(name, type, this)
+    val context = GraphQLLocalType(typename, type, this)
     context.init()
 
     addType(context)
@@ -76,7 +75,7 @@ class GraphQL {
     types[typeContext.typename] = typeContext
   }
 
-  private fun <T : Any> getFromClass(type: KClass<T>): String {
+  fun <T : Any> getFromClass(type: KClass<T>): String {
     return type.simpleName ?: throw IllegalArgumentException()
   }
 }

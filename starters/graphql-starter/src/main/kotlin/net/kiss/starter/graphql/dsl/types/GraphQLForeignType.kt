@@ -45,7 +45,7 @@ class GraphQLForeignType<T: Any>(
   }
 
   @QueryKeyword
-  fun federateAsIs() {
+  fun convertToFederationRequest() {
     federate<Map<String, Any>> {
       resolveAsIs()
     }

@@ -1,11 +1,11 @@
 spring:
   datasource:
-    username: ${USERS_USERNAME:demo}
-    password: ${USERS_PASSWORD:secret}
-    url: ${USERS_DB:jdbc:postgresql://localhost:5432/kiss-demo?currentSchema=users}
+    username: ${AUTH_USERNAME:demo}
+    password: ${AUTH_PASSWORD:secret}
+    url: ${AUTH_DB:jdbc:postgresql://localhost:5432/backend?currentSchema=auth}
 
 server:
-  port: 6010
+  port: 6012
 
 logging:
   pattern:
