@@ -1,5 +1,6 @@
-package net.kiss.demo.auth.config
+package net.kiss.starter.service.auth.config
 
+import net.kiss.starter.service.auth.service.CustomUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig @Autowired constructor(
-  private val userDetailsService: UserDetailsService
+  private val userDetailsService: CustomUserDetailsService
 ) : WebSecurityConfigurerAdapter() {
   override fun configure(auth: AuthenticationManagerBuilder) {
     auth.userDetailsService(userDetailsService)

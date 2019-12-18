@@ -1,4 +1,4 @@
-package net.kiss.demo.auth.model
+package net.kiss.starter.service.auth.model
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.User

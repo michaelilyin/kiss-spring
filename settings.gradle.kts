@@ -6,6 +6,7 @@ include(
   ":starters:commons:auth-api",
 
   ":starters:service-starter",
+  ":starters:auth-service-starter",
   ":starters:resource-service-starter",
   ":starters:graphql-starter",
   ":starters:test-starter",

@@ -1,4 +1,4 @@
-package net.kiss.demo.auth.config
+package net.kiss.starter.service.auth.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

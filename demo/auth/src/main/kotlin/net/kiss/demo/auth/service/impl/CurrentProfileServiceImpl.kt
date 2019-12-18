@@ -1,8 +1,8 @@
 package net.kiss.demo.auth.service.impl
 
-import net.kiss.demo.auth.model.UserProfile
+import net.kiss.starter.service.auth.model.UserProfile
 import net.kiss.demo.auth.repository.UserAccountRepository
-import net.kiss.demo.auth.service.CurrentProfileService
+import net.kiss.starter.service.auth.service.CurrentProfileService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

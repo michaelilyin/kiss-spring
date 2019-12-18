@@ -1,9 +1,10 @@
 package net.kiss.demo.auth.service.impl
 
 import mu.KotlinLogging
-import net.kiss.demo.auth.model.AuthUserDetails
+import net.kiss.starter.service.auth.model.AuthUserDetails
 import net.kiss.demo.auth.repository.PermissionRepository
 import net.kiss.demo.auth.repository.UserAccountRepository
+import net.kiss.starter.service.auth.service.CustomUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Primary
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service
 class UserDetailsServiceImpl @Autowired constructor(
   private val accountRepository: UserAccountRepository,
   private val permissionRepository: PermissionRepository
-) : UserDetailsService {
+) : CustomUserDetailsService {
   companion object {
     val log = KotlinLogging.logger { }
   }

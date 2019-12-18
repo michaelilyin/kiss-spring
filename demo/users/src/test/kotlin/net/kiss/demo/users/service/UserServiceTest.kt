@@ -70,7 +70,7 @@ class UserServiceTest @Autowired constructor(
     given(userRepository.findAllById(ids))
       .willReturn(listOf(user1, user2))
 
-    val users = userService.getAllById(ids)
+    val users = userService.resolveById(ids)
     assertThat(users).extracting("username")
       .containsExactly(user1.username, user2.username)
   }

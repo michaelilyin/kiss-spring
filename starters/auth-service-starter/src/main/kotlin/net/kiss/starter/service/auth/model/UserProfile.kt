@@ -1,4 +1,4 @@
-package net.kiss.demo.auth.model
+package net.kiss.starter.service.auth.model
 
 data class UserProfile(
   val id: Long,

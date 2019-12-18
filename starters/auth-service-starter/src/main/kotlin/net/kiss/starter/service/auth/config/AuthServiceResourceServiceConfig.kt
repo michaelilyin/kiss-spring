@@ -1,4 +1,4 @@
-package net.kiss.demo.auth.config
+package net.kiss.starter.service.auth.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 
 @EnableResourceServer
 @Configuration
-class AuthServiceRespirceServiceConfig : ResourceServerConfigurerAdapter() {
+class AuthServiceResourceServiceConfig : ResourceServerConfigurerAdapter() {
   override fun configure(http: HttpSecurity) {
     http
       .authorizeRequests()
