@@ -1,6 +1,4 @@
 databaseChangeLog:
   - include:
-      file: classpath*:auth/db/changelog/auth.changelog.yaml
-  - include:
       file: 001/_001.yaml
       relativeToChangelogFile: true
