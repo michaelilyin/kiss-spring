@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service
 class CurrentProfileServiceImpl @Autowired constructor(
   private val userAccountRepository: UserAccountRepository
 ) : CurrentProfileService {
+
   override fun getCurrentProfile(username: String): UserProfile {
     val user = userAccountRepository.findByUsername(username)
       ?: throw IllegalArgumentException("Can not find authenticated user")
@@ -21,4 +22,5 @@ class CurrentProfileServiceImpl @Autowired constructor(
       lastName = user.lastName
     )
   }
+
 }

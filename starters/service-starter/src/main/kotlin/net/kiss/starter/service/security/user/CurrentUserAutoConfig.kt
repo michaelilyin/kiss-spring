@@ -1,0 +1,39 @@
+package net.kiss.starter.service.security.user
+
+import net.kiss.starter.service.security.user.impl.AnonymousCurrentUser
+import net.kiss.starter.service.security.user.impl.ApplicationCurrentUser
+import net.kiss.starter.service.security.user.impl.OAuthCurrentUser
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Scope
+import org.springframework.context.annotation.ScopedProxyMode
+import org.springframework.security.authentication.AnonymousAuthenticationToken
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.provider.OAuth2Authentication
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails
+import org.springframework.security.oauth2.provider.token.TokenStore
+import org.springframework.web.context.WebApplicationContext
+
+@Configuration
+@ConditionalOnClass(OAuth2Authentication::class)
+class CurrentUserAutoConfig {
+  @Bean
+  @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+  fun currentUser(tokenStore: TokenStore): CurrentUser {
+    val auth = SecurityContextHolder.getContext().authentication
+    if (auth is AnonymousAuthenticationToken) {
+      return AnonymousCurrentUser()
+    }
+    if (auth is UsernamePasswordAuthenticationToken) {
+      return ApplicationCurrentUser()
+    }
+    if (auth is OAuth2Authentication) {
+      val details = auth.details as OAuth2AuthenticationDetails
+      val token = tokenStore.readAccessToken(details.tokenValue)
+      return OAuthCurrentUser(token)
+    }
+    throw UnsupportedOperationException("Unknown auth type")
+  }
+}

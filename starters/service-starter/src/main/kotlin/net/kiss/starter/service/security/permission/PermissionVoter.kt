@@ -1,4 +1,4 @@
-package net.kiss.starter.service.security
+package net.kiss.starter.service.security.permission
 
 import org.springframework.security.access.AccessDecisionVoter
 import org.springframework.security.access.ConfigAttribute

@@ -8,11 +8,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.core.userdetails.UserDetailsService
 
-//@Configuration
-//@EnableWebFluxSecurity
+@Configuration
+@EnableWebSecurity
 class WebSecurityConfig @Autowired constructor(
   private val userDetailsService: UserDetailsService
 ) : WebSecurityConfigurerAdapter() {

@@ -1,4 +1,4 @@
-package net.kiss.starter.service.security
+package net.kiss.starter.service.security.permission
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)

@@ -17,7 +17,7 @@ class MutationProxy<C : Any, I : Any, T>(
 
   override fun get(environment: DataFetchingEnvironment): T {
     return runBlocking(MDCContext()) {
-      val request = GraphQLRequest<C, I>(field.contextType, field.argType, environment, mapper)
+      val request = GraphQLRequest(field.contextType, field.argType, environment, mapper)
       logger.info { "Call mutation for ${environment.field.name} with argument ${request.arg} and context ${request.sourceOrNull}" }
       return@runBlocking field.fetcher.invoke(request).also {
         logger.info { "Result is $it" }

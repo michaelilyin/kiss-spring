@@ -6,6 +6,7 @@ import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken
 import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.security.oauth2.provider.OAuth2Authentication
 import org.springframework.security.oauth2.provider.token.TokenEnhancer
+import org.springframework.stereotype.Service
 
 class AugmentTokenEnhancer : TokenEnhancer {
   override fun enhance(accessToken: OAuth2AccessToken, authentication: OAuth2Authentication): OAuth2AccessToken {
@@ -13,6 +14,7 @@ class AugmentTokenEnhancer : TokenEnhancer {
     if (principal is AuthUserDetails && accessToken is DefaultOAuth2AccessToken) {
       val additionalInfo = AdditionalInfo(
         id = principal.id,
+        username = principal.username,
         firstName = principal.firstName,
         lastName = principal.lastName
       )

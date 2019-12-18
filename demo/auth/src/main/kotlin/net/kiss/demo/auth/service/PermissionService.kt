@@ -5,5 +5,5 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface PermissionService {
-  fun getPermissions(page: Pageable): Page<UserPermission>
+//  fun getPermissions(page: Pageable): Page<UserPermission>
 }

@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service
 class PermissionServiceImpl @Autowired constructor(
   private val permissionRepository: PermissionRepository
 ) : PermissionService {
-  override fun getPermissions(page: Pageable): Page<UserPermission> {
-    return permissionRepository.findAll(page).map { it.toModel() }
-  }
+//  override fun getPermissions(page: Pageable): Page<UserPermission> {
+//    return permissionRepository.findAll(page).map { it.toModel() }
+//  }
 }
 

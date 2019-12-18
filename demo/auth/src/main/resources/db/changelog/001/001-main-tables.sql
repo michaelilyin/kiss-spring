@@ -117,9 +117,9 @@ SELECT u.id, r.id, TRUE, g.id
 FROM users u,
      roles r,
      users g
-WHERE u.username == 'admin'
+WHERE u.username = 'admin'
   AND r.code IN ('user', 'user-admin')
-  AND g.username == 'admin'
+  AND g.username = 'admin'
 ON CONFLICT DO NOTHING;
 
 INSERT INTO user_roles (user_id, role_id, system, grant_user_id)
@@ -127,9 +127,9 @@ SELECT u.id, r.id, TRUE, g.id
 FROM users u,
      roles r,
      users g
-WHERE u.username == 'user'
+WHERE u.username = 'user'
   AND r.code IN ('user')
-  AND g.username == 'admin'
+  AND g.username = 'admin'
 ON CONFLICT DO NOTHING;
 
 INSERT INTO role_permissions (role_id, permission_id, system, grant_user_id)
@@ -139,7 +139,7 @@ FROM roles r,
      users g
 WHERE r.code = 'user'
   AND p.code IN ('self_r')
-  AND g.username == 'admin'
+  AND g.username = 'admin'
 ON CONFLICT DO NOTHING;
 
 INSERT INTO role_permissions (role_id, permission_id, system, grant_user_id)
@@ -149,7 +149,7 @@ FROM roles r,
      users g
 WHERE r.code = 'admin'
   AND p.code IN ('users_r', 'users_w')
-  AND g.username == 'admin'
+  AND g.username = 'admin'
 ON CONFLICT DO NOTHING;
 
 --changeset ilyin:add-name-column-to-users context:prod

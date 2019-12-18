@@ -1,4 +1,4 @@
-package net.kiss.starter.service.security
+package net.kiss.starter.service.security.permission
 
 import net.kiss.starter.service.utils.findAnnotation
 import org.springframework.security.access.ConfigAttribute
