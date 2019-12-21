@@ -5,6 +5,7 @@ import net.kiss.demo.auth.model.user.UserAccountCreate
 import net.kiss.demo.auth.service.UserAccountService
 import net.kiss.service.model.lists.PageResult
 import net.kiss.service.model.lists.PageRequest
+import net.kiss.service.model.lists.Sort
 import net.kiss.service.model.lists.SortField
 import net.kiss.starter.graphql.dsl.data.toFederationResponse
 import net.kiss.starter.graphql.dsl.graphql
@@ -23,8 +24,8 @@ class UserAccountFetchersConfig {
   ): SimpleInput<UserAccountCreate>
 
   data class UserAccountsPageInput(
-    override val sort: List<SortField>,
-    override val page: PageRequest
+    override val sort: Sort = Sort(),
+    override val page: PageRequest = PageRequest()
   ): SortRequestInput, PageRequestInput
 
   @Bean

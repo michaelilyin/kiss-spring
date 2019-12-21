@@ -21,7 +21,7 @@ input UserAccountCreate {
 
 extend type Query {
   userAccount(id: ID!): UserAccount
-  userAccounts(page: PageRequest, sort: [SortFieldInput!]!): UserAccountPage!
+  userAccounts(page: PageRequest, sort: SortRequest): UserAccountPage!
 }
 
 extend type Mutation {

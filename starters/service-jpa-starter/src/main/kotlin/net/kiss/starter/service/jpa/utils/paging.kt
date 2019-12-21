@@ -6,24 +6,26 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.PageRequest as SPageRequest
 import org.springframework.data.domain.Sort as SSort
 
-fun List<SortField>.toSort(): SSort = SSort.by(
-  this.map {
+fun Sort.toSort(): SSort = SSort.by(
+  fields.map {
     SSort.Order(SSort.Direction.fromString(it.direction), it.field)
   }
 )
 
-fun PageRequest.toPageable(sort: List<SortField>? = null): Pageable = SPageRequest.of(
+fun PageRequest.toPageable(sort: Sort? = Sort()): Pageable = SPageRequest.of(
   page,
   size,
   sort?.toSort() ?: SSort.unsorted()
 )
 
-fun SSort.toSortInfo(): List<SortField> = map {
-  SortField(
-    field = it.property,
-    direction = it.direction.name
-  )
-}.toList()
+fun SSort.toSortInfo(): Sort = Sort(
+  fields = map {
+    SortField(
+      field = it.property,
+      direction = it.direction.name
+    )
+  }.toList()
+)
 
 fun <T, R> SPage<T>.toPage(mapper: (T) -> R): PageResult<R> = PageResult(
   listInfo = ListInfo(
@@ -32,7 +34,8 @@ fun <T, R> SPage<T>.toPage(mapper: (T) -> R): PageResult<R> = PageResult(
   pageInfo = PageInfo(
     page = number,
     size = size,
-    totalPages = totalPages
+    totalPages = totalPages,
+    totalItems = totalElements.toInt()
   ),
   items = content.map(mapper)
 )

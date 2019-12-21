@@ -6,7 +6,9 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
+import org.springframework.stereotype.Repository
 
+@Repository
 interface UserRoleGrantsRepository : CrudRepository<UserRoleGrantEntity, UserRoleKey> {
   @Query("from UserRoleGrantEntity urg where urg.id.userId = :userId")
   fun getAllByUserId(@Param("userId") userId: Long, sort: Sort): List<UserRoleGrantEntity>;

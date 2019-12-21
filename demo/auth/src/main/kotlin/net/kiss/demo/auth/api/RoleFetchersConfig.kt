@@ -6,9 +6,9 @@ import net.kiss.demo.auth.model.user.UserAccount
 import net.kiss.demo.auth.service.RoleService
 import net.kiss.demo.auth.service.UserAccountService
 import net.kiss.service.exception.UnexpectedNullException
-import net.kiss.service.model.lists.ListResult
-import net.kiss.service.model.lists.SortField
+import net.kiss.service.model.lists.*
 import net.kiss.starter.graphql.dsl.graphql
+import net.kiss.starter.graphql.model.PageRequestInput
 import net.kiss.starter.graphql.model.SortRequestInput
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -17,8 +17,13 @@ import org.springframework.context.annotation.Configuration
 class RoleFetchersConfig {
 
   data class UserRolesListInput(
-    override val sort: List<SortField>
+    override val sort: Sort = Sort()
   ) : SortRequestInput
+
+  data class RolesPageInput(
+    override val page: PageRequest = PageRequest(),
+    override val sort: Sort = Sort()
+  ) : PageRequestInput, SortRequestInput
 
   @Bean
   fun roleFetchers(roleService: RoleService, userService: UserAccountService) = graphql {
@@ -44,6 +49,14 @@ class RoleFetchersConfig {
           fetch {
             userService.findUserAccountById(it.source.grantUserId) ?: throw UnexpectedNullException("grant user")
           }
+        }
+      }
+    }
+
+    query {
+      field<RolesPageInput, PageResult<Role>>("roles") {
+        fetch {
+          roleService.getRolesPage(it.arg.page, it.arg.sort)
         }
       }
     }
