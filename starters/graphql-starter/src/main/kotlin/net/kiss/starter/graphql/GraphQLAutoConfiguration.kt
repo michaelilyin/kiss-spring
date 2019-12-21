@@ -3,6 +3,8 @@ package net.kiss.starter.graphql
 import com.apollographql.federation.graphqljava.Federation
 import com.fasterxml.jackson.databind.ObjectMapper
 import graphql.GraphQL
+import graphql.TypeResolutionEnvironment
+import graphql.schema.GraphQLObjectType
 import graphql.schema.GraphQLSchema
 import graphql.schema.idl.SchemaGenerator
 import graphql.schema.idl.SchemaParser
@@ -72,17 +74,7 @@ class GraphQLAutoConfiguration @Autowired constructor(
 
     return Federation.transform(sdl, runtimeWiring)
       .fetchEntities(wiringBuilder.buildFederationFetcher())
-      .resolveEntityType { env ->
-        val obj = env.getObject<Any>()
-        val typename = if (obj is Map<*, *> && obj.containsKey("__typename")) {
-          obj["__typename"] as String
-        } else {
-          obj.javaClass.simpleName
-        }
-
-        logger.info { "Resolve Entity type for ${env.field.name} and object $typename" }
-        env.schema.getObjectType(typename)
-      }
+      .resolveEntityType { env -> wiringBuilder.resolveType(env) }
       .build()
   }
 }

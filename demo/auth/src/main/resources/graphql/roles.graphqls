@@ -1,0 +1,25 @@
+type UserRole {
+  grantUser: UserAccount!
+  system: Boolean!
+}
+
+type Role {
+  id: ID!
+  code: String!
+  name: String!
+  description: String!
+  system: Boolean!
+}
+
+extend type UserRole {
+  role: Role!
+}
+
+type UserRolesList implements ListResult {
+  listInfo: ListInfo!
+  items: [UserRole!]!
+}
+
+extend type UserAccount {
+  roles(sort: [SortFieldInput!]!): UserRolesList!
+}

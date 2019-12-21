@@ -12,5 +12,5 @@ import java.util.*
 @Repository
 interface UserRepository : CrudRepository<UserEntity, Long> {
   @Query("SELECT * FROM users WHERE username = :username")
-  fun findUserByUsername(@Param("username") username: String): Optional<UserEntity>
+  fun findUserByUsername(@Param("username") username: String): UserEntity?
 }

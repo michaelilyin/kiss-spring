@@ -1,27 +1,29 @@
 package net.kiss.demo.auth.entity
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.relational.core.mapping.Column
-import org.springframework.data.relational.core.mapping.Table
+import net.kiss.starter.service.jpa.entity.Persistable
+import javax.persistence.*
 
-@Table("users")
+
+@Entity
+@Table(name = "users")
 data class UserAccountEntity(
   @Id
-  @Column("id")
-  val id: Long?,
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  override val id: Long?,
 
-  @Column("username")
+  @Column(name = "username", updatable = false)
   val username: String,
 
-  @Column("password")
-  val password: String,
+  @Column(name = "password", updatable = false)
+  val password: String = "",
 
-  @Column("enabled")
-  val enabled: Boolean,
+  @Column(name = "enabled")
+  var enabled: Boolean,
 
-  @Column("first_name")
-  val firstName: String,
+  @Column(name = "first_name")
+  var firstName: String,
 
-  @Column("last_name")
-  val lastName: String?
-)
+  @Column(name = "last_name")
+  var lastName: String?
+): Persistable<Long>()

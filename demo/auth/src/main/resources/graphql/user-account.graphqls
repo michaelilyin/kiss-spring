@@ -1,0 +1,29 @@
+type UserAccount @key(fields: "id") {
+  id: ID!
+  username: String!
+  enabled: Boolean!
+  firstName: String!
+  lastName: String
+}
+
+type UserAccountPage implements PageResult {
+  pageInfo: PageInfo!
+  listInfo: ListInfo!
+  items: [UserAccount!]!
+}
+
+input UserAccountCreate {
+  username: String!
+  password: String!
+  firstName: String!
+  lastName: String
+}
+
+extend type Query {
+  userAccount(id: ID!): UserAccount
+  userAccounts(page: PageRequest, sort: [SortFieldInput!]!): UserAccountPage!
+}
+
+extend type Mutation {
+  createUserAccount(input: UserAccountCreate!): UserAccount!
+}

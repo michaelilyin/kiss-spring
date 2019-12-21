@@ -2,8 +2,10 @@ package net.kiss.starter.graphql.config
 
 import com.apollographql.federation.graphqljava._Entity
 import com.fasterxml.jackson.databind.ObjectMapper
+import graphql.TypeResolutionEnvironment
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
+import graphql.schema.GraphQLObjectType
 import graphql.schema.idl.RuntimeWiring
 import graphql.schema.idl.RuntimeWiring.newRuntimeWiring
 import graphql.schema.idl.TypeRuntimeWiring
@@ -47,6 +49,10 @@ class WiringBuilder(
 
     val wiring = newRuntimeWiring()
     wirings.values.forEach { wiring.type(it) }
+
+    wiring.type("ListResult", { it.typeResolver { resolveType(it) } })
+    wiring.type("PageResult", { it.typeResolver { resolveType(it) } })
+
     return wiring.build()
   }
 
@@ -119,6 +125,18 @@ class WiringBuilder(
 
   fun buildFederationFetcher(): DataFetcher<*> {
     return FederationFetcherProxy(federation.toMap(), mapper)
+  }
+
+  fun resolveType(env: TypeResolutionEnvironment): GraphQLObjectType? {
+    val obj = env.getObject<Any>()
+    val typename = if (obj is Map<*, *> && obj.containsKey("__typename")) {
+      obj["__typename"] as String
+    } else {
+      obj.javaClass.simpleName
+    }
+
+    logger.info { "Resolve Entity type for ${env.field.name} and object $typename" }
+    return env.schema.getObjectType(typename)
   }
 
   private fun getTypeWiring(type: String) = wirings.computeIfAbsent(type) { newTypeWiring(type) }

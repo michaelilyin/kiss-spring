@@ -8,6 +8,7 @@ import net.kiss.demo.cart.repository.CartRepository
 import net.kiss.demo.cart.service.CartService
 import net.kiss.starter.service.utils.orNull
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.concurrent.atomic.AtomicLong
 
@@ -18,12 +19,12 @@ class CartServiceImpl @Autowired constructor(
   private val logger = KotlinLogging.logger {}
 
   override fun findCartById(id: String): Cart? {
-    val cart = cartRepository.findById(id).orNull()
+    val cart = cartRepository.findByIdOrNull(id)
     return cart?.toModel()
   }
 
   override fun findCartByUserId(userId: Long): Cart? {
-    val cart = cartRepository.findByUserId(userId).orNull()
+    val cart = cartRepository.findByUserId(userId)
     return cart?.toModel()
   }
 

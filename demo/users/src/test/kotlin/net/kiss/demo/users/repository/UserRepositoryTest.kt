@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.jdbc.Sql
 import org.testcontainers.junit.jupiter.Container
@@ -34,7 +35,7 @@ class UserRepositoryTest @Autowired constructor(
 
   @Test
   fun `should find user by id`() {
-    val frodo = userRepository.findById(SqlValues.frodo.id!!).orNull()
+    val frodo = userRepository.findByIdOrNull(SqlValues.frodo.id!!)
 
     assertThat(frodo).isNotNull
     assertThat(frodo?.id).isEqualTo(SqlValues.frodo.id!!)
@@ -43,7 +44,7 @@ class UserRepositoryTest @Autowired constructor(
 
   @Test
   fun `should find user by username`() {
-    val frodo = userRepository.findUserByUsername(SqlValues.frodo.username).orNull()
+    val frodo = userRepository.findUserByUsername(SqlValues.frodo.username)
 
     assertThat(frodo).isNotNull
     assertThat(frodo?.id).isEqualTo(SqlValues.frodo.id!!)
@@ -55,7 +56,7 @@ class UserRepositoryTest @Autowired constructor(
     val user = UserEntityHelper.userEntity(id = null)
 
     val saved = userRepository.save(user)
-    val res = userRepository.findById(saved.id!!).orNull()
+    val res = userRepository.findByIdOrNull(saved.id!!)
 
     assertThat(res).isNotNull
     assertThat(res?.id).isEqualTo(saved.id!!)

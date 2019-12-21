@@ -9,6 +9,7 @@ import net.kiss.demo.users.repository.UserRepository
 import net.kiss.demo.users.service.UserService
 import net.kiss.starter.service.utils.orNull
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -18,8 +19,8 @@ class UserServiceImpl @Autowired constructor(
   val logger = KotlinLogging.logger {  }
 
   override fun findUserById(id: Long): User? {
-    val entity = userRepository.findById(id)
-    return entity.map { it.toModel() }.orNull()
+    val entity = userRepository.findByIdOrNull(id)
+    return entity?.toModel()
   }
 
   override fun createUser(input: UserCreate): User {

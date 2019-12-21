@@ -7,5 +7,39 @@ type Query {
 }
 
 type Mutation {
-  
+
+}
+
+type ListInfo {
+  sort: [SortField!]!
+}
+
+interface ListResult {
+  listInfo: ListInfo!
+}
+
+type SortField {
+  field: String!
+  direction: String!
+}
+
+input SortFieldInput {
+  field: String!
+  direction: String!
+}
+
+type PageInfo {
+  page: Int!
+  size: Int!
+  totalPages: Int!
+}
+
+interface PageResult {
+  listInfo: ListInfo!
+  pageInfo: PageInfo!
+}
+
+input PageRequest {
+  page: Int!
+  size: Int!
 }

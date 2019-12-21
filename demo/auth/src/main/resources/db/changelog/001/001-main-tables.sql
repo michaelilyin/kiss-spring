@@ -1,21 +1,5 @@
 --liquibase formatted sql
 
---changeset ilyin:create-client-auth-tables context:prod
-CREATE TABLE IF NOT EXISTS oauth_client_details
-(
-    client_id               VARCHAR(255) PRIMARY KEY,
-    resource_ids            VARCHAR(255),
-    client_secret           VARCHAR(255),
-    scope                   VARCHAR(255),
-    authorized_grant_types  VARCHAR(255),
-    web_server_redirect_uri VARCHAR(255),
-    authorities             VARCHAR(255),
-    access_token_validity   INTEGER,
-    refresh_token_validity  INTEGER,
-    additional_information  VARCHAR(4096),
-    autoapprove             VARCHAR(255)
-);
-
 --changeset ilyin:insert-main-client context:prod
 INSERT INTO oauth_client_details (client_id,
                                   resource_ids,
@@ -96,8 +80,7 @@ CREATE TABLE IF NOT EXISTS user_roles
 
 --changeset ilyin:insert-system-default-auth-data context:prod
 INSERT INTO users (username, password, enabled, system)
-VALUES ('admin', '$2a$10$Ae3Lv/HiiKqEV3G8/U7MCuUwlCSNvqtSFmwykt5c/tE2p0qy7WV3O', TRUE, TRUE),
-       ('user', '$2a$10$Ae3Lv/HiiKqEV3G8/U7MCuUwlCSNvqtSFmwykt5c/tE2p0qy7WV3O', TRUE, TRUE)
+VALUES ('admin', '$2a$10$Ae3Lv/HiiKqEV3G8/U7MCuUwlCSNvqtSFmwykt5c/tE2p0qy7WV3O', TRUE, TRUE)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO permissions (code, name, description)
@@ -108,7 +91,7 @@ VALUES ('self_r', 'View self account data',
 ON CONFLICT DO NOTHING;
 
 INSERT INTO roles (code, name, description, system)
-VALUES ('user', 'User', 'Regular user', TRUE),
+VALUES ('user', 'User', 'Regular user with basic permissions', TRUE),
        ('user-admin', 'Users administrator', 'Role with grants for manage another users', TRUE)
 ON CONFLICT DO NOTHING;
 
@@ -119,16 +102,6 @@ FROM users u,
      users g
 WHERE u.username = 'admin'
   AND r.code IN ('user', 'user-admin')
-  AND g.username = 'admin'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO user_roles (user_id, role_id, system, grant_user_id)
-SELECT u.id, r.id, TRUE, g.id
-FROM users u,
-     roles r,
-     users g
-WHERE u.username = 'user'
-  AND r.code IN ('user')
   AND g.username = 'admin'
 ON CONFLICT DO NOTHING;
 
@@ -160,9 +133,40 @@ ALTER TABLE users
 
 --changeset ilyin:update-names context:prod
 UPDATE users
-SET first_name = upper(username)
+SET first_name = INITCAP(username)
 WHERE first_name IS NULL;
 
 --changeset ilyin:make-first-name-required:prod
 ALTER TABLE users
     ALTER COLUMN first_name SET NOT NULL;
+
+--changeset ilyin:add-hidden-user-col context:prod
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS hidden BOOLEAN NOT NULL DEFAULT FALSE;
+
+--changeset ilyin:create-system-user context:prod
+INSERT INTO users (username, password, enabled, system, hidden, first_name)
+VALUES ('system', '', TRUE, TRUE, TRUE, 'System User')
+ON CONFLICT DO NOTHING;
+
+UPDATE user_roles
+SET grant_user_id = (SELECT id FROM users WHERE username = 'system')
+WHERE grant_user_id = (SELECT id FROM users WHERE username = 'admin');
+
+UPDATE role_permissions
+SET grant_user_id = (SELECT id FROM users WHERE username = 'system')
+WHERE grant_user_id = (SELECT id FROM users WHERE username = 'admin');
+
+--changeset ilyin:default-roles context:prod
+CREATE TABLE IF NOT EXISTS default_roles
+(
+    id      BIGSERIAL PRIMARY KEY,
+    role_id BIGINT  NOT NULL UNIQUE REFERENCES roles (id),
+    system  BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+INSERT INTO default_roles (role_id, system)
+SELECT id, TRUE
+FROM roles
+WHERE code = 'user'
+ON CONFLICT DO NOTHING;

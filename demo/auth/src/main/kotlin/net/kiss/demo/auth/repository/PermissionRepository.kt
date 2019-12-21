@@ -1,21 +1,18 @@
 package net.kiss.demo.auth.repository
 
-import net.kiss.demo.auth.entity.UserPermissionEntity
-import org.springframework.data.jdbc.repository.query.Query
+import net.kiss.demo.auth.entity.PermissionEntity
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
-import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
-interface PermissionRepository : CrudRepository<UserPermissionEntity, Long> {
-  // language=PostgreSQL
+interface PermissionRepository : CrudRepository<PermissionEntity, Long> {
   @Query("""
-SELECT p.*
-FROM permissions p
-       JOIN role_permissions rp ON rp.permission_id = p.id
-       JOIN user_roles ur ON ur.role_id = rp.role_id
-WHERE ur.user_id = :id
+    from PermissionEntity p
+      join RolePermissionGrantEntity rpg on p.id = rpg.id.permissionId
+      join UserRoleGrantEntity urg on rpg.id.roleId = urg.id.roleId
+    where urg.id.userId = :id
 """)
-  fun getPermissionsByUserId(@Param("id") id: Long): List<UserPermissionEntity>
+  fun getPermissionsByUserId(@Param("id") id: Long): List<PermissionEntity>
 }

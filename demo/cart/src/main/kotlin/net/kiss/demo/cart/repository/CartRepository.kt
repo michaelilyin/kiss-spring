@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import java.util.*
 
 interface CartRepository : MongoRepository<CartEntity, String> {
-  fun findByUserId(userId: Long): Optional<CartEntity>
+  fun findByUserId(userId: Long): CartEntity?
 }
