@@ -1,4 +1,4 @@
-package net.kiss.demo.auth.model
+package net.kiss.demo.auth.model.permission
 
 import net.kiss.demo.auth.entity.PermissionEntity
 

@@ -1,8 +1,8 @@
 package net.kiss.demo.auth.api
 
-import net.kiss.demo.auth.model.Permission
-import net.kiss.demo.auth.model.Role
-import net.kiss.demo.auth.model.RolePermission
+import net.kiss.demo.auth.model.permission.Permission
+import net.kiss.demo.auth.model.role.Role
+import net.kiss.demo.auth.model.permission.RolePermission
 import net.kiss.demo.auth.model.user.UserAccount
 import net.kiss.demo.auth.service.PermissionService
 import net.kiss.demo.auth.service.RoleService

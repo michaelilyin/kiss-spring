@@ -1,7 +1,7 @@
 package net.kiss.demo.auth.service
 
-import net.kiss.demo.auth.model.Permission
-import net.kiss.demo.auth.model.RolePermission
+import net.kiss.demo.auth.model.permission.Permission
+import net.kiss.demo.auth.model.permission.RolePermission
 import net.kiss.service.model.lists.ListResult
 import net.kiss.service.model.lists.PageRequest
 import net.kiss.service.model.lists.PageResult

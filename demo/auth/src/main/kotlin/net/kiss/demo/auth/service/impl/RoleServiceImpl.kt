@@ -1,8 +1,8 @@
 package net.kiss.demo.auth.service.impl
 
-import net.kiss.demo.auth.model.Role
-import net.kiss.demo.auth.model.UserRole
-import net.kiss.demo.auth.model.toModel
+import net.kiss.demo.auth.model.role.Role
+import net.kiss.demo.auth.model.role.UserRole
+import net.kiss.demo.auth.model.role.toModel
 import net.kiss.demo.auth.repository.RoleRepository
 import net.kiss.demo.auth.repository.UserRoleGrantsRepository
 import net.kiss.demo.auth.service.RoleService
