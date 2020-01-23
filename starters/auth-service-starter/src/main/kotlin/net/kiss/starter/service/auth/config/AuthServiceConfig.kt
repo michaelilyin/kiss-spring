@@ -1,14 +1,12 @@
 package net.kiss.starter.service.auth.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import net.kiss.starter.service.auth.service.CustomUserDetailsService
 import net.kiss.starter.service.auth.service.impl.AugmentTokenEnhancer
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.AutoConfigurationPackage
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter
@@ -28,7 +26,8 @@ class AuthServiceConfig @Autowired constructor(
   private val tokenStore: TokenStore,
   private val tokenConverter: JwtAccessTokenConverter,
   private val userDetailsService: CustomUserDetailsService,
-  private val passwordEncoder: PasswordEncoder
+  private val passwordEncoder: PasswordEncoder,
+  private val objectMapper: ObjectMapper
 ) : AuthorizationServerConfigurerAdapter() {
   override fun configure(clients: ClientDetailsServiceConfigurer) {
     clients
@@ -38,7 +37,7 @@ class AuthServiceConfig @Autowired constructor(
 
   @Bean
   fun augmentTokenEnhancer(): TokenEnhancer {
-    return AugmentTokenEnhancer()
+    return AugmentTokenEnhancer(objectMapper)
   }
 
   override fun configure(endpoints: AuthorizationServerEndpointsConfigurer) {

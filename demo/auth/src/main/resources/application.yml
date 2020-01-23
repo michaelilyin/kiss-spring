@@ -3,10 +3,8 @@ spring:
     username: ${AUTH_USERNAME:demo}
     password: ${AUTH_PASSWORD:secret}
     url: ${AUTH_DB:jdbc:postgresql://localhost:5432/kiss-demo?currentSchema=auth}
+  profiles:
+    active: logging
 
 server:
   port: 6012
-
-logging:
-  pattern:
-    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) <%X{TOKEN}> [%X{USERNAME}] %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
