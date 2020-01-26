@@ -1,0 +1,34 @@
+type RolePermission {
+  grantUser: UserAccount!
+  system: Boolean!
+}
+
+type Permission {
+  id: ID!
+  code: String!
+  name: String!
+  description: String!
+}
+
+extend type RolePermission {
+  permission: Permission!
+}
+
+type RolePermissionsList implements ListResult {
+  listInfo: ListInfo!
+  items: [RolePermission!]!
+}
+
+type PermissionsPage implements PageResult {
+  pageInfo: PageInfo!
+  listInfo: ListInfo!
+  items: [Permission!]!
+}
+
+extend type Role {
+  permissions(sort: SortRequest): RolePermissionsList!
+}
+
+extend type Query {
+  permissions(page: PageRequest, sort: SortRequest): PermissionsPage!
+}

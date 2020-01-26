@@ -1,7 +1,7 @@
 package net.kiss.starter.graphql.model
 
-import net.kiss.service.model.lists.SortField
+import net.kiss.service.model.lists.Sort
 
 interface SortRequestInput {
-  val sort: List<SortField>
+  val sort: Sort
 }

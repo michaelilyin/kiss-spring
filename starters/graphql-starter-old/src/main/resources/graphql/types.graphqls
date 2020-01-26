@@ -10,8 +10,12 @@ type Mutation {
 
 }
 
+type Sort {
+  fields: [SortField!]!
+}
+
 type ListInfo {
-  sort: [SortField!]!
+  sort: Sort!
 }
 
 interface ListResult {
@@ -23,15 +27,11 @@ type SortField {
   direction: String!
 }
 
-input SortFieldInput {
-  field: String!
-  direction: String!
-}
-
 type PageInfo {
   page: Int!
   size: Int!
   totalPages: Int!
+  totalItems: Int!
 }
 
 interface PageResult {
@@ -40,6 +40,15 @@ interface PageResult {
 }
 
 input PageRequest {
-  page: Int!
-  size: Int!
+  page: Int
+  size: Int
+}
+
+input SortFieldInput {
+  field: String!
+  direction: String
+}
+
+input SortRequest {
+  fields: [SortFieldInput!]
 }

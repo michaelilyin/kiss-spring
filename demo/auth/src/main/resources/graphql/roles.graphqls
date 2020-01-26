@@ -20,6 +20,16 @@ type UserRolesList implements ListResult {
   items: [UserRole!]!
 }
 
+type RolesPage implements PageResult {
+  listInfo: ListInfo!
+  pageInfo: PageInfo!
+  items: [Role!]!
+}
+
 extend type UserAccount {
-  roles(sort: [SortFieldInput!]!): UserRolesList!
+  roles(sort: SortRequest): UserRolesList!
+}
+
+extend type Query {
+  roles(page: PageRequest, sort: SortRequest): RolesPage!
 }

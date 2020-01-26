@@ -2,6 +2,9 @@ package net.kiss.demo.auth.repository
 
 import net.kiss.demo.auth.entity.RoleEntity
 import org.springframework.data.repository.CrudRepository
+import org.springframework.data.repository.PagingAndSortingRepository
+import org.springframework.stereotype.Repository
 
-interface RoleRepository: CrudRepository<RoleEntity, Long> {
+@Repository
+interface RoleRepository: PagingAndSortingRepository<RoleEntity, Long> {
 }

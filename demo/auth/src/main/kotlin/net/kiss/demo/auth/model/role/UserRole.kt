@@ -1,4 +1,4 @@
-package net.kiss.demo.auth.model
+package net.kiss.demo.auth.model.role
 
 import net.kiss.demo.auth.entity.UserRoleGrantEntity
 
@@ -10,7 +10,7 @@ data class UserRole(
 }
 
 fun UserRoleGrantEntity.toModel() = UserRole(
-  roleId = id.roleId,
-  grantUserId = grantUserId,
-  system = system
+    roleId = id.roleId,
+    grantUserId = grantUserId,
+    system = system
 )

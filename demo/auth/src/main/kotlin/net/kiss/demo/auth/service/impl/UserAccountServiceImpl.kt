@@ -12,6 +12,7 @@ import net.kiss.demo.auth.repository.UserRoleGrantsRepository
 import net.kiss.demo.auth.service.UserAccountService
 import net.kiss.service.model.lists.PageResult
 import net.kiss.service.model.lists.PageRequest
+import net.kiss.service.model.lists.Sort
 import net.kiss.service.model.lists.SortField
 import net.kiss.starter.service.jpa.utils.toPage
 import net.kiss.starter.service.jpa.utils.toPageable
@@ -41,7 +42,7 @@ class UserAccountServiceImpl @Autowired constructor(
     return account?.toModel()
   }
 
-  override fun getUserAccounts(page: PageRequest, sort: List<SortField>): PageResult<UserAccount> {
+  override fun getUserAccounts(page: PageRequest, sort: Sort): PageResult<UserAccount> {
     val request = page.toPageable(sort)
 
     val users = userAccountRepository.findAll(request)

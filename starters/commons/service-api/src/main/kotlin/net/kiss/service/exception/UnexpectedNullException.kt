@@ -1,7 +1,7 @@
 package net.kiss.service.exception
 
 class UnexpectedNullException(
-  message: String? = null,
+  message: String,
   cause: Throwable? = null
 ) : ServiceException(message, cause) {
 }
