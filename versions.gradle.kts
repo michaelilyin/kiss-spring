@@ -7,6 +7,8 @@ allprojects {
 
   val springVer by extra("5.1.5.RELEASE")
   val springDataVer by extra("2.1.8.RELEASE")
+  val graphqlKotlin by extra("2.0.0.RC1")
+//  val graphqlKotlin by extra("1.4.2")
   val junitVer by extra("5.3.2")
   val fakerVer by extra("0.17.2")
   val kotlinLoggingVer by extra("1.6.24")

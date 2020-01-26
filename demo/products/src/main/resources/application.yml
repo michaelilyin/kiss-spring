@@ -1,0 +1,6 @@
+server:
+  port: 6013
+
+graphql:
+  packages:
+    - net.kiss.demo.products

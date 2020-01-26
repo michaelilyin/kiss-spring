@@ -10,10 +10,12 @@ include(
   ":starters:service-jpa-starter",
   ":starters:auth-service-starter",
   ":starters:resource-service-starter",
+  ":starters:graphql-starter-old",
   ":starters:graphql-starter",
   ":starters:test-starter",
 
   ":demo:auth",
   ":demo:users",
-  ":demo:cart"
+  ":demo:cart",
+  ":demo:products"
 );

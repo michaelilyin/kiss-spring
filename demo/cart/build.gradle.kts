@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
   implementation(project(":starters:service-starter"))
-  implementation(project(":starters:graphql-starter"))
+  implementation(project(":starters:graphql-starter-old"))
 
   implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 }

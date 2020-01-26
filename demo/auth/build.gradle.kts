@@ -10,7 +10,7 @@ dependencies {
   implementation(project(":starters:service-starter"))
   implementation(project(":starters:service-jpa-starter"))
   implementation(project(":starters:auth-service-starter"))
-  implementation(project(":starters:graphql-starter"))
+  implementation(project(":starters:graphql-starter-old"))
 
   runtimeOnly("org.liquibase:liquibase-core")
   runtimeOnly("org.postgresql:postgresql")
