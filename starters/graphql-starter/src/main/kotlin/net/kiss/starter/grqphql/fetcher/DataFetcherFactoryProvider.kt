@@ -1,10 +1,11 @@
-package net.kiss.demo.products.graphql.fetchers
+package net.kiss.starter.grqphql.fetcher
 
 import com.expediagroup.graphql.execution.SimpleKotlinDataFetcherFactoryProvider
 import com.fasterxml.jackson.databind.ObjectMapper
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetcherFactory
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
@@ -15,12 +16,8 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.findAnnotation
 
-/**
- * @author ilyin
- */
-@Component
 @ExperimentalStdlibApi
-class DataFetcherFactoryProvider @Autowired constructor(
+class DataFetcherFactoryProvider constructor(
   private val beanFactory: BeanFactory,
   objectMapper: ObjectMapper
 ) : SimpleKotlinDataFetcherFactoryProvider(objectMapper) {
@@ -43,8 +40,9 @@ class DataFetcherFactoryProvider @Autowired constructor(
     val propertyFetcher = beanFactory.getBean<Any>(type.javaObjectType) as PropertyFetcher<Any, Any>
 
     val fetcher = DataFetcher { env ->
-      GlobalScope.launch {
-        propertyFetcher.fetchProperty(env)
+      GlobalScope.async {
+        val result = propertyFetcher.fetchProperty(env)
+        return@async result
       }.asCompletableFuture()
     } as DataFetcher<Any>
 

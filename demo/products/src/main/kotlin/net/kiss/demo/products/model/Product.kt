@@ -3,8 +3,8 @@ package net.kiss.demo.products.model
 import com.expediagroup.graphql.annotations.GraphQLID
 import com.expediagroup.graphql.annotations.GraphQLIgnore
 import com.fasterxml.jackson.annotation.JsonIgnore
-import net.kiss.demo.products.graphql.fetchers.GraphQLFetchProperty
-import net.kiss.demo.products.graphql.product.ProductCategoryFether
+import net.kiss.demo.products.graphql.fetcher.ProductCategoryFetcher
+import net.kiss.starter.grqphql.fetcher.GraphQLFetchProperty
 
 data class Product(
   @GraphQLID
@@ -13,10 +13,10 @@ data class Product(
   val description: String,
 
   @GraphQLIgnore
-  val categoryId: Long
+  val categoryId: String
 ) {
   @JsonIgnore
   @Suppress("unused")
-  @GraphQLFetchProperty(ProductCategoryFether::class)
+  @GraphQLFetchProperty(ProductCategoryFetcher::class)
   lateinit var category: ProductCategory
 }
