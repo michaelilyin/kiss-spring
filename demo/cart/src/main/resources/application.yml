@@ -1,3 +1,7 @@
+graphql:
+  packages:
+    - net.kiss.demo.cart
+
 spring:
   data:
     mongodb:
