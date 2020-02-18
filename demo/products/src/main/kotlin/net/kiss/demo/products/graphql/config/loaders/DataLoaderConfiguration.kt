@@ -1,7 +1,6 @@
-package net.kiss.demo.products.graphql.loaders
+package net.kiss.demo.products.graphql.config.loaders
 
 import com.expediagroup.graphql.spring.execution.DataLoaderRegistryFactory
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
@@ -11,7 +10,6 @@ import org.dataloader.DataLoader
 import org.dataloader.DataLoaderRegistry
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import java.util.concurrent.CompletableFuture
 
 /**
  * @author ilyin
@@ -23,7 +21,8 @@ class DataLoaderConfiguration {
 
   @Bean
   fun dataLoaderRegistryFactory(): DataLoaderRegistryFactory {
-    val productLoader = object : DataLoaderAdapter<String, ProductCategory> {
+    val productLoader = object :
+      DataLoaderAdapter<String, ProductCategory> {
       override suspend fun load(args: List<String>): List<ProductCategory> {
         return args.map { id ->
           ProductCategory(

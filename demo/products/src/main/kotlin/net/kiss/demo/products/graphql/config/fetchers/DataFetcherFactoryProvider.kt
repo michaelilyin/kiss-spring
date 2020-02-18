@@ -1,4 +1,4 @@
-package net.kiss.demo.products.graphql.fetchers
+package net.kiss.demo.products.graphql.config.fetchers
 
 import com.expediagroup.graphql.execution.SimpleKotlinDataFetcherFactoryProvider
 import com.fasterxml.jackson.databind.ObjectMapper

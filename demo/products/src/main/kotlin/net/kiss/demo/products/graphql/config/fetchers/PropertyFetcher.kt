@@ -1,8 +1,6 @@
-package net.kiss.demo.products.graphql.fetchers
+package net.kiss.demo.products.graphql.config.fetchers
 
-import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
-import java.util.concurrent.CompletableFuture
 
 /**
  * @author ilyin

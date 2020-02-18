@@ -1,4 +1,4 @@
-package net.kiss.demo.products.graphql.loaders
+package net.kiss.demo.products.graphql.config.loaders
 
 /**
  * @author ilyin
