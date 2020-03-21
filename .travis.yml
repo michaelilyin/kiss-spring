@@ -15,7 +15,20 @@ cache:
 services:
   - docker
 
+install:
+  - ./gradlew classes
+
 script:
   - ./gradlew build
   - docker build -t michaelilyin/kiss-spring-demo-goods:latest ./demo/goods
 
+deploy:
+  - provider: script
+    script: bash deploy.sh
+    on:
+      branch: master
+
+  - provider: script
+    script: echo deploy to cloud
+    on:
+      branch: master
