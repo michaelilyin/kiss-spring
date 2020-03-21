@@ -1,1 +1,6 @@
-build/
+.git
+.idea
+*.iml
+buildSrc
+src
+Dockerfile
