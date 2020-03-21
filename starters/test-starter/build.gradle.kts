@@ -11,9 +11,9 @@ dependencies {
   compile("org.springframework.boot:spring-boot-starter-test") {
     exclude(module = "junit")
   }
-  compile("org.springframework.security:spring-security-test:$springVer") {
-    exclude(module = "junit")
-  }
+//  compile("org.springframework.security:spring-security-test:$springVer") {
+//    exclude(module = "junit")
+//  }
 
   compile("org.testcontainers:junit-jupiter:$testcontainersVer") {
     exclude(module = "junit")
