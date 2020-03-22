@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: goods
+  name: goods
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goods
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: goods
+    spec:
+      containers:
+      - image: michaelilyin/kiss-spring-demo-goods:latest
+        name: kiss-spring-demo-goods
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: goods
+  name: goods
+spec:
+  ports:
+  - name: 8080-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: goods
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: goods
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /intra
+            backend:
+              serviceName: goods
+              servicePort: 8080
