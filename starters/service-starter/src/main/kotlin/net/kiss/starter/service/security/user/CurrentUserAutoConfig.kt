@@ -4,6 +4,8 @@ import net.kiss.starter.service.security.user.impl.AnonymousCurrentUser
 import net.kiss.starter.service.security.user.impl.ApplicationCurrentUser
 import net.kiss.starter.service.security.user.impl.OAuthCurrentUser
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Scope
@@ -17,23 +19,31 @@ import org.springframework.security.oauth2.provider.token.TokenStore
 import org.springframework.web.context.WebApplicationContext
 
 @Configuration
-@ConditionalOnClass(OAuth2Authentication::class)
 class CurrentUserAutoConfig {
+  @ConditionalOnClass(OAuth2Authentication::class)
+  class OAuthConfig {
+    @Bean
+    @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+    fun currentUser(tokenStore: TokenStore): CurrentUser {
+      val auth = SecurityContextHolder.getContext().authentication
+      if (auth is AnonymousAuthenticationToken) {
+        return AnonymousCurrentUser()
+      }
+      if (auth is UsernamePasswordAuthenticationToken) {
+        return ApplicationCurrentUser()
+      }
+      if (auth is OAuth2Authentication) {
+        val details = auth.details as OAuth2AuthenticationDetails
+        val token = tokenStore.readAccessToken(details.tokenValue)
+        return OAuthCurrentUser(token)
+      }
+      throw UnsupportedOperationException("Unknown auth type")
+    }
+  }
+
   @Bean
-  @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
-  fun currentUser(tokenStore: TokenStore): CurrentUser {
-    val auth = SecurityContextHolder.getContext().authentication
-    if (auth is AnonymousAuthenticationToken) {
-      return AnonymousCurrentUser()
-    }
-    if (auth is UsernamePasswordAuthenticationToken) {
-      return ApplicationCurrentUser()
-    }
-    if (auth is OAuth2Authentication) {
-      val details = auth.details as OAuth2AuthenticationDetails
-      val token = tokenStore.readAccessToken(details.tokenValue)
-      return OAuthCurrentUser(token)
-    }
-    throw UnsupportedOperationException("Unknown auth type")
+  @ConditionalOnMissingBean(CurrentUser::class)
+  fun anonymousUser(): CurrentUser {
+    return AnonymousCurrentUser()
   }
 }

@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Profile
 
 
 @Configuration
-@Profile("logging")
 class LoggingAutoConfig {
   @Bean
   fun loggingFilterBean(currentUser: CurrentUser) = Slf4jMDCFilter(currentUser)

@@ -1,5 +1,6 @@
 package net.kiss.starter.service.logging
 
+import mu.KotlinLogging
 import net.kiss.starter.service.security.user.CurrentUser
 import org.slf4j.MDC
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -13,6 +14,7 @@ class Slf4jMDCFilter constructor(
   private val currentUser: CurrentUser
 ) : WebFilter {
   companion object {
+    val logger = KotlinLogging.logger { }
     val REQUEST_TRACE_HEADER = "x-req-trace"
     val APP_SESSION_TRACE_HEADER = "x-app-trace"
 
@@ -49,10 +51,14 @@ class Slf4jMDCFilter constructor(
     response.headers[REQUEST_TRACE_HEADER] = reqToken
     response.headers[APP_SESSION_TRACE_HEADER] = appToken
 
-    MDC.put(MDC_BATCH, " [$appToken[$authTrace[$username]]](<$reqToken>$method $path)")
+    MDC.put(MDC_BATCH, " [$appToken[$authTrace[$username]]](<$reqToken> $method $path)")
 
+    logger.info { "Accept request" }
     return chain.filter(exchange)
-      .doFinally { MDC.clear() }
+      .doFinally {
+        logger.info { "Request processed ${response.statusCode?.value()}" }
+        MDC.clear()
+      }
   }
 
   private fun getReqToken(request: ServerHttpRequest): String? {
