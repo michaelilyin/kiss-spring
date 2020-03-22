@@ -9,23 +9,24 @@ import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
 import java.util.*
+import kotlin.time.measureTime
 
 class Slf4jMDCFilter constructor(
   private val currentUser: CurrentUser
 ) : WebFilter {
   companion object {
     val logger = KotlinLogging.logger { }
-    val REQUEST_TRACE_HEADER = "x-req-trace"
-    val APP_SESSION_TRACE_HEADER = "x-app-trace"
+    const val REQUEST_TRACE_HEADER = "x-req-trace"
+    const val APP_SESSION_TRACE_HEADER = "x-app-trace"
 
-    private val MDC_REQUEST_TOKEN = "TOKEN"
-    private val MDC_APP_TOKEN = "TOKEN"
-    private val MDC_REQUEST_USERNAME = "USERNAME"
-    private val MDC_REQUEST_AUTH_TOKEN = "AUTH_TOKEN"
-    private val MDC_REQUEST_METHOD = "METHOD"
-    private val MDC_REQUEST_PATH = "PATH"
+    private const val MDC_REQUEST_TOKEN = "TOKEN"
+    private const val MDC_APP_TOKEN = "TOKEN"
+    private const val MDC_REQUEST_USERNAME = "USERNAME"
+    private const val MDC_REQUEST_AUTH_TOKEN = "AUTH_TOKEN"
+    private const val MDC_REQUEST_METHOD = "METHOD"
+    private const val MDC_REQUEST_PATH = "PATH"
 
-    private val MDC_BATCH = "BATCH_TRACE"
+    private const val MDC_BATCH = "BATCH_TRACE"
   }
 
   override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
@@ -53,10 +54,10 @@ class Slf4jMDCFilter constructor(
 
     MDC.put(MDC_BATCH, " [$appToken[$authTrace[$username]]](<$reqToken> $method $path)")
 
-    logger.info { "Accept request" }
+    val start = System.currentTimeMillis()
     return chain.filter(exchange)
       .doFinally {
-        logger.info { "Request processed ${response.statusCode?.value()}" }
+        logger.info { "Processed:${response.statusCode?.value()}, ${System.currentTimeMillis() - start}ms" }
         MDC.clear()
       }
   }

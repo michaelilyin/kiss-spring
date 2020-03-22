@@ -15,20 +15,24 @@ cache:
 services:
   - docker
 
-install:
-  - ./gradlew classes
+install: skip
 
 script:
   - ./gradlew build
   - docker build -t michaelilyin/kiss-spring-demo-goods:latest ./demo/goods
 
+before_deploy:
+  - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+  - chmod +x ./kubectl
+  - sudo mv ./kubectl /usr/local/bin/kubectl
+
 deploy:
   - provider: script
-    script: bash deploy.sh
+    script: bash publish.sh
     on:
       branch: master
 
   - provider: script
-    script: echo deploy to cloud
+    script: bash deploy.sh
     on:
       branch: master

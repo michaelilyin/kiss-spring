@@ -1,5 +1,7 @@
 #!/bin/bash
 
-echo $DOCKER_TOKEN | docker login --username michaelilyin --password-stdin
+mkdir ${HOME}/.kube
+echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
 
-docker push michaelilyin/kiss-spring-demo-goods:latest
+kubectl apply -f deployment.yaml
+kubectl rollout restart deployment/goods
