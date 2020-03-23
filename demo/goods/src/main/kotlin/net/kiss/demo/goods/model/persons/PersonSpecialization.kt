@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 data class PersonSpecialization(
   val id: ID,
-  val person: HasName,
+  val person: String,
   val specialization: SpecializationBrief,
   val since: LocalDateTime
 )

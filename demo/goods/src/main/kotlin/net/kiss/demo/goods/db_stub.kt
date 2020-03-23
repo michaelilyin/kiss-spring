@@ -1,7 +1,10 @@
 package net.kiss.demo.goods
 
-import net.kiss.demo.goods.model.persons.Position
-import net.kiss.demo.goods.model.persons.Specialization
+import net.kiss.demo.goods.model.persons.*
+import java.io.DataInputStream
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 
 val ID = Random(System.currentTimeMillis())
@@ -131,4 +134,78 @@ val SPECIALIZATIONS = mutableListOf(
   ANGULAR, REACT, TYPESCRIPT, HTML, CSS,
   JAVA, KOTLIN, SPRING, SPRINGBOOT,
   CSHARP, NET, IIS
+)
+
+
+val HARRY_POTTER = Person(
+  id = id(),
+  firstName = "Harry",
+  lastName = "Potter",
+  gender = Gender.MALE,
+  photo = "https://vignette.wikia.nocookie.net/harrypotter/images/4/4f/Harry_Potter_-_GoF_Promo.jpg/revision/latest?cb=20061109083433&path-prefix=ru",
+  position = SENIOR,
+  birthday = LocalDate.of(1980, 7, 31)
+)
+
+val HERMIONE_GRANGER = Person(
+  id = id(),
+  firstName = "Hermione",
+  lastName = "Granger",
+  gender = Gender.FEMALE,
+  photo = "https://www.meme-arsenal.com/memes/0cc23ffb44f657c5036facc582f5a334.jpg",
+  position = EXPERT,
+  birthday = LocalDate.of(1979, 9, 19)
+)
+
+val RONALD_WEASLEY = Person(
+  id = id(),
+  firstName = "Ronald",
+  lastName = "Weasley",
+  gender = Gender.MALE,
+  photo = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTvpPU5IC8QxWLScWQhjmDma92uZOqbt-8HWsWaA1cytkcA7lR5",
+  position = JUNIOR,
+  birthday = LocalDate.of(1980, 3, 1)
+)
+
+val HAGRID = Person(
+  id = id(),
+  firstName = "Hagrid",
+  lastName = null,
+  gender = Gender.MALE,
+  photo = "https://vignette.wikia.nocookie.net/harrypotter/images/e/ee/Rubeushagrid.PNG/revision/latest?cb=20161123044204",
+  position = null,
+  birthday = null
+)
+
+val PERSONS = mutableListOf(
+  HARRY_POTTER, HERMIONE_GRANGER, RONALD_WEASLEY
+)
+
+val HARRY_SPEC = mutableListOf(
+  PersonSpecialization(
+    id = id(),
+    person = HARRY_POTTER.id,
+    specialization = ANGULAR.toBrief(),
+    since = LocalDateTime.parse("2001-05-02T16:15:21Z", DateTimeFormatter.ISO_DATE_TIME)
+  ),
+  PersonSpecialization(
+    id = id(),
+    person = HARRY_POTTER.id,
+    specialization = TYPESCRIPT.toBrief(),
+    since = LocalDateTime.parse("2013-09-18T03:55:14Z", DateTimeFormatter.ISO_DATE_TIME)
+  )
+)
+
+val HERMIONE_SPEC = mutableListOf(
+  PersonSpecialization(
+    id = id(),
+    person = HARRY_POTTER.id,
+    specialization = CSHARP.toBrief(),
+    since = LocalDateTime.parse("2017-07-07T21:16:23Z", DateTimeFormatter.ISO_DATE_TIME)
+  )
+)
+
+val PERSON_SPECS = mutableMapOf(
+  HARRY_POTTER.id to HARRY_SPEC,
+  HERMIONE_GRANGER.id to HERMIONE_SPEC
 )

@@ -8,8 +8,8 @@ data class Person(
   val id: ID,
   val photo: String,
   val firstName: String,
-  val lastName: String,
-  val birthday: LocalDate,
+  val lastName: String?,
+  val birthday: LocalDate?,
   val gender: Gender,
-  val position: HasName
+  val position: HasName?
 )
