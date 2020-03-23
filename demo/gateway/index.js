@@ -4,10 +4,11 @@ const uuid = require('uuid/v5');
 
 const gateway = new ApolloGateway({
   serviceList: [
-    {name: "users", url: "http://localhost:6010/graphql"},
+    // {name: "users", url: "http://localhost:6010/graphql"},
+    {name: "products", url: "http://localhost:6013/graphql"},
     {name: "cart", url: "http://localhost:6011/graphql"},
   ],
-  experimental_pollInterval: 10000
+  experimental_pollInterval: 1000000
 });
 
 const server = new ApolloServer({

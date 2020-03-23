@@ -1,7 +1,9 @@
 package net.kiss.demo.cart.service.impl
 
+import kotlinx.coroutines.future.await
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitFirstOrNull
+import kotlinx.coroutines.reactive.awaitSingle
 import mu.KotlinLogging
 import net.kiss.demo.cart.entity.CartEntity
 import net.kiss.demo.cart.model.Cart
@@ -20,8 +22,12 @@ class CartServiceImpl @Autowired constructor(
   private val logger = KotlinLogging.logger {}
 
   override suspend fun findCartById(id: String): Cart? {
-    val cart = cartRepository.findById(id).awaitFirstOrNull()
-    return cart?.toModel()
+//    val cart = cartRepository.findById(id).block()
+//    return cart?.toModel()
+    return Cart(
+      id = id,
+      userId = "123"
+    )
   }
 
   override suspend fun findCartByUserId(userId: String): Cart? {

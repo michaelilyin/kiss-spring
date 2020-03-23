@@ -39,12 +39,7 @@ class DataFetcherFactoryProvider constructor(
     val type = fetch.fetcher as KClass<Any>
     val propertyFetcher = beanFactory.getBean<Any>(type.javaObjectType) as PropertyFetcher<Any, Any>
 
-    val fetcher = DataFetcher { env ->
-      GlobalScope.async {
-        val result = propertyFetcher.fetchProperty(env)
-        return@async result
-      }.asCompletableFuture()
-    } as DataFetcher<Any>
+    val fetcher = DataFetcher { propertyFetcher.fetchProperty(it) } as DataFetcher<Any>
 
     return DataFetcherFactory { fetcher }
   }

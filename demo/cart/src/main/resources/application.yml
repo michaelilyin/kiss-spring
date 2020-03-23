@@ -1,6 +1,8 @@
 graphql:
   packages:
     - net.kiss.demo.cart
+  federation:
+    enabled: true
 
 spring:
   data:
@@ -11,3 +13,10 @@ spring:
 
 server:
   port: 6011
+
+logging:
+  level:
+    ROOT: INFO
+#    graphql: TRACE
+#    com.expediagroup: TRACE
+#    org.springframework.http.codec: DEBUG

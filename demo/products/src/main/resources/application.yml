@@ -4,3 +4,5 @@ server:
 graphql:
   packages:
     - net.kiss.demo.products
+  federation:
+    enabled: true
