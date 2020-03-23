@@ -144,7 +144,7 @@ val HARRY_POTTER = Person(
   gender = Gender.MALE,
   photo = "https://vignette.wikia.nocookie.net/harrypotter/images/4/4f/Harry_Potter_-_GoF_Promo.jpg/revision/latest?cb=20061109083433&path-prefix=ru",
   position = SENIOR,
-  birthday = LocalDate.of(1980, 7, 31)
+  birthday = "1980-07-31"
 )
 
 val HERMIONE_GRANGER = Person(
@@ -154,7 +154,7 @@ val HERMIONE_GRANGER = Person(
   gender = Gender.FEMALE,
   photo = "https://www.meme-arsenal.com/memes/0cc23ffb44f657c5036facc582f5a334.jpg",
   position = EXPERT,
-  birthday = LocalDate.of(1979, 9, 19)
+  birthday = "1979-09-19"
 )
 
 val RONALD_WEASLEY = Person(
@@ -164,7 +164,7 @@ val RONALD_WEASLEY = Person(
   gender = Gender.MALE,
   photo = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTvpPU5IC8QxWLScWQhjmDma92uZOqbt-8HWsWaA1cytkcA7lR5",
   position = JUNIOR,
-  birthday = LocalDate.of(1980, 3, 1)
+  birthday = "1980-03-01"
 )
 
 val HAGRID = Person(
@@ -186,13 +186,13 @@ val HARRY_SPEC = mutableListOf(
     id = id(),
     person = HARRY_POTTER.id,
     specialization = ANGULAR.toBrief(),
-    since = LocalDateTime.parse("2001-05-02T16:15:21Z", DateTimeFormatter.ISO_DATE_TIME)
+    since = "2001-05-02T16:15:21Z"
   ),
   PersonSpecialization(
     id = id(),
     person = HARRY_POTTER.id,
     specialization = TYPESCRIPT.toBrief(),
-    since = LocalDateTime.parse("2013-09-18T03:55:14Z", DateTimeFormatter.ISO_DATE_TIME)
+    since = "2013-09-18T03:55:14Z"
   )
 )
 
@@ -201,7 +201,7 @@ val HERMIONE_SPEC = mutableListOf(
     id = id(),
     person = HARRY_POTTER.id,
     specialization = CSHARP.toBrief(),
-    since = LocalDateTime.parse("2017-07-07T21:16:23Z", DateTimeFormatter.ISO_DATE_TIME)
+    since = "2017-07-07T21:16:23Z"
   )
 )
 
