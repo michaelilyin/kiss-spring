@@ -1,15 +1,12 @@
 package net.kiss.demo.goods.controller
 
-import net.kiss.demo.goods.PERSONS
-import net.kiss.demo.goods.PERSON_SPECS
-import net.kiss.demo.goods.model.persons.Person
-import net.kiss.demo.goods.model.persons.PersonSpecialization
+import net.kiss.demo.goods.*
+import net.kiss.demo.goods.model.persons.*
 import net.kiss.service.exception.NotFoundException
 import net.kiss.service.model.lists.ListValue
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @RestController
 @RequestMapping("/api/persons")
@@ -24,8 +21,74 @@ class PersonController {
     return PERSONS.find { it.id == id } ?: throw NotFoundException("person")
   }
 
+  @PostMapping
+  fun createPerson(@RequestBody input: PersonCreateInput): Person {
+    val person = Person(
+      id = id(),
+      firstName = input.firstName,
+      lastName = input.lastName,
+      photo = input.photo,
+      gender = input.gender,
+      birthday = input.birthday,
+      position = input.positionId?.let { findPosition(it) }
+    )
+
+    PERSONS.add(person)
+
+    return person;
+  }
+
+  @PutMapping("/{id}")
+  fun updatePerson(@PathVariable("id") id: String, @RequestBody input: PersonUpdateInput): Person {
+    val person = PERSONS.find { it.id == id } ?: throw NotFoundException("person")
+
+    person.apply {
+      firstName = input.firstName
+      lastName = input.lastName
+      birthday = input.birthday
+      gender = input.gender
+      position = input.positionId?.let { findPosition(it) }
+    }
+
+    return person
+  }
+
   @GetMapping("/{id}/specializations")
   fun getPersonSpecializations(@PathVariable("id") id: String): ListValue<PersonSpecialization> {
     return ListValue(PERSON_SPECS[id] ?: emptyList())
   }
+
+  @PostMapping("/{id}/specializations")
+  fun addSpecialization(@PathVariable("id") id: String, @RequestBody input: PersonSpecializationCreateInput): PersonSpecialization {
+    val spec = PersonSpecialization(
+      id = id(),
+      person = id,
+      specialization = findSpecialization(input.specialization).toBrief(),
+      since = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+    )
+
+    val specs = PERSON_SPECS.computeIfAbsent(id) { mutableListOf() }
+
+    val existing = specs.find { it.specialization.id == input.specialization }
+    if (existing != null) {
+      return existing
+    }
+
+    specs.add(spec)
+
+    return spec
+  }
+
+  @DeleteMapping("/{id}/specializations/{spec-id}")
+  fun deleteSpecialization(@PathVariable("id") id: String, @PathVariable("spec-id") specId: String): String {
+    val specs = PERSON_SPECS[id] ?: throw NotFoundException("person-spec")
+    specs.removeIf { it.id == specId }
+    return specId
+  }
+
+  private fun findPosition(positionId: String) =
+    POSITIONS.find { it.id == positionId } ?: throw NotFoundException("position")
+
+  private fun findSpecialization(specId: String) =
+    SPECIALIZATIONS.find { it.id == specId } ?: throw NotFoundException("spec")
 }

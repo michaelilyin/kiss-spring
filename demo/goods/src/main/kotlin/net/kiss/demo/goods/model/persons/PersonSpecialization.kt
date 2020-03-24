@@ -12,3 +12,7 @@ data class PersonSpecialization(
 //  @JsonSerialize(using = LocalDateTimeSerializer::class)
   val since: String
 )
+
+data class PersonSpecializationCreateInput(
+  val specialization: String
+)

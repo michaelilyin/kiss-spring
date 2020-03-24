@@ -10,11 +10,29 @@ import java.time.LocalDate
 
 data class Person(
   val id: ID,
+  var photo: String,
+  var firstName: String,
+  var lastName: String?,
+//  @JsonSerialize(using = LocalDateSerializer::class)
+  var birthday: String?,
+  var gender: Gender,
+  var position: HasName?
+)
+
+data class PersonCreateInput(
   val photo: String,
   val firstName: String,
   val lastName: String?,
-//  @JsonSerialize(using = LocalDateSerializer::class)
   val birthday: String?,
   val gender: Gender,
-  val position: HasName?
+  val positionId: String?
+)
+
+data class PersonUpdateInput(
+  val photo: String,
+  val firstName: String,
+  val lastName: String?,
+  val birthday: String?,
+  val gender: Gender,
+  val positionId: String?
 )

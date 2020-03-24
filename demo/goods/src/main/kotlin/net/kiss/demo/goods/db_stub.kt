@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 
-val ID = Random(System.currentTimeMillis())
+val ID = Random(10)
 fun id(): String {
   return java.lang.Long.toHexString(ID.nextLong())
 }
@@ -178,7 +178,7 @@ val HAGRID = Person(
 )
 
 val PERSONS = mutableListOf(
-  HARRY_POTTER, HERMIONE_GRANGER, RONALD_WEASLEY
+  HARRY_POTTER, HERMIONE_GRANGER, RONALD_WEASLEY, HAGRID
 )
 
 val HARRY_SPEC = mutableListOf(
