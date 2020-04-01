@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/specializations")
 class SpecializationController {
   @GetMapping
-  fun getAllSpecializations(): ListValue<SpecializationBrief> {
+  suspend fun getAllSpecializations(): ListValue<SpecializationBrief> {
     return ListValue(SPECIALIZATIONS.map { it.toBrief() })
   }
 
   @GetMapping("/{id}")
-  fun getSpecialization(@PathVariable("id") id: String): Specialization {
+  suspend fun getSpecialization(@PathVariable("id") id: String): Specialization {
     return SPECIALIZATIONS.find { it.id == id } ?: throw NotFoundException("specialization")
   }
 }

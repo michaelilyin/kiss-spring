@@ -1,4 +1,4 @@
-package net.kiss.starter.service.security.user
+package net.kiss.auth.model
 
 import net.kiss.auth.model.AdditionalInfo
 

@@ -4,4 +4,5 @@ plugins {
 
 dependencies {
   implementation(project(":starters:service-starter"))
+  implementation(project(":starters:session-security-starter"))
 }

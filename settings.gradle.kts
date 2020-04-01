@@ -7,6 +7,7 @@ include(
   ":starters:commons:auth-api",
 
   ":starters:service-starter",
+  ":starters:session-security-starter",
 //  ":starters:service-jpa-starter",
 //  ":starters:auth-service-starter",
 //  ":starters:resource-service-starter",

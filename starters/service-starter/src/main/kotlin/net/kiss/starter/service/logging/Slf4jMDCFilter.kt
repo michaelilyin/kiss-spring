@@ -1,7 +1,7 @@
 package net.kiss.starter.service.logging
 
 import mu.KotlinLogging
-import net.kiss.starter.service.security.user.CurrentUser
+import net.kiss.auth.model.CurrentUser
 import org.slf4j.MDC
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.web.server.ServerWebExchange
@@ -9,7 +9,6 @@ import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
 import java.util.*
-import kotlin.time.measureTime
 
 class Slf4jMDCFilter constructor(
   private val currentUser: CurrentUser

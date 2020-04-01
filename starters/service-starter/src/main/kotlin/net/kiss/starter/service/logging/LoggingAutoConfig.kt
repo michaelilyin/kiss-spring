@@ -1,9 +1,8 @@
 package net.kiss.starter.service.logging
 
-import net.kiss.starter.service.security.user.CurrentUser
+import net.kiss.auth.model.CurrentUser
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 
 
 @Configuration
