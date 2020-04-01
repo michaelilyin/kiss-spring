@@ -71,7 +71,7 @@ class SessionConfiguration() {
       .authorizeExchange { auth ->
         auth
           .pathMatchers("/api/public/**").permitAll()
-          .pathMatchers(HttpMethod.GET).hasRole("USER")
+          .pathMatchers(HttpMethod.GET).hasAnyRole("USER", "ADMIN")
           .pathMatchers(HttpMethod.POST).hasRole("ADMIN")
           .pathMatchers(HttpMethod.PUT).hasRole("ADMIN")
           .pathMatchers(HttpMethod.DELETE).hasRole("ADMIN")

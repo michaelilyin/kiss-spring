@@ -44,7 +44,7 @@ kind: Ingress
 metadata:
   name: goods
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1/$2$3
+    nginx.ingress.kubernetes.io/rewrite-target: /$1$2$3
 spec:
   rules:
     - http:
