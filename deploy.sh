@@ -1,4 +1,7 @@
 #!/bin/bash
 
-KUBECONFIG=$(echo "$KUBE_CONFIG" | base64 --decode) kubectl apply -f deployment.yaml
-KUBECONFIG=$(echo "$KUBE_CONFIG" | base64 --decode) kubectl rollout restart deployment/goods
+mkdir ${HOME}/.kube
+echo "KCONF" | base64 --decode > ${HOME}/.kube/config
+
+kubectl apply -f deployment.yaml
+kubectl rollout restart deployment/goods
