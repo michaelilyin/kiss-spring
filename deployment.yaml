@@ -144,7 +144,7 @@ spec:
     - host: auth.michaelilyin.ru
       http:
         paths:
-          - path: .*
+          - path: /.*
             backend:
               serviceName: auth
               servicePort: 8080
