@@ -1,11 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: kiss-cloud
   labels:
     app: goods
   name: goods
 spec:
   replicas: 1
+  revisionHistoryLimit: 5
   selector:
     matchLabels:
       app: goods
@@ -13,18 +15,19 @@ spec:
     type: RollingUpdate
   template:
     metadata:
+      namespace: kiss-cloud
       labels:
         app: goods
     spec:
       containers:
       - image: michaelilyin/kiss-spring-demo-goods:latest
         imagePullPolicy: Always
-        name: kiss-spring-demo-goods
-
+        name: kiss-cloud-goods
 ---
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: kiss-cloud
   labels:
     app: goods
   name: goods
@@ -38,16 +41,129 @@ spec:
     app: goods
   type: ClusterIP
 
+
 ---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kiss-cloud
+  labels:
+    app: auth
+  name: auth
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: auth
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      namespace: kiss-cloud
+      labels:
+        app: auth
+    spec:
+      containers:
+        - image: jboss/keycloak:latest
+          imagePullPolicy: Always
+          name: kiss-cloud-auth
+          env:
+            - name: KEYCLOAK_USER
+              valueFrom:
+                secretKeyRef:
+                  key: kiss-cloud-keycloak
+                  name: KEYCLOAK_USER
+            - name: KEYCLOAK_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: kiss-cloud-keycloak
+                  name: KEYCLOAK_PASSWORD
+            - name: DB_VENDOR
+              value: postgres
+            - name: DB_ADDR
+              valueFrom:
+                secretKeyRef:
+                  key: kiss-cloud-keycloak
+                  name: DB_ADDR
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: kiss-cloud-keycloak
+                  name: DB_PORT
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: kiss-cloud-keycloak
+                  name: DB_DATABASE
+            - name: DB_SCHEMA
+              valueFrom:
+                secretKeyRef:
+                  key: kiss-cloud-keycloak
+                  name: DB_SCHEMA
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: kiss-cloud-keycloak
+                  name: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: kiss-cloud-keycloak
+                  name: DB_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kiss-cloud
+  labels:
+    app: auth
+  name: auth
+spec:
+  ports:
+    - name: 8080-8080
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: auth
+  type: ClusterIP
+
+
+---
+
+
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: goods
+  namespace: kiss-cloud
+  name: kiss-cloud-auth-ingress
+spec:
+  rules:
+    - host: auth.michaelilyin.ru
+      http:
+        paths:
+          - path: .*
+            backend:
+              serviceName: auth
+              servicePort: 8080
+
+
+---
+
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  namespace: kiss-cloud
+  name: kiss-cloud-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1$2$3
 spec:
   rules:
-    - http:
+    - host: cl.michaelilyin.ru
+      http:
         paths:
           - path: /(api|auth)/intra(/|$)(.*)
             backend:
