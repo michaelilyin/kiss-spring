@@ -74,44 +74,44 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: kiss-cloud-keycloak
-                  name: KEYCLOAK.USER
+                  name: keycloak.user
             - name: KEYCLOAK_PASSWORD
               valueFrom:
                 secretKeyRef:
                   key: kiss-cloud-keycloak
-                  name: KEYCLOAK.PASSWORD
+                  name: keycloak.password
             - name: DB_VENDOR
               value: postgres
             - name: DB_ADDR
               valueFrom:
                 secretKeyRef:
                   key: kiss-cloud-keycloak
-                  name: DB.ADDR
+                  name: db.addr
             - name: DB_PORT
               valueFrom:
                 secretKeyRef:
                   key: kiss-cloud-keycloak
-                  name: DB.PORT
+                  name: db.port
             - name: DB_DATABASE
               valueFrom:
                 secretKeyRef:
                   key: kiss-cloud-keycloak
-                  name: DB.DATABASE
+                  name: db.database
             - name: DB_SCHEMA
               valueFrom:
                 secretKeyRef:
                   key: kiss-cloud-keycloak
-                  name: DB.SCHEMA
+                  name: db.schema
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
                   key: kiss-cloud-keycloak
-                  name: DB.USER
+                  name: db.user
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   key: kiss-cloud-keycloak
-                  name: DB.PASSWORD
+                  name: db.password
 ---
 apiVersion: v1
 kind: Service
