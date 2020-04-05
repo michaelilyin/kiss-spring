@@ -1,0 +1,23 @@
+logging:
+  level:
+    org:
+      springframework: INFO
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: hrh-items-dev
+            client-secret: e644df2f-1e00-4579-8009-6a07f0b73ebe
+        #            authorization-grant-type: authorization_code
+        #            redirectUriTemplate: '{baseUrl}/login/oauth2/code/{registrationId}'
+        #            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: https://auth.michaelilyin.ru/auth/realms/kiss-cloud
+      #                  user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://auth.michaelilyin.ru/auth/realms/kiss-cloud/protocol/openid-connect/certs

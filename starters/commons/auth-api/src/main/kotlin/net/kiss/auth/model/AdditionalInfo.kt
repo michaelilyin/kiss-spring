@@ -9,7 +9,14 @@ class AdditionalInfo(source: Map<String, *>) {
   @Suppress("UNCHECKED_CAST")
   val roles: List<String> = source["roles"] as List<String>? ?: emptyList()
 
-  constructor(id: Long, username: String, firstName: String, lastName: String?, tracing: String, roles: List<String>) : this(
+  constructor(
+    id: Long,
+    username: String,
+    firstName: String,
+    lastName: String?,
+    tracing: String,
+    roles: List<String>
+  ) : this(
     mapOf(
       "id" to id,
       "user_name" to username,

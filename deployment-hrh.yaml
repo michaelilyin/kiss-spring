@@ -1,0 +1,75 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  namespace: hrh-cloud
+  name: hrh-cloud-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /api$2$3
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  labels:
+    app: hrh
+spec:
+  tls:
+    - hosts:
+        - hrh.michaelilyin.ru
+      secretName: cl-tls
+  rules:
+    - host: hrh.michaelilyin.ru
+      http:
+        paths:
+          - path: /api/items(/|$)(.*)
+            backend:
+              serviceName: hrh
+              servicePort: 8080
+
+
+---
+
+
+#####
+# Items Service
+#####
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: hrh-cloud
+  labels:
+    app: items
+  name: items
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: items
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      namespace: hrh-cloud
+      labels:
+        app: items
+    spec:
+      containers:
+      - image: michaelilyin/hrh-items:latest
+        imagePullPolicy: Always
+        name: hrh-cloud-items
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: hrh-cloud
+  labels:
+    app: items
+  name: items
+spec:
+  ports:
+  - name: 8080-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: items
+  type: ClusterIP
+

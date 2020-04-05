@@ -20,6 +20,7 @@ install: skip
 script:
   - ./gradlew build
   - docker build -t michaelilyin/kiss-spring-demo-goods:latest ./demo/goods
+  - docker build -t michaelilyin/hrh-items:latest ./hrh/items
 
 before_deploy:
   - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl

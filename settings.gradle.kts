@@ -10,14 +10,16 @@ include(
   ":starters:session-security-starter",
 //  ":starters:service-jpa-starter",
 //  ":starters:auth-service-starter",
-//  ":starters:resource-service-starter",
+  ":starters:resource-service-starter",
 //  ":starters:graphql-starter-old",
 //  ":starters:graphql-starter",
   ":starters:test-starter",
 
-  ":demo:goods"
+  ":demo:goods",
 //  ":demo:auth",
 //  ":demo:users",
 //  ":demo:cart",
 //  ":demo:products"
+
+  ":hrh:items"
 );

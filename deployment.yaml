@@ -10,7 +10,7 @@ metadata:
   name: goods
 spec:
   replicas: 1
-  revisionHistoryLimit: 5
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: goods
@@ -84,7 +84,7 @@ metadata:
   name: auth
 spec:
   replicas: 1
-  revisionHistoryLimit: 5
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: auth

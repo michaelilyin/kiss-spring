@@ -3,10 +3,18 @@ plugins {
 }
 
 val springbootVer: String by extra
+val springVer: String by extra
 val kotlinLoggingVer: String by extra
 
 dependencies {
   compile(project(":starters:commons:auth-api"))
-  compile("io.github.microutils:kotlin-logging:$kotlinLoggingVer")
-  compile("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:$springbootVer")
+  api("org.springframework.boot:spring-boot-autoconfigure:$springbootVer")
+
+  compileOnly("io.github.microutils:kotlin-logging:$kotlinLoggingVer")
+
+  compileOnly("org.springframework.boot:spring-boot-starter-webflux")
+  implementation("org.springframework.boot:spring-boot-starter-security")
+  implementation("org.springframework.security:spring-security-oauth2-client:$springVer")
+  implementation("org.springframework.security:spring-security-oauth2-resource-server:$springVer")
+  implementation("org.springframework.security:spring-security-oauth2-jose:$springVer")
 }
