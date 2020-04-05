@@ -4,7 +4,7 @@ metadata:
   namespace: hrh-cloud
   name: hrh-cloud-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /api$2$3
+    nginx.ingress.kubernetes.io/rewrite-target: /api$1$2
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
   labels:
@@ -20,7 +20,7 @@ spec:
         paths:
           - path: /api/items(/|$)(.*)
             backend:
-              serviceName: hrh
+              serviceName: items
               servicePort: 8080
 
 
