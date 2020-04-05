@@ -51,9 +51,15 @@ metadata:
   name: kiss-cloud-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1$2$3
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
   labels:
     app: goods
 spec:
+  tls:
+    - hosts:
+        - cl.michaelilyin.ru
+      secretName: cl-tls
   rules:
     - host: cl.michaelilyin.ru
       http:
@@ -132,6 +138,8 @@ spec:
                 secretKeyRef:
                   key: db.password
                   name: kiss-cloud-keycloak
+            - name: PROXY_ADDRESS_FORWARDING
+              value: "true"
 ---
 apiVersion: v1
 kind: Service
@@ -157,9 +165,18 @@ metadata:
   name: kiss-cloud-auth-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /auth/$1
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
   labels:
     app: auth
 spec:
+  tls:
+    - hosts:
+        - auth.michaelilyin.ru
+      secretName: auth-tls
   rules:
     - host: auth.michaelilyin.ru
       http:
