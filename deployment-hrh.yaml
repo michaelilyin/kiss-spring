@@ -13,7 +13,7 @@ spec:
   tls:
     - hosts:
         - api.hrh.michaelilyin.ru
-      secretName: cl-tls
+      secretName: api-tls
   rules:
     - host: api.hrh.michaelilyin.ru
       http:
