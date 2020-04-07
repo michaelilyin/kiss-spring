@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class LoggingAutoConfig {
   @Bean
-  fun loggingFilterBean(currentUser: CurrentUser) = Slf4jMDCFilter(currentUser)
+  fun loggingFilterBean() = Slf4jMDCFilter()
 
 //  @Bean
 //  fun loggingFilter(filter: Slf4jMDCFilter): FilterRegistrationBean<Slf4jMDCFilter> {

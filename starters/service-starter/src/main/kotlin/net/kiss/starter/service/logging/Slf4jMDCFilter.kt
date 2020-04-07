@@ -10,9 +10,7 @@ import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
 import java.util.*
 
-class Slf4jMDCFilter constructor(
-  private val currentUser: CurrentUser
-) : WebFilter {
+class Slf4jMDCFilter : WebFilter {
   companion object {
     val logger = KotlinLogging.logger { }
     const val REQUEST_TRACE_HEADER = "x-req-trace"
@@ -31,7 +29,10 @@ class Slf4jMDCFilter constructor(
   override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
     val request = exchange.request
     val response = exchange.response
-    val info = currentUser.info
+
+    val currentUser = exchange.getAttribute<CurrentUser>("current-user")
+
+    val info = currentUser?.info
 
     val reqToken = getReqToken(request)
     val appToken = request.headers[APP_SESSION_TRACE_HEADER]?.first() ?: "no-app"
@@ -39,7 +40,6 @@ class Slf4jMDCFilter constructor(
     val authTrace = info?.tracing ?: ""
     val path = request.path
     val method = request.method
-
 
     MDC.put(MDC_REQUEST_TOKEN, reqToken)
     MDC.put(MDC_APP_TOKEN, appToken)
