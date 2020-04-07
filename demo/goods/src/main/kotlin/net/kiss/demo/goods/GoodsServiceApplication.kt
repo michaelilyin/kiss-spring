@@ -13,12 +13,6 @@ import org.springframework.web.reactive.config.WebFluxConfigurer
 @EnableWebFlux
 @EnableConfigurationProperties
 class GoodsServiceApplication {
-  @Configuration
-  class WebFluxConfig : WebFluxConfigurer {
-    override fun addCorsMappings(registry: CorsRegistry) {
-      registry.addMapping("/**").allowedOrigins("*").allowedMethods("*")
-    }
-  }
 }
 
 fun main(args: Array<String>) {
