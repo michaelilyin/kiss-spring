@@ -57,6 +57,7 @@ class Slf4jMDCFilter : WebFilter {
     return chain.filter(exchange)
       .doFinally {
         logger.info { "Processed:${response.statusCode?.value()}, ${System.currentTimeMillis() - start}ms" }
+
         MDC.clear()
       }
   }
