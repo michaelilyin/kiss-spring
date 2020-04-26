@@ -8,3 +8,4 @@ kubectl rollout restart --namespace kiss-cloud deployment/goods
 
 kubectl apply -f deployment-hrh.yaml
 kubectl rollout restart --namespace hrh-cloud deployment/items
+kubectl rollout restart --namespace hrh-cloud deployment/houses

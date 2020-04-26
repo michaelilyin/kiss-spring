@@ -4,5 +4,5 @@ import net.kiss.auth.model.AdditionalInfo
 
 interface CurrentUser {
   val authenticated: Boolean
-  val info: AdditionalInfo?
+  val info: AdditionalInfo
 }

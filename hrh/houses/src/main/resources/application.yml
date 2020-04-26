@@ -1,0 +1,30 @@
+server:
+  port: 28081
+
+logging:
+  level:
+    org:
+      springframework: INFO
+
+spring:
+  datasource:
+    username: ${USERS_USERNAME:demo}
+    password: ${USERS_PASSWORD:secret}
+    url: ${USERS_DB:jdbc:postgresql://localhost:5432/kiss-demo?currentSchema=public}
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: hrh-houses
+            client-secret: 069bedf3-a1f8-49bb-9fe7-42080f024511
+        #            authorization-grant-type: authorization_code
+        #            redirectUriTemplate: '{baseUrl}/login/oauth2/code/{registrationId}'
+        #            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: https://auth.michaelilyin.ru/auth/realms/kiss-cloud
+      #                  user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://auth.michaelilyin.ru/auth/realms/kiss-cloud/protocol/openid-connect/certs

@@ -64,7 +64,7 @@ spec:
     - host: cl.michaelilyin.ru
       http:
         paths:
-          - path: /(api)/intra(/|$)(.*)
+          - path: /(api|auth)/intra(/|$)(.*)
             backend:
               serviceName: goods
               servicePort: 8080

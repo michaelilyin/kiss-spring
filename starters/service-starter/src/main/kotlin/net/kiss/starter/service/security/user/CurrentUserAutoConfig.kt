@@ -44,25 +44,4 @@ class CurrentUserAutoConfig {
       throw UnsupportedOperationException("Unknown auth type")
     }
   }
-
-  @ConditionalOnMissingBean(CurrentUser::class)
-  class WebSessionConfig {
-    @Bean
-    fun anonymousUser(): CurrentUser {
-      return object : CurrentUser {
-        override val authenticated: Boolean
-          get() {
-            return false
-          }
-        override val info: AdditionalInfo?
-          get() = null
-      }
-    }
-  }
-
-//  @Bean
-//  @ConditionalOnMissingBean(CurrentUser::class)
-//  fun anonymousUser(): CurrentUser {
-//    return AnonymousCurrentUser()
-//  }
 }

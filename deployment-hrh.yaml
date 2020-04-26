@@ -22,6 +22,10 @@ spec:
             backend:
               serviceName: items
               servicePort: 8080
+          - path: /v1/houses/(.*)
+            backend:
+              serviceName: houses
+              servicePort: 28081
 
 
 ---
@@ -71,5 +75,55 @@ spec:
     targetPort: 8080
   selector:
     app: items
+  type: ClusterIP
+
+
+---
+
+
+#####
+# Houses Service
+#####
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: hrh-cloud
+  labels:
+    app: houses
+  name: houses
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: houses
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      namespace: hrh-cloud
+      labels:
+        app: houses
+    spec:
+      containers:
+        - image: michaelilyin/hrh-houses:latest
+          imagePullPolicy: Always
+          name: hrh-cloud-houses
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: hrh-cloud
+  labels:
+    app: houses
+  name: houses
+spec:
+  ports:
+    - name: 28081-28081
+      port: 28081
+      protocol: TCP
+      targetPort: 28081
+  selector:
+    app: houses
   type: ClusterIP
 

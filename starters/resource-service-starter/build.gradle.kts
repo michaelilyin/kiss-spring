@@ -4,6 +4,7 @@ plugins {
 
 val springbootVer: String by extra
 val springVer: String by extra
+val springSecurityOauth2Ver: String by extra
 val kotlinLoggingVer: String by extra
 
 dependencies {

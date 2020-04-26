@@ -1,5 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  net.kiss.starter.service.security.permission.MethodSecurityAutoConfig, \
   net.kiss.starter.service.swagger.SwaggerConfig, \
   net.kiss.starter.service.logging.LoggingAutoConfig, \
   net.kiss.starter.service.security.user.CurrentUserAutoConfig, \

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.WebSession
+import java.lang.IllegalStateException
 
 @RestController
 @RequestMapping("/api/public/profile")
@@ -19,13 +20,13 @@ class ProfileController @Autowired() constructor() {
   }
 
   class WebSessionCurrentUser(private val session: WebSession) : CurrentUser {
-    override val info: AdditionalInfo?
+    override val info: AdditionalInfo
       get() {
         val context = session.getAttribute<SecurityContext>("SPRING_SECURITY_CONTEXT")
         val auth = context?.authentication
         if (auth is UsernamePasswordAuthenticationToken) {
           return AdditionalInfo(
-            id = 0,
+            id = "0",
             firstName = "",
             lastName = "",
             tracing = "",
@@ -33,7 +34,7 @@ class ProfileController @Autowired() constructor() {
             roles = auth.authorities.map { it.authority }
           )
         }
-        return null
+        throw IllegalStateException("current user")
       }
     override val authenticated: Boolean
       get() = session.attributes.isNotEmpty()

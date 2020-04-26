@@ -32,12 +32,12 @@ class Slf4jMDCFilter : WebFilter {
 
     val currentUser = exchange.getAttribute<CurrentUser>("current-user")
 
-    val info = currentUser?.info
+    val info = if (currentUser?.authenticated == true) currentUser.info else null
 
     val reqToken = getReqToken(request)
     val appToken = request.headers[APP_SESSION_TRACE_HEADER]?.first() ?: "no-app"
     val username = info?.username ?: "no-user"
-    val authTrace = info?.tracing ?: ""
+    val authTrace = info?.tracing?.take(8) ?: ""
     val path = request.path
     val method = request.method
 
@@ -56,8 +56,8 @@ class Slf4jMDCFilter : WebFilter {
     val start = System.currentTimeMillis()
     return chain.filter(exchange)
       .doFinally {
+        MDC.put(MDC_BATCH, " [$appToken[$authTrace[$username]]](<$reqToken> $method $path)")
         logger.info { "Processed:${response.statusCode?.value()}, ${System.currentTimeMillis() - start}ms" }
-
         MDC.clear()
       }
   }
@@ -65,7 +65,7 @@ class Slf4jMDCFilter : WebFilter {
   private fun getReqToken(request: ServerHttpRequest): String? {
     val reqToken = request.headers[REQUEST_TRACE_HEADER]?.first()
     return if (reqToken.isNullOrEmpty()) {
-      UUID.randomUUID().toString().toUpperCase().replace("-", "").take(8)
+      UUID.randomUUID().toString().take(8)
     } else {
       reqToken
     }

@@ -8,6 +8,7 @@ include(
 
   ":starters:service-starter",
   ":starters:session-security-starter",
+  ":starters:service-r2dbc-starter",
 //  ":starters:service-jpa-starter",
 //  ":starters:auth-service-starter",
   ":starters:resource-service-starter",
@@ -21,5 +22,6 @@ include(
 //  ":demo:cart",
 //  ":demo:products"
 
+  ":hrh:houses",
   ":hrh:items"
 );
