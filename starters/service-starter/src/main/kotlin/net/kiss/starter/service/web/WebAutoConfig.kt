@@ -21,6 +21,7 @@ class WebAutoConfig : WebFluxConfigurer {
   }
 
   override fun addCorsMappings(registry: CorsRegistry) {
+    registry.addMapping("/api").allowedOrigins("*").allowedMethods("*")
     registry.addMapping("/api/**").allowedOrigins("*").allowedMethods("*")
   }
 
