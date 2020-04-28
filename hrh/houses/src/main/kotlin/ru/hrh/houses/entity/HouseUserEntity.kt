@@ -10,11 +10,11 @@ data class HouseUserEntity(
   @Id
   val id: Long?,
 
-  val userId: String,
+  val userId: UUID,
 
   val houseId: Long,
 
-  val attachedBy: String,
+  val attachedBy: UUID,
 
   val attachedAt: LocalDateTime
 )

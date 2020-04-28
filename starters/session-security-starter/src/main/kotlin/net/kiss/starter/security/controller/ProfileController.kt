@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.WebSession
 import java.lang.IllegalStateException
+import java.util.*
 
 @RestController
 @RequestMapping("/api/public/profile")
@@ -26,7 +27,7 @@ class ProfileController @Autowired() constructor() {
         val auth = context?.authentication
         if (auth is UsernamePasswordAuthenticationToken) {
           return AdditionalInfo(
-            id = "0",
+            id = UUID.randomUUID(),
             firstName = "",
             lastName = "",
             tracing = "",

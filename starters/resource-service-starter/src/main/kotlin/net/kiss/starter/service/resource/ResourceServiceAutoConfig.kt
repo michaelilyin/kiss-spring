@@ -102,7 +102,7 @@ class ResourceServiceAutoConfig @Autowired() constructor(
     override val info = AdditionalInfo(
       id = UUID.nameUUIDFromBytes(
         principal.token.getClaim<String>("preferred_username").toByteArray(Charsets.UTF_8)
-      ).toString(),
+      ),
       username = principal.token.getClaim("preferred_username"),
       firstName = principal.token.getClaim("given_name"),
       lastName = principal.token.getClaim<String>("family_name"),

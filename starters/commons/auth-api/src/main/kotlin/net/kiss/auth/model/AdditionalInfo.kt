@@ -1,7 +1,9 @@
 package net.kiss.auth.model
 
+import java.util.*
+
 data class AdditionalInfo(
-  val id: String,
+  val id: UUID,
   val username: String,
   val firstName: String,
   val lastName: String?,
@@ -12,7 +14,7 @@ data class AdditionalInfo(
   constructor(
     source: Map<String, *>
   ) : this(
-    id = source["id"] as String,
+    id = if (source["id"] is UUID) source["id"] as UUID else UUID.fromString(source["id"] as String),
     username = source["user_name"] as String,
     firstName = source["first_name"] as String,
     lastName = source["last_name"] as String?,

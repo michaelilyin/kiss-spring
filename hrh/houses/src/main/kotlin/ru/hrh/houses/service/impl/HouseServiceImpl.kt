@@ -12,8 +12,9 @@ import ru.hrh.houses.repository.HouseRepository
 import ru.hrh.houses.repository.HouseUserRepository
 import ru.hrh.houses.service.HouseService
 import java.time.LocalDateTime
+import java.util.*
 
-fun HouseEntity.createUserLink(userId: String, granterId: String) = HouseUserEntity(
+fun HouseEntity.createUserLink(userId: UUID, granterId: UUID) = HouseUserEntity(
   id = null,
   userId = userId,
   houseId = id!!,
@@ -27,7 +28,7 @@ class HouseServiceImpl @Autowired constructor(
   private val houseUserRepository: HouseUserRepository
 ) : HouseService {
   @Transactional
-  override suspend fun getCurrentHousesByUserId(id: String): Page<CurrentHouseView> {
+  override suspend fun getCurrentHousesByUserId(id: UUID): Page<CurrentHouseView> {
     val list = houseRepository.findAll()
       .map { it.toCurrentView() }
       .collectList()
@@ -36,7 +37,7 @@ class HouseServiceImpl @Autowired constructor(
   }
 
   @Transactional
-  override suspend fun createHouse(input: HouseCreateInput, creatorId: String): HouseView {
+  override suspend fun createHouse(input: HouseCreateInput, creatorId: UUID): HouseView {
     val entity = input.toEntity(creatorId)
 
     val saved = houseRepository.save(entity).awaitFirst()
