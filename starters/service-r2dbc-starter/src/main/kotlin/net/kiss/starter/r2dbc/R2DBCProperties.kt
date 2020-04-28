@@ -3,7 +3,7 @@ package net.kiss.starter.r2dbc
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 
-@ConfigurationProperties("kiss.r2bc")
+@ConfigurationProperties("kiss.r2dbc")
 @ConstructorBinding
 data class R2DBCProperties(
   val host: String,
