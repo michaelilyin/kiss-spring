@@ -4,7 +4,7 @@ metadata:
   namespace: hrh-cloud
   name: hrh-cloud-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /api/$1
+    nginx.ingress.kubernetes.io/rewrite-target: /api$1
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
   labels:
