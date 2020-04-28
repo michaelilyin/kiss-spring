@@ -24,7 +24,7 @@ class HouseController @Autowired constructor(
   }
 
   @PreAuthorize("hasRole('house-member')")
-  @PostMapping("/")
+  @PostMapping
   fun postHouse(@RequestBody input: HouseCreateInput, currentUser: CurrentUser) = returnMono {
     houseService.createHouse(input, currentUser.info.id)
   }
