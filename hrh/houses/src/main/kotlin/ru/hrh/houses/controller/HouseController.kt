@@ -18,7 +18,7 @@ class HouseController @Autowired constructor(
 ) {
 
   @PreAuthorize("hasAnyRole('house-member', 'house-demo-member')")
-  @GetMapping("/current")
+  @GetMapping
   fun getUserCurrentHouses(currentUser: CurrentUser) = returnMono {
     houseService.getCurrentHousesByUserId(currentUser.info.id)
   }
