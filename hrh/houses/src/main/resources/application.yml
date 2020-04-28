@@ -8,9 +8,9 @@ logging:
 
 spring:
   datasource:
-    username: ${USERS_USERNAME:demo}
-    password: ${USERS_PASSWORD:secret}
-    url: ${USERS_DB:jdbc:postgresql://localhost:5432/kiss-demo?currentSchema=public}
+    username: ${DB_USERNAME:demo}
+    password: ${DB_PASSWORD:secret}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:kiss-demo}?currentSchema=${DB_SCHEMA:public}
   security:
     oauth2:
       client:
@@ -28,3 +28,12 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: https://auth.michaelilyin.ru/auth/realms/kiss-cloud/protocol/openid-connect/certs
+
+kiss:
+  r2dbc:
+    host: ${DB_HOST:localhost}
+    port: ${DB_PORT:5432}
+    database: ${DB_NAME:kiss-demo}
+    schema: ${DB_SCHEMA:public}
+    username: ${DB_USERNAME:demo}
+    password: ${DB_PASSWORD:secret}

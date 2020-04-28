@@ -3,6 +3,8 @@ package net.kiss.starter.r2dbc
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
 import io.r2dbc.postgresql.PostgresqlConnectionFactory
 import io.r2dbc.spi.ConnectionFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -15,18 +17,23 @@ import org.springframework.data.relational.core.mapping.RelationalMappingContext
 import java.util.*
 
 @Configuration
+@EnableConfigurationProperties(R2DBCProperties::class)
 @EnableJdbcRepositories
-class R2DBCAutoConfig : AbstractR2dbcConfiguration() {
+class R2DBCAutoConfig @Autowired constructor(
+  private val properties: R2DBCProperties
+) : AbstractR2dbcConfiguration() {
+
   @Bean
   override fun connectionFactory(): ConnectionFactory {
     return PostgresqlConnectionFactory(
       PostgresqlConnectionConfiguration
         .builder()
-        .host("localhost")
-        .database("kiss-demo")
-        .username("demo")
-        .password("secret")
-        .port(5432)
+        .host(properties.host)
+        .database(properties.database)
+        .username(properties.username)
+        .password(properties.password)
+        .port(properties.port)
+        .schema(properties.schema)
         .build()
     );
   }
