@@ -22,7 +22,7 @@ spec:
             backend:
               serviceName: items
               servicePort: 8080
-          - path: /v1/houses/(.*)
+          - path: /v1/houses($|/.*)
             backend:
               serviceName: houses
               servicePort: 28081
