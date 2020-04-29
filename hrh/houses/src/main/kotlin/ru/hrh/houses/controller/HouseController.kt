@@ -23,6 +23,12 @@ class HouseController @Autowired constructor(
     houseService.getCurrentHousesByUserId(currentUser.info.id)
   }
 
+  @PreAuthorize("hasAnyRole('house-member', 'house-demo-member')")
+  @GetMapping("/count")
+  fun getUserCurrentHousesCount(currentUser: CurrentUser) = returnMono {
+    houseService.getCurrentHousesCountByUserId(currentUser.info.id)
+  }
+
   @PreAuthorize("hasRole('house-member')")
   @PostMapping
   fun postHouse(@RequestBody input: HouseCreateInput, currentUser: CurrentUser) = returnMono {

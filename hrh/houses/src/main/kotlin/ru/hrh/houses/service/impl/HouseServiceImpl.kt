@@ -1,6 +1,7 @@
 package ru.hrh.houses.service.impl
 
 import kotlinx.coroutines.reactive.awaitFirst
+import net.kiss.service.model.Value
 import net.kiss.service.model.page.Page
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -34,6 +35,13 @@ class HouseServiceImpl @Autowired constructor(
       .collectList()
       .awaitFirst()
     return Page(list)
+  }
+
+  @Transactional
+  override suspend fun getCurrentHousesCountByUserId(id: UUID): Value<Int> {
+    val count = houseRepository.countAllByUserId(id).awaitFirst()
+
+    return Value(count)
   }
 
   @Transactional
