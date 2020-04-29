@@ -118,6 +118,11 @@ spec:
                 secretKeyRef:
                   key: db.addr
                   name: kiss-cloud-keycloak
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: db.port
+                  name: kiss-cloud-keycloak
             - name: DB_DATABASE
               valueFrom:
                 secretKeyRef:

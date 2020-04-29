@@ -29,7 +29,7 @@ class HouseServiceImpl @Autowired constructor(
 ) : HouseService {
   @Transactional
   override suspend fun getCurrentHousesByUserId(id: UUID): Page<CurrentHouseView> {
-    val list = houseRepository.findAll()
+    val list = houseRepository.findAllByUserId(id)
       .map { it.toCurrentView() }
       .collectList()
       .awaitFirst()
@@ -43,7 +43,7 @@ class HouseServiceImpl @Autowired constructor(
     val saved = houseRepository.save(entity).awaitFirst()
     val userHouseLink = saved.createUserLink(creatorId, creatorId)
 
-    houseUserRepository.save(userHouseLink)
+    houseUserRepository.save(userHouseLink).awaitFirst()
     return saved.toView()
   }
 }
