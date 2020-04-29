@@ -20,11 +20,6 @@ class WebAutoConfig : WebFluxConfigurer {
     private val logger = KotlinLogging.logger { }
   }
 
-  override fun addCorsMappings(registry: CorsRegistry) {
-    registry.addMapping("/api").allowedOrigins("*").allowedMethods("*")
-    registry.addMapping("/api/**").allowedOrigins("*").allowedMethods("*")
-  }
-
   override fun configureArgumentResolvers(configurer: ArgumentResolverConfigurer) {
     configurer.addCustomResolver(CurrentUserArgumentResolver())
   }
