@@ -8,8 +8,11 @@ import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2Clien
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.core.convert.converter.Converter
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
@@ -27,7 +30,6 @@ import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
-import java.lang.IllegalStateException
 import java.security.Principal
 import java.util.*
 
@@ -68,6 +70,14 @@ class ResourceServiceAutoConfig @Autowired() constructor(
     return ReactiveJwtAuthenticationConverterAdapter(extractor)
   }
 
+  @Bean
+  @Primary
+  fun securityExpressionHandler(): MethodSecurityExpressionHandler {
+    val expressionHandler = DefaultMethodSecurityExpressionHandler()
+    expressionHandler.setPermissionEvaluator(ObjectPermissionEvaluator())
+    return expressionHandler
+  }
+
   inner class GrantedAuthoritiesExtractor : JwtAuthenticationConverter() {
     override fun extractAuthorities(jwt: Jwt): Collection<GrantedAuthority> {
       val clientId = oAuth2ClientProperties.registration["keycloak"]!!.clientId
@@ -100,9 +110,7 @@ class ResourceServiceAutoConfig @Autowired() constructor(
   class KeycloakJwtBasedCurrentUser(principal: JwtAuthenticationToken) : CurrentUser {
     override val authenticated = true
     override val info = AdditionalInfo(
-      id = UUID.nameUUIDFromBytes(
-        principal.token.getClaim<String>("preferred_username").toByteArray(Charsets.UTF_8)
-      ),
+      id = UUID.fromString(principal.token.getClaim("sub")),
       username = principal.token.getClaim("preferred_username"),
       firstName = principal.token.getClaim("given_name"),
       lastName = principal.token.getClaim<String>("family_name"),

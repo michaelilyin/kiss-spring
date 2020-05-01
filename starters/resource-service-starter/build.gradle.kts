@@ -13,6 +13,7 @@ dependencies {
   api("org.springframework.boot:spring-boot-starter-security")
 
   compileOnly("io.github.microutils:kotlin-logging:$kotlinLoggingVer")
+  compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.3.5")
 
   compileOnly("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.security:spring-security-oauth2-client:$springVer")

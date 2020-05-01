@@ -28,13 +28,22 @@ class HouseServiceImpl @Autowired constructor(
   private val houseRepository: HouseRepository,
   private val houseUserRepository: HouseUserRepository
 ) : HouseService {
+
   @Transactional
   override suspend fun getCurrentHousesByUserId(id: UUID): Page<CurrentHouseView> {
     val list = houseRepository.findAllByUserId(id)
       .map { it.toCurrentView() }
       .collectList()
       .awaitFirst()
+
     return Page(list)
+  }
+
+  @Transactional
+  override suspend fun getHouseInfo(id: String): HouseView {
+    val house = houseRepository.findById(id.toLong()).awaitFirst()
+
+    return house.toView()
   }
 
   @Transactional
@@ -50,8 +59,8 @@ class HouseServiceImpl @Autowired constructor(
 
     val saved = houseRepository.save(entity).awaitFirst()
     val userHouseLink = saved.createUserLink(creatorId, creatorId)
-
     houseUserRepository.save(userHouseLink).awaitFirst()
+
     return saved.toView()
   }
 }

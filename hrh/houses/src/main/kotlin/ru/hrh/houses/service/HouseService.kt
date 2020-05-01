@@ -11,4 +11,5 @@ interface HouseService {
   suspend fun getCurrentHousesByUserId(id: UUID): Page<CurrentHouseView>
   suspend fun createHouse(input: HouseCreateInput, creatorId: UUID): HouseView
   suspend fun getCurrentHousesCountByUserId(id: UUID): Value<Int>
+  suspend fun getHouseInfo(id: String): HouseView
 }

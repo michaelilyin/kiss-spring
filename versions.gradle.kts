@@ -5,6 +5,7 @@ allprojects {
     from("$rootDir/buildSrc/build-versions.gradle.kts")
   }
 
+  val coroutinesVer by extra("1.3.5")
   val springSecurityOauth2Ver by extra("2.3.8.RELEASE")
   val springVer by extra("5.2.3.RELEASE")
   val springDataVer by extra("2.2.5.RELEASE")
