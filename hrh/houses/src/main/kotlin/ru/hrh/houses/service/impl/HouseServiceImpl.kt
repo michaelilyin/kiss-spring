@@ -1,6 +1,7 @@
 package ru.hrh.houses.service.impl
 
 import kotlinx.coroutines.reactive.awaitFirst
+import kotlinx.coroutines.reactive.awaitFirstOrNull
 import net.kiss.auth.model.longValue
 import net.kiss.service.model.Value
 import net.kiss.service.model.page.Page
@@ -75,8 +76,8 @@ class HouseServiceImpl @Autowired constructor(
 
   @Transactional
   override suspend fun deleteHouse(id: String): String {
-    houseUserRepository.deleteAllByHouseId(id.toLong()).awaitFirst()
-    houseRepository.deleteById(id.toLong()).awaitFirst()
+    houseUserRepository.deleteAllByHouseId(id.toLong()).awaitFirstOrNull()
+    houseRepository.deleteById(id.toLong()).awaitFirstOrNull()
     return id
   }
 }
