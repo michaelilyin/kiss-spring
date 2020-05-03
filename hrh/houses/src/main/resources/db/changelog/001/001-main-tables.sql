@@ -19,3 +19,18 @@ CREATE TABLE IF NOT EXISTS house_users (
 
     CONSTRAINT unique_user_per_house UNIQUE (user_id, house_id)
 );
+
+--changeset ilyin:add-description-column context:prod
+ALTER TABLE houses
+    ADD COLUMN description VARCHAR(300);
+
+--changeset ilyin:add-owner-column context:prod
+ALTER TABLE houses
+    ADD COLUMN IF NOT EXISTS owned_by UUID;
+
+UPDATE houses
+SET owned_by = created_by
+WHERE owned_by IS NULL;
+
+ALTER TABLE houses
+    ALTER COLUMN owned_by SET NOT NULL;

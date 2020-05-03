@@ -1,6 +1,7 @@
 package ru.hrh.houses.service.impl
 
 import kotlinx.coroutines.reactive.awaitFirst
+import net.kiss.auth.model.longValue
 import net.kiss.service.model.Value
 import net.kiss.service.model.page.Page
 import org.springframework.beans.factory.annotation.Autowired
@@ -47,10 +48,8 @@ class HouseServiceImpl @Autowired constructor(
   }
 
   @Transactional
-  override suspend fun getCurrentHousesCountByUserId(id: UUID): Value<Int> {
-    val count = houseRepository.countAllByUserId(id).awaitFirst()
-
-    return Value(count)
+  override suspend fun getCurrentHousesCountByUserId(id: UUID): Int {
+    return houseRepository.countAllByUserId(id).awaitFirst()
   }
 
   @Transactional
@@ -62,5 +61,22 @@ class HouseServiceImpl @Autowired constructor(
     houseUserRepository.save(userHouseLink).awaitFirst()
 
     return saved.toView()
+  }
+
+  @Transactional
+  override suspend fun updateHouse(input: HouseUpdateCommonInfoInput): HouseView {
+    val entity = houseRepository.findById(input.id.longValue()).awaitFirst()
+    input.fillEntity(entity)
+
+    val saved = houseRepository.save(entity).awaitFirst()
+
+    return saved.toView()
+  }
+
+  @Transactional
+  override suspend fun deleteHouse(id: String): String {
+    houseUserRepository.deleteAllByHouseId(id.toLong()).awaitFirst()
+    houseRepository.deleteById(id.toLong()).awaitFirst()
+    return id
   }
 }

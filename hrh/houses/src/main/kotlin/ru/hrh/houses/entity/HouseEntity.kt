@@ -10,9 +10,13 @@ data class HouseEntity(
   @Id
   val id: Long?,
 
-  val name: String,
+  var name: String,
+
+  var description: String?,
 
   val createdBy: UUID,
+
+  val ownedBy: UUID,
 
   val createdAt: LocalDateTime
 )

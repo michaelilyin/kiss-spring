@@ -28,4 +28,10 @@ interface HouseRepository : ReactiveCrudRepository<HouseEntity, Long> {
     )
   """)
   fun countAllByUserId(@Param("user_id") userId: UUID): Mono<Int>
+
+  // language=PostgreSQL
+  @Query("""
+    SELECT created_by = :user_id FROM houses WHERE id = :house_id
+  """)
+  fun isOwnerOf(@Param("house_id") houseId: Long, @Param("user_id") userId: UUID): Mono<Boolean>
 }
