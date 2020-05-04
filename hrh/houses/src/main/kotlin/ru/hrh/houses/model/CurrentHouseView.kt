@@ -5,11 +5,13 @@ import ru.hrh.houses.entity.HouseEntity
 
 data class CurrentHouseView(
   val id: ID,
-  val name: String
+  val name: String,
+  val description: String?
 ) {
 }
 
 fun HouseEntity.toCurrentView() = CurrentHouseView(
   id = id.toString(),
-  name = name
+  name = name,
+  description = description
 )
