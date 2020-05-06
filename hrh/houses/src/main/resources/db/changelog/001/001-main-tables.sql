@@ -34,3 +34,7 @@ WHERE owned_by IS NULL;
 
 ALTER TABLE houses
     ALTER COLUMN owned_by SET NOT NULL;
+
+--changeset ilyin:reduce-house-lengths context:prod
+ALTER TABLE houses ALTER COLUMN name TYPE VARCHAR(50);
+ALTER TABLE houses ALTER COLUMN description TYPE VARCHAR(200);

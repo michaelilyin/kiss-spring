@@ -17,6 +17,7 @@ interface HouseRepository : ReactiveCrudRepository<HouseEntity, Long> {
     WHERE id IN (
         SELECT house_id FROM house_users WHERE user_id = :user_id
     )
+    ORDER BY id
   """)
   fun findAllByUserId(@Param("user_id") userId: UUID): Flux<HouseEntity>
 
