@@ -1,4 +1,4 @@
-package ru.hrh.houses.model
+package ru.hrh.houses.model.house
 
 import net.kiss.service.model.ID
 import ru.hrh.houses.entity.HouseEntity
@@ -11,7 +11,7 @@ data class CurrentHouseView(
 }
 
 fun HouseEntity.toCurrentView() = CurrentHouseView(
-  id = id.toString(),
-  name = name,
-  description = description
+        id = id.toString(),
+        name = name,
+        description = description
 )

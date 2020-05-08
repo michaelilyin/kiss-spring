@@ -3,14 +3,13 @@ package ru.hrh.houses.service.impl
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import net.kiss.auth.model.longValue
-import net.kiss.service.model.Value
 import net.kiss.service.model.page.Page
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.hrh.houses.entity.HouseEntity
 import ru.hrh.houses.entity.HouseUserEntity
-import ru.hrh.houses.model.*
+import ru.hrh.houses.model.house.*
 import ru.hrh.houses.repository.HouseRepository
 import ru.hrh.houses.repository.HouseUserRepository
 import ru.hrh.houses.service.HouseService

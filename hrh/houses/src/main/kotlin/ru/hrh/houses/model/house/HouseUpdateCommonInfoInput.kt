@@ -1,4 +1,4 @@
-package ru.hrh.houses.model
+package ru.hrh.houses.model.house
 
 import ru.hrh.houses.entity.HouseEntity
 

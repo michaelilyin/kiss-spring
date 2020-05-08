@@ -2,3 +2,6 @@ databaseChangeLog:
   - include:
       file: 001-main-tables.sql
       relativeToChangelogFile: true
+  - include:
+      file: 002-house-invites.sql
+      relativeToChangelogFile: true

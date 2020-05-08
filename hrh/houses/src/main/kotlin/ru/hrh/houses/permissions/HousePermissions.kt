@@ -26,4 +26,8 @@ class HousePermissions @Autowired() constructor(
   val delete = ObjectPermissions.Permission(this) { id, userId ->
     houseRepository.isOwnerOf(id.longValue(), userId).awaitFirst()
   }
+
+  val invite = ObjectPermissions.Permission(this) { id, userId ->
+    houseRepository.isOwnerOf(id.longValue(), userId).awaitFirst()
+  }
 }

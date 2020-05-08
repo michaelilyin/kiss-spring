@@ -1,4 +1,4 @@
-package ru.hrh.houses.model
+package ru.hrh.houses.model.house
 
 import ru.hrh.houses.entity.HouseEntity
 import java.util.*
@@ -11,8 +11,8 @@ data class HouseView(
 )
 
 fun HouseEntity.toView() = HouseView(
-  id = id.toString(),
-  name = name,
-  description = description,
-  ownerBy = ownedBy
+        id = id.toString(),
+        name = name,
+        description = description,
+        ownerBy = ownedBy
 )
