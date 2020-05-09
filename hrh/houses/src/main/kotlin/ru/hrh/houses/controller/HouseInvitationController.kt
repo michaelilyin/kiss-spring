@@ -48,7 +48,7 @@ class HouseInvitationController {
     hasAnyRole(@roles.houseMember) && !hasRole(@roles.demo)
       && hasPermission(#invitationId, @invitationPermission.type, @invitationPermission.cancel)
    """)
-  @PutMapping("/invitations/{invitationId}/reject")
+  @PutMapping("/invitations/{invitationId}/cancel")
   fun cancelInvitation(
     @PathVariable("invitationId") invitationId: String,
     @RequestBody resolution: InvitationResolution,
