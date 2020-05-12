@@ -23,7 +23,13 @@ class PostgresContainer(
       TestPropertyValues.of(
         "spring.datasource.url=${postgres.jdbcUrl}",
         "spring.datasource.username=${postgres.username}",
-        "spring.datasource.password=${postgres.password}"
+        "spring.datasource.password=${postgres.password}",
+
+        "spring.r2dbc.url=r2dbc:postgresql://" +
+          "${postgres.containerIpAddress}:${postgres.getMappedPort(POSTGRESQL_PORT)}/${postgres.databaseName}" +
+          "?currentSchema=public",
+        "spring.r2dbc.username=${postgres.username}",
+        "spring.r2dbc.password=${postgres.password}"
       ).applyTo(applicationContext.environment)
     }
   }

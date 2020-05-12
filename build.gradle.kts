@@ -3,8 +3,12 @@ allprojects {
   version = "1.0-SNAPSHOT"
 
   repositories {
+    mavenLocal()
     jcenter()
     mavenCentral()
+    maven {
+      setUrl("https://repo.spring.io/milestone")
+    }
   }
 
   apply {

@@ -7,5 +7,5 @@ dependencies {
   implementation(project(":starters:resource-service-starter"))
   implementation(project(":starters:service-r2dbc-starter"))
 
-  runtimeOnly("org.liquibase:liquibase-core")
+  testImplementation(project(":starters:test-starter"))
 }

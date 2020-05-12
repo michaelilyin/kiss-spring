@@ -1,18 +1,24 @@
 package ru.hrh.houses.controller
 
 import net.kiss.auth.model.CurrentUser
+import net.kiss.service.model.page.PageRequest
+import net.kiss.service.model.sort.SortRequest
 import net.kiss.starter.service.utils.returnMono
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Mono
+import ru.hrh.houses.model.invitation.HouseInvitationsFilter
 import ru.hrh.houses.model.invitation.InvitationCreateInput
-import ru.hrh.houses.model.invitation.InvitationResolution
+import ru.hrh.houses.model.invitation.InvitationResolutionInput
+import ru.hrh.houses.service.HouseInvitationService
 import java.lang.IllegalArgumentException
 
-@Controller
+@RestController
 @RequestMapping("/api")
-class HouseInvitationController {
+class HouseInvitationController @Autowired constructor(
+  private val houseInvitationService: HouseInvitationService
+) {
+
   @PreAuthorize("hasAnyRole(@roles.houseMember)")
   @GetMapping("/invitations")
   fun getCurrentInvitations(currentUser: CurrentUser) = returnMono {
@@ -38,7 +44,7 @@ class HouseInvitationController {
   @PutMapping("/invitations/{invitationId}/reject")
   fun rejectInvitation(
     @PathVariable("invitationId") invitationId: String,
-    @RequestBody resolution: InvitationResolution,
+    @RequestBody resolution: InvitationResolutionInput,
     currentUser: CurrentUser
   ) = returnMono {
     "{}"
@@ -51,7 +57,7 @@ class HouseInvitationController {
   @PutMapping("/invitations/{invitationId}/cancel")
   fun cancelInvitation(
     @PathVariable("invitationId") invitationId: String,
-    @RequestBody resolution: InvitationResolution,
+    @RequestBody resolution: InvitationResolutionInput,
     currentUser: CurrentUser
   ) = returnMono {
     "{}"
@@ -70,7 +76,7 @@ class HouseInvitationController {
     if (houseId != input.houseId) {
       throw IllegalArgumentException();
     }
-    "{}"
+    houseInvitationService.createInvitation(input, currentUser)
   }
 
   @PreAuthorize("""
@@ -79,10 +85,20 @@ class HouseInvitationController {
   @GetMapping("/{houseId}/invitations")
   fun getHouseInvitations(
     @PathVariable("houseId") houseId: String,
-    @RequestParam("active") active: Boolean,
-    @RequestParam("rejected") rejected: Boolean,
-    @RequestParam("cancelled") cancelled: Boolean
+    @RequestParam("active", defaultValue = "true") active: Boolean,
+    @RequestParam("accepted", defaultValue = "false") accepted: Boolean,
+    @RequestParam("rejected", defaultValue = "false") rejected: Boolean,
+    @RequestParam("cancelled", defaultValue = "false") cancelled: Boolean,
+    @RequestParam("offset", defaultValue = "0") offset: Int,
+    @RequestParam("limit", defaultValue = "25") limit: Int,
+    @RequestParam("sort", defaultValue = "id") sort: String,
+    @RequestParam("desc", defaultValue = "false") desc: Boolean
   ) = returnMono {
-    "[]"
+    houseInvitationService.getHouseInvitations(
+      houseId,
+      HouseInvitationsFilter(active, accepted, rejected, cancelled),
+      PageRequest(offset, limit),
+      SortRequest(sort, desc)
+    )
   }
 }

@@ -10,7 +10,12 @@ val kotlinLoggingVer: String by extra
 dependencies {
   api("org.springframework.boot:spring-boot-autoconfigure:$springbootVer")
   api("org.springframework.data:spring-data-r2dbc:1.0.0.RELEASE")
-  api("org.springframework.boot:spring-boot-starter-data-jdbc")
+  compile("org.springframework.boot.experimental:spring-boot-autoconfigure-r2dbc:0.1.0.M3")
+//  api("org.springframework.boot:spring-boot-starter-data-jdbc")
+
+  runtimeOnly("org.liquibase:liquibase-core")
+  runtimeOnly("org.springframework:spring-jdbc:$springVer")
+  runtimeOnly("com.zaxxer:HikariCP:3.4.5")
 
   compileOnly("io.github.microutils:kotlin-logging:$kotlinLoggingVer")
 

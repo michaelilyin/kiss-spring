@@ -11,6 +11,11 @@ dependencies {
   compile("org.springframework.boot:spring-boot-starter-test") {
     exclude(module = "junit")
   }
+  compile("org.springframework.boot.experimental:spring-boot-test-autoconfigure-r2dbc:0.1.0.M3") {
+    exclude(module = "junit")
+  }
+
+
 //  compile("org.springframework.security:spring-security-test:$springVer") {
 //    exclude(module = "junit")
 //  }
