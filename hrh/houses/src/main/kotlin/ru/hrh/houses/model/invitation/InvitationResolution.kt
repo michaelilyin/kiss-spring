@@ -4,5 +4,5 @@ enum class InvitationResolution {
   NEW,
   ACCEPTED,
   REJECTED,
-  CANCELLED
+  CANCELLED;
 }

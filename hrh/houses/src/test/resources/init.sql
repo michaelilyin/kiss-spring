@@ -8,7 +8,7 @@ VALUES
 (1, 'Common Test House', '71a0f36b-69fb-42ec-9fa8-181a3d80bb9e', '71a0f36b-69fb-42ec-9fa8-181a3d80bb9e', '2020-05-11T13:32:48.409Z')
 ;
 
-ALTER SEQUENCE houses_id_seq START WITH 1000;
+ALTER SEQUENCE houses_id_seq RESTART WITH 1000;
 
 INSERT INTO house_invites (id, house_id, user_email, invited_by, invited_at, invitation, resolution_status)
 VALUES
@@ -17,4 +17,4 @@ VALUES
 (2, 1, 'jim@hrh.ru', '71a0f36b-69fb-42ec-9fa8-181a3d80bb9e', '2020-05-11T13:54:23.231Z', 'Please, join', 'NEW')
 ;
 
-ALTER SEQUENCE house_invites_id_seq START WITH 1000;
+ALTER SEQUENCE house_invites_id_seq RESTART WITH 1000;

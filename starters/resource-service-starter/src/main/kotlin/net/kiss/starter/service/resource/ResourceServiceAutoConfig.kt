@@ -112,6 +112,7 @@ class ResourceServiceAutoConfig @Autowired() constructor(
     override val info = AdditionalInfo(
       id = UUID.fromString(principal.token.getClaim("sub")),
       username = principal.token.getClaim("preferred_username"),
+      email = principal.token.getClaim("email"),
       firstName = principal.token.getClaim("given_name"),
       lastName = principal.token.getClaim<String>("family_name"),
       tracing = principal.token.getClaim<String>("jti"),

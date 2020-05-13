@@ -11,13 +11,14 @@ data class InvitationCreateInput(
 )
 
 fun InvitationCreateInput.toEntity(currentUser: UUID) = HouseInvitationEntity(
-        id = null,
-        userEmail = userEmail,
-        invitedBy = currentUser,
-        invitedAt = LocalDateTime.now(),
-        invitation = invitation,
-        resolutionStatus = InvitationResolution.NEW,
-        resolution = null,
-        resolvedBy = null,
-        resolvedAt = null
+  id = null,
+  houseId = houseId.toLong(),
+  userEmail = userEmail,
+  invitedBy = currentUser,
+  invitedAt = LocalDateTime.now(),
+  invitation = invitation,
+  resolutionStatus = InvitationResolution.NEW,
+  resolution = null,
+  resolvedBy = null,
+  resolvedAt = null
 )

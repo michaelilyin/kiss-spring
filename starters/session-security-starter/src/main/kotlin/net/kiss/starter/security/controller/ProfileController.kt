@@ -32,6 +32,7 @@ class ProfileController @Autowired() constructor() {
             lastName = "",
             tracing = "",
             username = auth.name,
+            email = auth.name,
             roles = auth.authorities.map { it.authority }
           )
         }

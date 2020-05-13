@@ -2,8 +2,10 @@ package ru.hrh.houses.repository
 
 import com.github.javafaker.Faker
 import kotlinx.coroutines.reactive.awaitFirst
+import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.runBlocking
 import net.kiss.starter.r2dbc.R2DBCAutoConfig
+import net.kiss.starter.service.utils.awaitList
 import net.kiss.starter.test.containers.PostgresContainer
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -39,9 +41,10 @@ class HouseInvitationRepositoryTest @Autowired constructor(
   }
 
   @Test
-  fun createInvitation() {
+  fun createInvitation() = runBlocking {
     val entity = HouseInvitationEntity(
       id = null,
+      houseId = 1,
       userEmail = faker.internet().emailAddress(),
       invitedBy = UUID.randomUUID(),
       invitedAt = LocalDateTime.now(),
@@ -52,13 +55,13 @@ class HouseInvitationRepositoryTest @Autowired constructor(
       resolvedAt = null
     )
 
-    val saved = runBlocking { houseInvitationRepository.save(entity).awaitFirst() }
+    val saved = houseInvitationRepository.save(entity).awaitFirst()
 
     Assertions.assertNotNull(saved?.id)
   }
 
   @Test
-  fun getHouseInvitations() {
+  fun getHouseInvitations() = runBlocking {
     val invitationsPage = houseInvitationRepository.getHouseInvitations(
       houseId = 1,
       active = true,
@@ -68,11 +71,46 @@ class HouseInvitationRepositoryTest @Autowired constructor(
       offset = 0,
       limit = 10,
       order = "created_at desc"
-    )
-      .collectList()
-      .block()
+    ).awaitList()
 
-    Assertions.assertEquals(2, invitationsPage?.size)
-    Assertions.assertEquals(2, invitationsPage?.get(0)?._count)
+    val invitationsPageCount = houseInvitationRepository.getHouseInvitationsCount(
+      houseId = 1,
+      active = true,
+      rejected = false,
+      accepted = false,
+      cancelled = false
+    ).awaitFirst()
+
+    Assertions.assertEquals(2, invitationsPage.size)
+    Assertions.assertEquals(2, invitationsPageCount)
+  }
+
+  @Test
+  fun getHouseInvitationByEmail() = runBlocking {
+    val invitationsPage = houseInvitationRepository.getHouseInvitationsByUserEmail(
+      email = "john@hrh.ru",
+      active = true,
+      accepted = false,
+      cancelled = false,
+      rejected = false
+    ).awaitList()
+
+    Assertions.assertEquals(1, invitationsPage.size)
+    Assertions.assertEquals("john@hrh.ru", invitationsPage.first().userEmail)
+  }
+
+  @Test
+  fun updateResolutionStatus() = runBlocking {
+    val user = UUID.randomUUID()
+    val resolution = faker.lorem().paragraph()
+    val status = InvitationResolution.ACCEPTED
+
+    houseInvitationRepository.updateResolution(
+      2, status.name, resolution, user, LocalDateTime.now()
+    ).awaitFirstOrNull()
+    val updated = houseInvitationRepository.findById(2).awaitFirst()
+
+    Assertions.assertEquals(status, updated.resolutionStatus)
+    Assertions.assertEquals("jim@hrh.ru", updated.userEmail)
   }
 }

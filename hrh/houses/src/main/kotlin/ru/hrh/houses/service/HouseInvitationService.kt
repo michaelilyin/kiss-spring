@@ -4,16 +4,24 @@ import net.kiss.auth.model.CurrentUser
 import net.kiss.service.model.page.Page
 import net.kiss.service.model.page.PageRequest
 import net.kiss.service.model.sort.SortRequest
-import ru.hrh.houses.model.invitation.HouseInvitation
-import ru.hrh.houses.model.invitation.HouseInvitationsFilter
-import ru.hrh.houses.model.invitation.InvitationCreateInput
+import ru.hrh.houses.model.invitation.*
 
 interface HouseInvitationService {
-  suspend fun createInvitation(input: InvitationCreateInput, currentUser: CurrentUser): HouseInvitation
+  suspend fun createInvitation(input: InvitationCreateInput, currentUser: CurrentUser): HouseInvitationView
+
   suspend fun getHouseInvitations(
     houseId: String,
     filter: HouseInvitationsFilter,
     page: PageRequest,
     sort: SortRequest
-  ): Page<HouseInvitation>
+  ): Page<HouseInvitationView>
+
+  suspend fun getUserInvitations(user: CurrentUser, filter: HouseInvitationsFilter): Page<HouseInvitationView>
+
+  suspend fun resolveInvitation(
+    id: String,
+    resolution: InvitationResolution,
+    input: InvitationResolutionInput,
+    user: CurrentUser
+  ): HouseInvitationView
 }

@@ -4,6 +4,8 @@ import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import net.kiss.auth.model.longValue
 import net.kiss.service.model.page.Page
+import net.kiss.service.model.page.newPage
+import net.kiss.starter.service.utils.awaitList
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -33,18 +35,15 @@ class HouseServiceImpl @Autowired constructor(
   @Transactional
   override suspend fun getCurrentHousesByUserId(id: UUID): Page<CurrentHouseView> {
     val list = houseRepository.findAllByUserId(id)
-      .map { it.toCurrentView() }
-      .collectList()
-      .awaitFirst()
 
-    return Page(list)
+    return newPage(list.awaitList()) { it.toCurrentView() }
   }
 
   @Transactional
   override suspend fun getHouseInfo(id: String): HouseView {
-    val house = houseRepository.findById(id.toLong()).awaitFirst()
+    val house = houseRepository.findById(id.toLong())
 
-    return house.toView()
+    return house.awaitFirst().toView()
   }
 
   @Transactional
@@ -57,6 +56,7 @@ class HouseServiceImpl @Autowired constructor(
     val entity = input.toEntity(creatorId)
 
     val saved = houseRepository.save(entity).awaitFirst()
+
     val userHouseLink = saved.createUserLink(creatorId, creatorId)
     houseUserRepository.save(userHouseLink).awaitFirst()
 
@@ -68,15 +68,19 @@ class HouseServiceImpl @Autowired constructor(
     val entity = houseRepository.findById(input.id.longValue()).awaitFirst()
     input.fillEntity(entity)
 
-    val saved = houseRepository.save(entity).awaitFirst()
+    val saved = houseRepository.save(entity)
 
-    return saved.toView()
+    return saved.awaitFirst().toView()
   }
 
   @Transactional
   override suspend fun deleteHouse(id: String): String {
-    houseUserRepository.deleteAllByHouseId(id.toLong()).awaitFirstOrNull()
-    houseRepository.deleteById(id.toLong()).awaitFirstOrNull()
+    val usersDelete = houseUserRepository.deleteAllByHouseId(id.toLong())
+    val houseDelete = houseRepository.deleteById(id.toLong())
+
+    usersDelete.awaitFirstOrNull()
+    houseDelete.awaitFirstOrNull()
+
     return id
   }
 }

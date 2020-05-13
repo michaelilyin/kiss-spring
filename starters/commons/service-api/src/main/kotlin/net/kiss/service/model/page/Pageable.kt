@@ -1,4 +1,4 @@
-package ru.hrh.houses.entity
+package net.kiss.service.model.page
 
 interface Pageable {
   val _count: Int?

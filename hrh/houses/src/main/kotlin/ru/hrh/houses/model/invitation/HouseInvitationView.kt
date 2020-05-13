@@ -5,7 +5,7 @@ import ru.hrh.houses.entity.HouseInvitationEntity
 import java.time.LocalDateTime
 import java.util.*
 
-data class HouseInvitation(
+data class HouseInvitationView(
   val id: ID,
   val userEmail: String,
   val invitedBy: UUID,
@@ -18,7 +18,7 @@ data class HouseInvitation(
 ) {
 }
 
-fun HouseInvitationEntity.toView() = HouseInvitation(
+fun HouseInvitationEntity.toView() = HouseInvitationView(
   id = id!!.toString(),
   userEmail = userEmail,
   invitedBy = invitedBy,
