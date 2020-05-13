@@ -8,7 +8,7 @@ logging:
 
 spring:
   r2dbc:
-    url: r2dbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:kiss-demo}?currentSchema=${DB_SCHEMA:public}
+    url: r2dbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:kiss-demo}?schema=${DB_SCHEMA:public}
     username: ${DB_USERNAME:demo}
     password: ${DB_PASSWORD:secret}
   liquibase:

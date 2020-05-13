@@ -31,7 +31,7 @@ class PostgresContainer(
 
         "spring.r2dbc.url=r2dbc:postgresql://" +
           "${postgres.containerIpAddress}:${postgres.getMappedPort(POSTGRESQL_PORT)}/${postgres.databaseName}" +
-          "?currentSchema=public",
+          "?schema=public",
         "spring.r2dbc.username=${postgres.username}",
         "spring.r2dbc.password=${postgres.password}"
       ).applyTo(applicationContext.environment)
