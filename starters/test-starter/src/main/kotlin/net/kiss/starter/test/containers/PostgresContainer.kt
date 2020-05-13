@@ -21,6 +21,10 @@ class PostgresContainer(
   ) : ApplicationContextInitializer<ConfigurableApplicationContext> {
     override fun initialize(applicationContext: ConfigurableApplicationContext) {
       TestPropertyValues.of(
+        "spring.liquibase.url=${postgres.jdbcUrl}",
+        "spring.liquibase.user=${postgres.username}",
+        "spring.liquibase.password=${postgres.password}",
+
         "spring.datasource.url=${postgres.jdbcUrl}",
         "spring.datasource.username=${postgres.username}",
         "spring.datasource.password=${postgres.password}",

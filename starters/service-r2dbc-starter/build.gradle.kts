@@ -13,6 +13,9 @@ dependencies {
   compile("org.springframework.boot.experimental:spring-boot-autoconfigure-r2dbc:0.1.0.M3")
 //  api("org.springframework.boot:spring-boot-starter-data-jdbc")
 
+  compile("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.3.5")
+  compile("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.3.5")
+
   runtimeOnly("org.liquibase:liquibase-core")
   runtimeOnly("org.springframework:spring-jdbc:$springVer")
   runtimeOnly("com.zaxxer:HikariCP:3.4.5")

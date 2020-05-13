@@ -2,10 +2,13 @@ package ru.hrh.houses
 
 import org.springframework.boot.Banner
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 import org.springframework.boot.runApplication
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
 
-@SpringBootApplication
+@SpringBootApplication(
+  exclude = [DataSourceAutoConfiguration::class]
+)
 @EnableR2dbcRepositories
 class HousesServiceApplication {
 }

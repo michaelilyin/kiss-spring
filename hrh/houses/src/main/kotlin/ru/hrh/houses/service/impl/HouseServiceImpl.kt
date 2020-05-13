@@ -5,10 +5,10 @@ import kotlinx.coroutines.reactive.awaitFirstOrNull
 import net.kiss.auth.model.longValue
 import net.kiss.service.model.page.Page
 import net.kiss.service.model.page.newPage
+import net.kiss.starter.r2dbc.TxHelper
 import net.kiss.starter.service.utils.awaitList
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import ru.hrh.houses.entity.HouseEntity
 import ru.hrh.houses.entity.HouseUserEntity
 import ru.hrh.houses.model.house.*
@@ -29,58 +29,66 @@ fun HouseEntity.createUserLink(userId: UUID, granterId: UUID) = HouseUserEntity(
 @Service
 class HouseServiceImpl @Autowired constructor(
   private val houseRepository: HouseRepository,
-  private val houseUserRepository: HouseUserRepository
+  private val houseUserRepository: HouseUserRepository,
+  private val txHelper: TxHelper
 ) : HouseService {
 
-  @Transactional
+
   override suspend fun getCurrentHousesByUserId(id: UUID): Page<CurrentHouseView> {
-    val list = houseRepository.findAllByUserId(id)
+    return txHelper.wrap {
+      val list = houseRepository.findAllByUserId(id)
 
-    return newPage(list.awaitList()) { it.toCurrentView() }
+      newPage(list.awaitList()) { it.toCurrentView() }
+    }.awaitFirst()
   }
 
-  @Transactional
   override suspend fun getHouseInfo(id: String): HouseView {
-    val house = houseRepository.findById(id.toLong())
+    return txHelper.wrap {
+      val house = houseRepository.findById(id.toLong())
 
-    return house.awaitFirst().toView()
+      house.awaitFirst().toView()
+    }.awaitFirst()
   }
 
-  @Transactional
   override suspend fun getCurrentHousesCountByUserId(id: UUID): Int {
-    return houseRepository.countAllByUserId(id).awaitFirst()
+    return txHelper.wrap {
+      houseRepository.countAllByUserId(id).awaitFirst()
+    }.awaitFirst()
   }
 
-  @Transactional
   override suspend fun createHouse(input: HouseCreateInput, creatorId: UUID): HouseView {
-    val entity = input.toEntity(creatorId)
+    return txHelper.wrap {
+      val entity = input.toEntity(creatorId)
 
-    val saved = houseRepository.save(entity).awaitFirst()
+      val saved = houseRepository.save(entity).awaitFirst()
 
-    val userHouseLink = saved.createUserLink(creatorId, creatorId)
-    houseUserRepository.save(userHouseLink).awaitFirst()
+      val userHouseLink = saved.createUserLink(creatorId, creatorId)
+      houseUserRepository.save(userHouseLink).awaitFirst()
 
-    return saved.toView()
+      saved.toView()
+    }.awaitFirst()
   }
 
-  @Transactional
   override suspend fun updateHouse(input: HouseUpdateCommonInfoInput): HouseView {
-    val entity = houseRepository.findById(input.id.longValue()).awaitFirst()
-    input.fillEntity(entity)
+    return txHelper.wrap {
+      val entity = houseRepository.findById(input.id.longValue()).awaitFirst()
+      input.fillEntity(entity)
 
-    val saved = houseRepository.save(entity)
+      val saved = houseRepository.save(entity)
 
-    return saved.awaitFirst().toView()
+      saved.awaitFirst().toView()
+    }.awaitFirst()
   }
 
-  @Transactional
   override suspend fun deleteHouse(id: String): String {
-    val usersDelete = houseUserRepository.deleteAllByHouseId(id.toLong())
-    val houseDelete = houseRepository.deleteById(id.toLong())
+    return txHelper.wrap {
+      val usersDelete = houseUserRepository.deleteAllByHouseId(id.toLong())
+      val houseDelete = houseRepository.deleteById(id.toLong())
 
-    usersDelete.awaitFirstOrNull()
-    houseDelete.awaitFirstOrNull()
+      usersDelete.awaitFirstOrNull()
+      houseDelete.awaitFirstOrNull()
 
-    return id
+      id
+    }.awaitFirst()
   }
 }
