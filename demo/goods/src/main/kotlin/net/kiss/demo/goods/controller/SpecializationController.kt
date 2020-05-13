@@ -5,7 +5,8 @@ import net.kiss.demo.goods.model.persons.Specialization
 import net.kiss.demo.goods.model.persons.SpecializationBrief
 import net.kiss.demo.goods.model.persons.toBrief
 import net.kiss.service.exception.NotFoundException
-import net.kiss.service.model.lists.ListValue
+import net.kiss.service.model.page.Page
+import net.kiss.service.model.page.newPage
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/specializations")
 class SpecializationController {
   @GetMapping
-  suspend fun getAllSpecializations(): ListValue<SpecializationBrief> {
-    return ListValue(SPECIALIZATIONS.map { it.toBrief() })
+  suspend fun getAllSpecializations(): Page<SpecializationBrief> {
+    return newPage(SPECIALIZATIONS.map { it.toBrief() })
   }
 
   @GetMapping("/{id}")

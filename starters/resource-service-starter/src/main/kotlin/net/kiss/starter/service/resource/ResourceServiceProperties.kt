@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue
 @ConstructorBinding
 @ConfigurationProperties("resource")
 class ResourceServiceProperties (
-  @DefaultValue("/api/public/**")
+  @DefaultValue("/api/public/**", "/v3/api-docs", "/v3/api-docs.yaml", "/v3/api-docs/**", "/swagger-ui.html", "/webjars/**")
   val publicApi: List<String>
 ) {
 }

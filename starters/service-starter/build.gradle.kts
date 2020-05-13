@@ -10,6 +10,7 @@ dependencies {
   api(project(":starters:commons:auth-api"))
   api(project(":starters:commons:service-api"))
   api("io.github.microutils:kotlin-logging:$kotlinLoggingVer")
+  api("org.springdoc:springdoc-openapi-webflux-ui:1.2.32")
 
   compile("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.3.5")
   compile("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.3.5")

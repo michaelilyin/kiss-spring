@@ -16,6 +16,10 @@ fun <T, D> newPage(
   )
 }
 
+fun <T> newPage(items: Collection<T>): Page<T> {
+  return newPage(items) { it }
+}
+
 fun <T, D> newPage(
   items: Collection<T>,
   size: Int,

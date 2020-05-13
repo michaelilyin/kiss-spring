@@ -3,8 +3,8 @@ package net.kiss.demo.goods.controller
 import net.kiss.demo.goods.*
 import net.kiss.demo.goods.model.persons.*
 import net.kiss.service.exception.NotFoundException
-import net.kiss.service.model.lists.ListValue
-import org.springframework.security.access.prepost.PreAuthorize
+import net.kiss.service.model.page.Page
+import net.kiss.service.model.page.newPage
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -13,8 +13,8 @@ import java.time.format.DateTimeFormatter
 @RequestMapping("/api/persons")
 class PersonController {
   @GetMapping
-  suspend fun getPersons(): ListValue<Person> {
-    return ListValue(PERSONS)
+  suspend fun getPersons(): Page<Person> {
+    return newPage(PERSONS)
   }
 
   @GetMapping("/{id}")
@@ -55,8 +55,8 @@ class PersonController {
   }
 
   @GetMapping("/{id}/specializations")
-  suspend fun getPersonSpecializations(@PathVariable("id") id: String): ListValue<PersonSpecialization> {
-    return ListValue(PERSON_SPECS[id] ?: emptyList())
+  suspend fun getPersonSpecializations(@PathVariable("id") id: String): Page<PersonSpecialization> {
+    return newPage(PERSON_SPECS[id] ?: emptyList())
   }
 
   @PostMapping("/{id}/specializations")
