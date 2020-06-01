@@ -59,7 +59,7 @@ interface HouseInvitationRepository : ReactiveCrudRepository<HouseInvitationEnti
       resolution_status = :#{#update.resolutionStatus},
       resolution = :#{#update.resolution},
       resolved_by = :#{#update.updatedBy},
-      resolved_at = :#{update.updatedAt}
+      resolved_at = :#{#update.updatedAt}
     WHERE
       id = :id
   """)

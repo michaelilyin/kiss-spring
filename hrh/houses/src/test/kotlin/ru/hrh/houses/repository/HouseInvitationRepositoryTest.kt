@@ -21,6 +21,7 @@ import org.springframework.test.context.jdbc.SqlConfig
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import ru.hrh.houses.entity.HouseInvitationEntity
+import ru.hrh.houses.entity.update.ResolveInvitationEntityUpdate
 import ru.hrh.houses.model.invitation.InvitationResolution
 import java.time.LocalDateTime
 import java.util.*
@@ -104,10 +105,11 @@ class HouseInvitationRepositoryTest @Autowired constructor(
     val user = UUID.randomUUID()
     val resolution = faker.lorem().paragraph()
     val status = InvitationResolution.ACCEPTED
+    val update = ResolveInvitationEntityUpdate(
+      status, resolution, user, LocalDateTime.now()
+    )
 
-    houseInvitationRepository.updateResolution(
-      2, status.name, resolution, user, LocalDateTime.now()
-    ).awaitFirstOrNull()
+    houseInvitationRepository.updateResolution(2, update).awaitFirstOrNull()
     val updated = houseInvitationRepository.findById(2).awaitFirst()
 
     Assertions.assertEquals(status, updated.resolutionStatus)
