@@ -5,11 +5,11 @@ import org.springframework.data.domain.Sort
 data class SortRequest(
   val field: String, val desc: Boolean = false
 ) {
-  val order = if (desc) "desc" else "asc"
+  val order: String
+    get() = if (desc) "desc" else "asc"
 
-  fun statement(): String {
-    return "$field $order"
-  }
+  val statement: String
+    get() = "${this.field} $order"
 }
 
 fun SortRequest.toSpringSort() = Sort.by(

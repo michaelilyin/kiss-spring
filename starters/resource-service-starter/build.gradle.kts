@@ -8,7 +8,7 @@ val springSecurityOauth2Ver: String by extra
 val kotlinLoggingVer: String by extra
 
 dependencies {
-  compile(project(":starters:commons:auth-api"))
+  api(project(":starters:commons:auth-api"))
   api("org.springframework.boot:spring-boot-autoconfigure:$springbootVer")
   api("org.springframework.boot:spring-boot-starter-security")
 
@@ -16,7 +16,8 @@ dependencies {
   compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.3.5")
 
   compileOnly("org.springframework.boot:spring-boot-starter-webflux")
-  implementation("org.springframework.security:spring-security-oauth2-client:$springVer")
-  implementation("org.springframework.security:spring-security-oauth2-resource-server:$springVer")
-  implementation("org.springframework.security:spring-security-oauth2-jose:$springVer")
+//  implementation("org.keycloak:keycloak-spring-boot-starter:9.0.3")
+  implementation("org.springframework.security:spring-security-oauth2-client:5.3.2.RELEASE")
+  implementation("org.springframework.security:spring-security-oauth2-resource-server:5.3.2.RELEASE")
+  implementation("org.springframework.security:spring-security-oauth2-jose:5.3.2.RELEASE")
 }

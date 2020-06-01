@@ -1,7 +1,5 @@
 rootProject.name = "kiss-spring"
 
-includeBuild("buildSrc")
-
 include(
   ":starters:commons:service-api",
   ":starters:commons:auth-api",

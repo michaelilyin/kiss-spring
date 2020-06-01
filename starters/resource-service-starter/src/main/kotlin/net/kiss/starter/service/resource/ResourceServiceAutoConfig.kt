@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.core.convert.converter.Converter
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler
@@ -50,7 +51,8 @@ class ResourceServiceAutoConfig @Autowired() constructor(
     return http.authorizeExchange { exchange ->
       exchange
         .pathMatchers(*resourceServiceProperties.publicApi.toTypedArray()).permitAll()
-        .anyExchange().authenticated()
+        .pathMatchers(HttpMethod.OPTIONS).permitAll()
+        .anyExchange().permitAll()
         .and()
         .exceptionHandling { exHandle ->
           exHandle.accessDeniedHandler(HttpStatusServerAccessDeniedHandler(HttpStatus.FORBIDDEN))

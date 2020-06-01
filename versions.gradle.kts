@@ -7,8 +7,8 @@ allprojects {
 
   val coroutinesVer by extra("1.3.5")
   val springSecurityOauth2Ver by extra("2.3.8.RELEASE")
-  val springVer by extra("5.2.3.RELEASE")
-  val springDataVer by extra("2.2.5.RELEASE")
+  val springVer by extra("5.2.6.RELEASE")
+  val springDataVer by extra("2.3.0.RELEASE")
   val graphqlKotlin by extra("2.0.0.RC1")
 //  val graphqlKotlin by extra("1.4.2")
   val junitVer by extra("5.3.2")

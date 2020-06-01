@@ -1,27 +1,34 @@
 package ru.hrh.houses.service
 
 import net.kiss.auth.model.CurrentUser
-import net.kiss.service.model.page.Page
 import net.kiss.service.model.page.PageRequest
 import net.kiss.service.model.sort.SortRequest
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import ru.hrh.houses.model.invitation.*
+import ru.hrh.houses.model.invitation.filter.HouseInvitationsFilter
 
 interface HouseInvitationService {
-  suspend fun createInvitation(input: InvitationCreateInput, currentUser: CurrentUser): HouseInvitationView
+  fun createInvitation(input: InvitationCreateInput, currentUser: CurrentUser): Mono<HouseInvitationView>
 
-  suspend fun getHouseInvitations(
+  fun getHouseInvitations(
     houseId: String,
     filter: HouseInvitationsFilter,
     page: PageRequest,
     sort: SortRequest
-  ): Page<HouseInvitationView>
+  ): Flux<HouseInvitationListView>
 
-  suspend fun getUserInvitations(user: CurrentUser, filter: HouseInvitationsFilter): Page<HouseInvitationView>
+  fun getUserInvitations(
+    user: CurrentUser,
+    filter: HouseInvitationsFilter,
+    page: PageRequest,
+    sort: SortRequest
+  ): Flux<HouseInvitationListView>
 
-  suspend fun resolveInvitation(
+  fun resolveInvitation(
     id: String,
     resolution: InvitationResolution,
-    input: InvitationResolutionInput,
+    input: HouseInvitationResolutionInput,
     user: CurrentUser
-  ): HouseInvitationView
+  ): Mono<HouseInvitationView>
 }

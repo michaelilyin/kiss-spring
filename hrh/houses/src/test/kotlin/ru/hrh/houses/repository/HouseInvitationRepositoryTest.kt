@@ -4,6 +4,8 @@ import com.github.javafaker.Faker
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.runBlocking
+import net.kiss.service.model.page.PageRequest
+import net.kiss.service.model.sort.SortRequest
 import net.kiss.starter.r2dbc.R2DBCAutoConfig
 import net.kiss.starter.service.utils.awaitList
 import net.kiss.starter.test.containers.PostgresContainer
@@ -15,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.jdbc.Sql
+import org.springframework.test.context.jdbc.SqlConfig
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import ru.hrh.houses.entity.HouseInvitationEntity
@@ -25,7 +28,9 @@ import java.util.*
 @DataR2dbcTest
 @Testcontainers
 @Import(R2DBCAutoConfig::class)
-@Sql("classpath:init.sql")
+@Sql("classpath:init.sql", config = SqlConfig(
+  dataSource = "liquibaseDataSource"
+))
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(initializers = [HouseInvitationRepositoryTest.Companion.PostgresInitializer::class])
 class HouseInvitationRepositoryTest @Autowired constructor(
@@ -64,21 +69,16 @@ class HouseInvitationRepositoryTest @Autowired constructor(
   fun getHouseInvitations() = runBlocking {
     val invitationsPage = houseInvitationRepository.getHouseInvitations(
       houseId = 1,
-      active = true,
-      rejected = false,
-      accepted = false,
-      cancelled = false,
-      offset = 0,
-      limit = 10,
-      order = "created_at desc"
+      statuses = setOf(InvitationResolution.NEW),
+      email = null,
+      page = PageRequest(0, 10),
+      sort = SortRequest("id")
     ).awaitList()
 
     val invitationsPageCount = houseInvitationRepository.getHouseInvitationsCount(
       houseId = 1,
-      active = true,
-      rejected = false,
-      accepted = false,
-      cancelled = false
+      statuses = setOf(InvitationResolution.NEW),
+      email = null
     ).awaitFirst()
 
     Assertions.assertEquals(2, invitationsPage.size)
@@ -87,12 +87,12 @@ class HouseInvitationRepositoryTest @Autowired constructor(
 
   @Test
   fun getHouseInvitationByEmail() = runBlocking {
-    val invitationsPage = houseInvitationRepository.getHouseInvitationsByUserEmail(
+    val invitationsPage = houseInvitationRepository.getHouseInvitations(
+      houseId = null,
+      statuses = setOf(InvitationResolution.NEW),
       email = "john@hrh.ru",
-      active = true,
-      accepted = false,
-      cancelled = false,
-      rejected = false
+      page = PageRequest(0, 10),
+      sort = SortRequest("id")
     ).awaitList()
 
     Assertions.assertEquals(1, invitationsPage.size)
