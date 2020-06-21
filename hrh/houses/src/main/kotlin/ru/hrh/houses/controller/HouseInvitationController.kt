@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import ru.hrh.houses.facade.HouseInvitationViewFacade
 import ru.hrh.houses.model.invitation.*
 import ru.hrh.houses.model.invitation.filter.HouseInvitationsFilter
 import ru.hrh.houses.service.HouseInvitationService
@@ -17,7 +18,8 @@ import ru.hrh.houses.service.HouseInvitationService
 @RestController
 @RequestMapping("/api")
 class HouseInvitationController @Autowired constructor(
-  private val houseInvitationService: HouseInvitationService
+  private val houseInvitationService: HouseInvitationService,
+  private val houseInvitationViewFacade: HouseInvitationViewFacade
 ) {
 
   @PreAuthorize("hasAnyRole(@roles.houseMember)")
@@ -26,7 +28,7 @@ class HouseInvitationController @Autowired constructor(
     page: PageRequest, sort: SortRequest, currentUser: CurrentUser
   ): Flux<HouseInvitationListView> {
     val filter = HouseInvitationsFilter(active = true)
-    return houseInvitationService.getUserInvitations(currentUser, filter, page, sort)
+    return houseInvitationViewFacade.getUserInvitations(currentUser, filter, page, sort)
   }
 
   @PreAuthorize("""
@@ -99,6 +101,6 @@ class HouseInvitationController @Autowired constructor(
     sort: SortRequest
   ): Flux<HouseInvitationListView> {
     val filter = HouseInvitationsFilter(email.emptyAsNull(), active, accepted, rejected, cancelled)
-    return houseInvitationService.getHouseInvitations(houseId, filter, page, sort)
+    return houseInvitationViewFacade.getHouseInvitations(houseId, filter, page, sort)
   }
 }

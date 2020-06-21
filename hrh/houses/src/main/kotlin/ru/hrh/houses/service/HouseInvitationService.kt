@@ -5,6 +5,7 @@ import net.kiss.service.model.page.PageRequest
 import net.kiss.service.model.sort.SortRequest
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import ru.hrh.houses.entity.HouseInvitationEntity
 import ru.hrh.houses.model.invitation.*
 import ru.hrh.houses.model.invitation.filter.HouseInvitationsFilter
 
@@ -16,14 +17,14 @@ interface HouseInvitationService {
     filter: HouseInvitationsFilter,
     page: PageRequest,
     sort: SortRequest
-  ): Flux<HouseInvitationListView>
+  ): Flux<HouseInvitationEntity>
 
   fun getUserInvitations(
     user: CurrentUser,
     filter: HouseInvitationsFilter,
     page: PageRequest,
     sort: SortRequest
-  ): Flux<HouseInvitationListView>
+  ): Flux<HouseInvitationEntity>
 
   fun resolveInvitation(
     id: String,
