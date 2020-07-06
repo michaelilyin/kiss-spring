@@ -1,0 +1,19 @@
+server:
+  port: 38081
+
+logging:
+  level:
+    org:
+      springframework: INFO
+
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:demo-shopping-list}?schema=${DB_SCHEMA:public}
+    username: ${DB_USERNAME:demo}
+    password: ${DB_PASSWORD:secret}
+  liquibase:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:demo-shopping-list}?currentSchema=${DB_SCHEMA:public}
+    user: ${DB_USERNAME:demo}
+    password: ${DB_PASSWORD:secret}
+  webflux:
+    base-path: shopping

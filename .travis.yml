@@ -19,6 +19,7 @@ install: skip
 
 script:
   - ./gradlew build
+  - docker build -t michaelilyin/demo-shopping-list:latest ./demo/demo-shopping-list
   - docker build -t michaelilyin/kiss-spring-demo-goods:latest ./demo/goods
   - docker build -t michaelilyin/hrh-items:latest ./hrh/items
   - docker build -t michaelilyin/hrh-houses:latest ./hrh/houses

@@ -15,6 +15,7 @@ include(
   ":starters:test-starter",
 
   ":demo:goods",
+  ":demo:demo-shopping-list",
 //  ":demo:auth",
 //  ":demo:users",
 //  ":demo:cart",

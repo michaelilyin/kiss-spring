@@ -43,7 +43,88 @@ spec:
   selector:
     app: goods
   type: ClusterIP
+
 ---
+
+#####
+# Demo Shopping List Service
+#####
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kiss-cloud
+  labels:
+    app: demo-shopping-list
+  name: demo-shopping-list
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: demo-shopping-list
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      namespace: kiss-cloud
+      labels:
+        app: demo-shopping-list
+    spec:
+      containers:
+        - image: michaelilyin/demo-shopping-list:latest
+          imagePullPolicy: Always
+          name: kiss-cloud-demo-shopping-list
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: db.host
+                  name: demo-cloud-shopping
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: db.port
+                  name: demo-cloud-shopping
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: db.name
+                  name: demo-cloud-shopping
+            - name: DB_SCHEMA
+              valueFrom:
+                secretKeyRef:
+                  key: db.schema
+                  name: demo-cloud-shopping
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: db.username
+                  name: demo-cloud-shopping
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: db.password
+                  name: demo-cloud-shopping
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kiss-cloud
+  labels:
+    app: demo-shopping-list
+  name: demo-shopping-list
+spec:
+  ports:
+    - name: 38081-38081
+      port: 38081
+      protocol: TCP
+      targetPort: 38081
+  selector:
+    app: demo-shopping-list
+  type: ClusterIP
+---
+
+# CLOUD INGRESS
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
@@ -64,11 +145,14 @@ spec:
     - host: cl.michaelilyin.ru
       http:
         paths:
-          - path: /(api|auth)/intra(/|$)(.*)
+          - path: /(api)/intra(/|$)(.*)
             backend:
               serviceName: goods
               servicePort: 8080
-
+          - path: /(shopping)(/|$)(.*)
+            backend:
+              serviceName: demo-shopping-list
+              servicePort: 38081
 
 ---
 

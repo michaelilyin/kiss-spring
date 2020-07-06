@@ -70,38 +70,40 @@ class SessionConfiguration() {
     return http
       .authorizeExchange { auth ->
         auth
-          .pathMatchers("/api/public/**").permitAll()
-          .pathMatchers(HttpMethod.GET).hasAnyRole("USER", "ADMIN")
-          .pathMatchers(HttpMethod.POST).hasRole("ADMIN")
-          .pathMatchers(HttpMethod.PUT).hasRole("ADMIN")
-          .pathMatchers(HttpMethod.DELETE).hasRole("ADMIN")
-          .anyExchange().authenticated()
+          .anyExchange().permitAll()
           .and()
-          .formLogin { login ->
-            login
-              .loginPage("/auth/login")
-              .authenticationSuccessHandler { webFilterExchange, authentication ->
-                webFilterExchange.exchange.response.statusCode = HttpStatus.OK
-                Mono.fromRunnable { }
-              }
-          }
-          .logout { logout ->
-            logout
-              .logoutUrl("/auth/logout")
-              .logoutSuccessHandler { exchange, authentication ->
-                exchange.exchange.response.statusCode = HttpStatus.OK
-                Mono.fromRunnable { }
-              }
-          }
-          .exceptionHandling { handle ->
-            handle
-              .authenticationEntryPoint { exchange, e ->
-                if (exchange.response.statusCode != HttpStatus.FORBIDDEN) {
-                  exchange.response.statusCode = HttpStatus.UNAUTHORIZED
-                }
-                Mono.error(e)
-              }
-          }
+//          .pathMatchers("/api/public/**").permitAll()
+//          .pathMatchers(HttpMethod.GET).hasAnyRole("USER", "ADMIN")
+//          .pathMatchers(HttpMethod.POST).hasRole("ADMIN")
+//          .pathMatchers(HttpMethod.PUT).hasRole("ADMIN")
+//          .pathMatchers(HttpMethod.DELETE).hasRole("ADMIN")
+//          .anyExchange().authenticated()
+//          .and()
+//          .formLogin { login ->
+//            login
+//              .loginPage("/auth/login")
+//              .authenticationSuccessHandler { webFilterExchange, authentication ->
+//                webFilterExchange.exchange.response.statusCode = HttpStatus.OK
+//                Mono.fromRunnable { }
+//              }
+//          }
+//          .logout { logout ->
+//            logout
+//              .logoutUrl("/auth/logout")
+//              .logoutSuccessHandler { exchange, authentication ->
+//                exchange.exchange.response.statusCode = HttpStatus.OK
+//                Mono.fromRunnable { }
+//              }
+//          }
+//          .exceptionHandling { handle ->
+//            handle
+//              .authenticationEntryPoint { exchange, e ->
+//                if (exchange.response.statusCode != HttpStatus.FORBIDDEN) {
+//                  exchange.response.statusCode = HttpStatus.UNAUTHORIZED
+//                }
+//                Mono.error(e)
+//              }
+//          }
           .csrf { csrf ->
 //            csrf.csrfTokenRepository(
 //              CookieServerCsrfTokenRepository
