@@ -1,6 +1,7 @@
 package ru.hrh.houses.facade.impl
 
 import net.kiss.auth.model.CurrentUser
+import net.kiss.service.model.page.ItemPageInfo
 import net.kiss.service.model.page.PageRequest
 import net.kiss.service.model.sort.SortRequest
 import net.kiss.starter.service.facade.Facade
@@ -9,6 +10,7 @@ import reactor.core.publisher.Flux
 import ru.hrh.houses.facade.HouseInvitationViewFacade
 import ru.hrh.houses.model.invitation.HouseInvitationListView
 import ru.hrh.houses.model.invitation.filter.HouseInvitationsFilter
+import ru.hrh.houses.model.invitation.toListView
 import ru.hrh.houses.service.HouseInvitationService
 
 @Facade
@@ -21,7 +23,7 @@ class HouseInvitationViewFacadeImpl @Autowired constructor(
     page: PageRequest,
     sort: SortRequest
   ): Flux<HouseInvitationListView> {
-    houseInvitationService.getUserInvitations()
+    return houseInvitationService.getUserInvitations(currentUser, filter, page, sort)
   }
 
   override fun getHouseInvitations(
@@ -30,6 +32,6 @@ class HouseInvitationViewFacadeImpl @Autowired constructor(
     page: PageRequest,
     sort: SortRequest
   ): Flux<HouseInvitationListView> {
-    TODO("Not yet implemented")
+    return houseInvitationService.getHouseInvitations(houseId, filter, page, sort)
   }
 }

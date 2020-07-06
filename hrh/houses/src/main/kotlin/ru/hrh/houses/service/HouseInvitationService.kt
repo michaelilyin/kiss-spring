@@ -17,14 +17,14 @@ interface HouseInvitationService {
     filter: HouseInvitationsFilter,
     page: PageRequest,
     sort: SortRequest
-  ): Flux<HouseInvitationEntity>
+  ): Flux<HouseInvitationListView>
 
   fun getUserInvitations(
     user: CurrentUser,
     filter: HouseInvitationsFilter,
     page: PageRequest,
     sort: SortRequest
-  ): Flux<HouseInvitationEntity>
+  ): Flux<HouseInvitationListView>
 
   fun resolveInvitation(
     id: String,
