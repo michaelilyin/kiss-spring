@@ -51,7 +51,7 @@ VALUES ('The pirate list', now(), '9eee848c-3b5a-4255-b367-09e0572099ab',
         'Demo shopping list allowed for all. Just for show functionality of the App.');
 
 INSERT INTO shopping_lists
-(name, created_at, created_by, description)
+    (name, created_at, created_by, description)
 VALUES ('BBQ list', now(), '9eee848c-3b5a-4255-b367-09e0572099ab',
         'Demo shopping list allowed for all. Just for show functionality of the App.');
 
@@ -108,3 +108,7 @@ VALUES ((SELECT id FROM goods WHERE name = 'Pork'),
         (SELECT id FROM shopping_lists WHERE name = 'BBQ list'),
         20,
         'LITER');
+
+--changeset ilyin:archive_shopping_lists context:prod
+ALTER TABLE shopping_lists
+    ADD COLUMN archived BOOLEAN NOT NULL DEFAULT FALSE;

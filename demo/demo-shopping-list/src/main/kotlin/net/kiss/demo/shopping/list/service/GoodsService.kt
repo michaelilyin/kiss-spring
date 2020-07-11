@@ -1,8 +1,8 @@
 package net.kiss.demo.shopping.list.service
 
-import net.kiss.demo.shopping.list.dto.GoodCreateInput
-import net.kiss.demo.shopping.list.dto.GoodUpdateInput
-import net.kiss.demo.shopping.list.dto.GoodView
+import net.kiss.demo.shopping.list.dto.goods.GoodCreateInput
+import net.kiss.demo.shopping.list.dto.goods.GoodUpdateInput
+import net.kiss.demo.shopping.list.dto.goods.GoodView
 import net.kiss.service.model.page.Page
 import reactor.core.publisher.Mono
 

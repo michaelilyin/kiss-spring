@@ -1,6 +1,6 @@
 package net.kiss.demo.shopping.list.service.impl
 
-import net.kiss.demo.shopping.list.dto.*
+import net.kiss.demo.shopping.list.dto.goods.*
 import net.kiss.demo.shopping.list.repository.GoodsRepository
 import net.kiss.demo.shopping.list.service.GoodsService
 import net.kiss.service.model.page.Page

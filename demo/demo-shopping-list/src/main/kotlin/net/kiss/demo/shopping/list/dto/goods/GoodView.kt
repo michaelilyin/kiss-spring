@@ -1,4 +1,4 @@
-package net.kiss.demo.shopping.list.dto
+package net.kiss.demo.shopping.list.dto.goods
 
 import net.kiss.demo.shopping.list.entity.GoodEntity
 
@@ -10,7 +10,7 @@ data class GoodView(
 }
 
 fun GoodEntity.toView() = GoodView(
-  id = id!!.toString(),
-  name = name,
-  description = description
+        id = id!!.toString(),
+        name = name,
+        description = description
 )

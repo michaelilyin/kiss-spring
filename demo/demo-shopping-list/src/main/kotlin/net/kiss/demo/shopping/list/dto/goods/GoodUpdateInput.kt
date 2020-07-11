@@ -1,4 +1,4 @@
-package net.kiss.demo.shopping.list.dto
+package net.kiss.demo.shopping.list.dto.goods
 
 import net.kiss.demo.shopping.list.entity.GoodEntity
 

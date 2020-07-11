@@ -1,0 +1,280 @@
+{
+	"info": {
+		"_postman_id": "19dc171d-a23a-41c3-9a2c-51a38009393c",
+		"name": "VITA Shopping",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Goods",
+			"item": [
+				{
+					"name": "Get goods",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/goods?offset=0&limit=100",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"goods"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search goods by name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/goods/by-name?search=bre",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"goods",
+								"by-name"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "bre"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get good by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/goods/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"goods",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create good",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Some Good\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/goods",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"goods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update good",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 13,\r\n    \"name\": \"Some good\",\r\n    \"description\": \"Desc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/goods/13",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"goods",
+								"13"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Shopping Lists",
+			"item": [
+				{
+					"name": "Get shopping list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/shopping-lists?offset=0&limit=100",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"shopping-lists"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get shopping list by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/shopping-lists/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"shopping-lists",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Archive Shopping List",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/shopping-lists/1/archive",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"shopping-lists",
+								"1",
+								"archive"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore Shopping List",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/shopping-lists/1/restore",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"shopping-lists",
+								"1",
+								"restore"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Shopping List",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Test\",\r\n    \"description\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/shopping-lists",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"shopping-lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Shopping List",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"API Test\",\r\n    \"description\": \"Updated description\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/shopping-lists/3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"shopping-lists",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

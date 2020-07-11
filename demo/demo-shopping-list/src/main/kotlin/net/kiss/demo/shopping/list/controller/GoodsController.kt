@@ -1,8 +1,8 @@
 package net.kiss.demo.shopping.list.controller
 
-import net.kiss.demo.shopping.list.dto.GoodCreateInput
-import net.kiss.demo.shopping.list.dto.GoodUpdateInput
-import net.kiss.demo.shopping.list.dto.GoodView
+import net.kiss.demo.shopping.list.dto.goods.GoodCreateInput
+import net.kiss.demo.shopping.list.dto.goods.GoodUpdateInput
+import net.kiss.demo.shopping.list.dto.goods.GoodView
 import net.kiss.demo.shopping.list.service.GoodsService
 import net.kiss.service.model.page.Page
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,8 +22,10 @@ class GoodsController @Autowired constructor(
   }
 
   @GetMapping()
-  fun getGoods(@RequestParam("offset", defaultValue = "0") offset: Int,
-               @RequestParam("limit", defaultValue = "25") limit: Int): Mono<Page<GoodView>> {
+  fun getGoods(
+    @RequestParam("offset", defaultValue = "0") offset: Int,
+    @RequestParam("limit", defaultValue = "25") limit: Int
+  ): Mono<Page<GoodView>> {
     return goodsService.getGoods(offset, limit)
   }
 
