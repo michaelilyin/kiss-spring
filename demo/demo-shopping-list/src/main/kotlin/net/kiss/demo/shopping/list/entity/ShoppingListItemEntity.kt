@@ -1,6 +1,7 @@
 package net.kiss.demo.shopping.list.entity
 
 import net.kiss.demo.shopping.list.model.ShoppingListItemState
+import net.kiss.demo.shopping.list.model.UnitOfMeasure
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 
@@ -10,6 +11,7 @@ data class ShoppingListItemEntity(
   val id: Long?,
   val goodId: Long,
   val listId: Long,
-  val quantity: Int,
-  val state: ShoppingListItemState
+  var quantity: Int,
+  var state: ShoppingListItemState,
+  var measure: UnitOfMeasure
 )

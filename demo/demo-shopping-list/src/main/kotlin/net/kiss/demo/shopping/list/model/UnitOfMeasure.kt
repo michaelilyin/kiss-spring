@@ -1,8 +1,9 @@
 package net.kiss.demo.shopping.list.model
 
 enum class UnitOfMeasure {
-  PIECE,
+  PCS,
   PACKAGE,
   LITER,
-  KILOGRAM
+  KILOGRAM,
+  BOTTLE
 }

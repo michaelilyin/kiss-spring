@@ -8,7 +8,9 @@ import net.kiss.demo.shopping.list.repository.UserRepository
 import net.kiss.demo.shopping.list.service.ShoppingListService
 import net.kiss.service.model.page.Page
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toFlux
 import java.time.LocalDateTime
 import java.util.*
 
@@ -18,12 +20,15 @@ class ShoppingListServiceImpl(
   private val userRepository: UserRepository
 ) : ShoppingListService {
   override fun getUserShoppingLists(userId: UUID, offset: Int, limit: Int): Mono<Page<ShoppingListView>> {
-    return shoppingListRepository.getListsByUserId(userId, offset, limit)
-      .flatMap {
-        mapShoppingListToView(it)
+    return shoppingListRepository.countListsByUserId(userId)
+      .flatMap { count ->
+        shoppingListRepository.getListsByUserId(userId, offset, limit)
+          .flatMap {
+            mapShoppingListToView(it)
+          }
+          .collectList()
+          .map { Page(it, count) }
       }
-      .collectList()
-      .map { Page(it, it.size) }
   }
 
   override fun findShoppingList(id: String): Mono<ShoppingListView> {

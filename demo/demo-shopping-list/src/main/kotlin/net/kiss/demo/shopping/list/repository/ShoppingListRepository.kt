@@ -24,6 +24,14 @@ interface ShoppingListRepository : ReactiveCrudRepository<ShoppingListEntity, Lo
 
   // language=PostgreSQL
   @Query("""
+    SELECT count(*) FROM shopping_lists WHERE archived IS FALSE AND created_by = :userId
+  """)
+  fun countListsByUserId(
+    @Param("userId") userId: UUID
+  ): Mono<Int>
+
+  // language=PostgreSQL
+  @Query("""
     UPDATE shopping_lists SET archived = TRUE WHERE id = :id
   """)
   @Modifying
