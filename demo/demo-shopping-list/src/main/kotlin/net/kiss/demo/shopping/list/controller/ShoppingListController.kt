@@ -1,5 +1,6 @@
 package net.kiss.demo.shopping.list.controller
 
+import net.kiss.auth.model.CurrentUser
 import net.kiss.demo.shopping.list.dto.shopping.lists.ShoppingListCreateInput
 import net.kiss.demo.shopping.list.dto.shopping.lists.ShoppingListUpdateInput
 import net.kiss.demo.shopping.list.dto.shopping.lists.ShoppingListView
@@ -18,9 +19,11 @@ class ShoppingListController @Autowired() constructor(
   @GetMapping
   fun getMyShoppingLists(
     @RequestParam("offset", defaultValue = "0") offset: Int,
-    @RequestParam("limit", defaultValue = "25") limit: Int
+    @RequestParam("limit", defaultValue = "25") limit: Int,
+    currentUser: CurrentUser
   ): Mono<Page<ShoppingListView>> {
-    return shoppingListService.getUserShoppingLists(UserRepositoryImpl.USER_ID, offset, limit)
+    val userId = if (currentUser.authenticated) currentUser.info.id else UserRepositoryImpl.USER_ID
+    return shoppingListService.getUserShoppingLists(userId, offset, limit)
   }
 
   @GetMapping("/{id}")
@@ -29,8 +32,9 @@ class ShoppingListController @Autowired() constructor(
   }
 
   @PostMapping()
-  fun createShoppingList(@RequestBody input: ShoppingListCreateInput): Mono<ShoppingListView> {
-    return shoppingListService.createShoppingList(input, UserRepositoryImpl.USER_ID)
+  fun createShoppingList(@RequestBody input: ShoppingListCreateInput, currentUser: CurrentUser): Mono<ShoppingListView> {
+    val userId = if (currentUser.authenticated) currentUser.info.id else UserRepositoryImpl.USER_ID
+    return shoppingListService.createShoppingList(input, userId)
   }
 
   @PutMapping("/{id}")

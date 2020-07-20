@@ -39,8 +39,9 @@ class WebAutoConfig : WebFluxConfigurer {
       return parameter.parameterType == CurrentUser::class.java
     }
 
-    override fun resolveArgument(parameter: MethodParameter, bindingContext: BindingContext, exchange: ServerWebExchange): Mono<Any> {
-      return Mono.just(exchange.getAttribute<CurrentUser>("current-user")!!)
+    override fun resolveArgument(parameter: MethodParameter, bindingContext: BindingContext, exchange: ServerWebExchange): Mono<Any?> {
+      val user = exchange.getAttribute<CurrentUser>("current-user")
+      return Mono.justOrEmpty(user)
     }
   }
 
