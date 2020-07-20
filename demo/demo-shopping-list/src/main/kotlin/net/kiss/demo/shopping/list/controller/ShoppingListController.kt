@@ -22,7 +22,7 @@ class ShoppingListController @Autowired() constructor(
     @RequestParam("limit", defaultValue = "25") limit: Int,
     currentUser: CurrentUser
   ): Mono<Page<ShoppingListView>> {
-    val userId = if (currentUser.authenticated) currentUser.info.id else UserRepositoryImpl.USER_ID
+    val userId = if (currentUser.authenticated) currentUser.info.id else UserRepositoryImpl.DEFAULT_ID
     return shoppingListService.getUserShoppingLists(userId, offset, limit)
   }
 
@@ -33,7 +33,7 @@ class ShoppingListController @Autowired() constructor(
 
   @PostMapping()
   fun createShoppingList(@RequestBody input: ShoppingListCreateInput, currentUser: CurrentUser): Mono<ShoppingListView> {
-    val userId = if (currentUser.authenticated) currentUser.info.id else UserRepositoryImpl.USER_ID
+    val userId = if (currentUser.authenticated) currentUser.info.id else UserRepositoryImpl.DEFAULT_ID
     return shoppingListService.createShoppingList(input, userId)
   }
 
