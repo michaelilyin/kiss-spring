@@ -112,3 +112,14 @@ VALUES ((SELECT id FROM goods WHERE name = 'Pork'),
 --changeset ilyin:archive_shopping_lists context:prod
 ALTER TABLE shopping_lists
     ADD COLUMN archived BOOLEAN NOT NULL DEFAULT FALSE;
+
+--changeset ilyin:files
+CREATE TABLE files
+(
+    id       UUID PRIMARY KEY,
+    filename VARCHAR NOT NULL,
+    data     BYTEA
+);
+
+ALTER TABLE goods
+    ADD COLUMN image UUID REFERENCES files (id);

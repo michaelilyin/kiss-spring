@@ -14,20 +14,22 @@ import java.util.*
 interface ShoppingListRepository : ReactiveCrudRepository<ShoppingListEntity, Long> {
   // language=PostgreSQL
   @Query("""
-    SELECT * FROM shopping_lists WHERE archived IS FALSE AND created_by = :userId OFFSET :offset LIMIT :limit
+    SELECT * FROM shopping_lists WHERE archived IS FALSE AND created_by = :userId AND (:search IS NULL OR name ilike '%' || :search || '%' ) OFFSET :offset LIMIT :limit
   """)
   fun getListsByUserId(
     @Param("userId") userId: UUID,
+    @Param("search") search: String?,
     @Param("offset") offset: Int,
     @Param("limit") limit: Int
   ): Flux<ShoppingListEntity>
 
   // language=PostgreSQL
   @Query("""
-    SELECT count(*) FROM shopping_lists WHERE archived IS FALSE AND created_by = :userId
+    SELECT count(*) FROM shopping_lists WHERE archived IS FALSE AND created_by = :userId AND (:search IS NULL OR name ilike '%' || :search || '%' )
   """)
   fun countListsByUserId(
-    @Param("userId") userId: UUID
+    @Param("userId") userId: UUID,
+    @Param("search") search: String?
   ): Mono<Int>
 
   // language=PostgreSQL

@@ -16,29 +16,7 @@ import java.util.*
 @RequestMapping("/api/public/profile")
 class ProfileController @Autowired() constructor() {
   @GetMapping
-  fun getProfile(webSession: WebSession): CurrentUser {
-    return WebSessionCurrentUser(webSession)
-  }
-
-  class WebSessionCurrentUser(private val session: WebSession) : CurrentUser {
-    override val info: AdditionalInfo
-      get() {
-        val context = session.getAttribute<SecurityContext>("SPRING_SECURITY_CONTEXT")
-        val auth = context?.authentication
-        if (auth is UsernamePasswordAuthenticationToken) {
-          return AdditionalInfo(
-            id = UUID.randomUUID(),
-            firstName = "",
-            lastName = "",
-            tracing = "",
-            username = auth.name,
-            email = auth.name,
-            roles = auth.authorities.map { it.authority }
-          )
-        }
-        throw IllegalStateException("current user")
-      }
-    override val authenticated: Boolean
-      get() = session.attributes.isNotEmpty()
+  fun getProfile(currentUser: CurrentUser): AdditionalInfo? {
+    return if (currentUser.authenticated == true) currentUser.info else null
   }
 }

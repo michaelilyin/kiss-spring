@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono
 import java.util.*
 
 interface ShoppingListService {
-  fun getUserShoppingLists(userId: UUID, offset: Int, limit: Int): Mono<Page<ShoppingListView>>
+  fun getUserShoppingLists(userId: UUID, search: String?, offset: Int, limit: Int): Mono<Page<ShoppingListView>>
   fun findShoppingList(id: String): Mono<ShoppingListView>
   fun createShoppingList(input: ShoppingListCreateInput, userId: UUID): Mono<ShoppingListView>
   fun updateShoppingList(id: String, input: ShoppingListUpdateInput): Mono<ShoppingListView>

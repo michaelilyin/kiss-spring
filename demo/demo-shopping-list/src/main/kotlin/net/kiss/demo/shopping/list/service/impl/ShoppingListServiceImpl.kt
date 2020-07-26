@@ -19,10 +19,10 @@ class ShoppingListServiceImpl(
   private val shoppingListRepository: ShoppingListRepository,
   private val userRepository: UserRepository
 ) : ShoppingListService {
-  override fun getUserShoppingLists(userId: UUID, offset: Int, limit: Int): Mono<Page<ShoppingListView>> {
-    return shoppingListRepository.countListsByUserId(userId)
+  override fun getUserShoppingLists(userId: UUID, search: String?, offset: Int, limit: Int): Mono<Page<ShoppingListView>> {
+    return shoppingListRepository.countListsByUserId(userId, search)
       .flatMap { count ->
-        shoppingListRepository.getListsByUserId(userId, offset, limit)
+        shoppingListRepository.getListsByUserId(userId, search, offset, limit)
           .flatMap {
             mapShoppingListToView(it)
           }

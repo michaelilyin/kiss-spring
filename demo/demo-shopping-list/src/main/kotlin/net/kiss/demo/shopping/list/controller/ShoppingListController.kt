@@ -18,12 +18,13 @@ class ShoppingListController @Autowired() constructor(
 ) {
   @GetMapping
   fun getMyShoppingLists(
+    @RequestParam("search") search: String?,
     @RequestParam("offset", defaultValue = "0") offset: Int,
     @RequestParam("limit", defaultValue = "25") limit: Int,
     currentUser: CurrentUser
   ): Mono<Page<ShoppingListView>> {
     val userId = if (currentUser.authenticated) currentUser.info.id else UserRepositoryImpl.DEFAULT_ID
-    return shoppingListService.getUserShoppingLists(userId, offset, limit)
+    return shoppingListService.getUserShoppingLists(userId, search, offset, limit)
   }
 
   @GetMapping("/{id}")
