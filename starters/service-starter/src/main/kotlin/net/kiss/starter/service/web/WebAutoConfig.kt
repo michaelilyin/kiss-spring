@@ -23,9 +23,9 @@ class WebAutoConfig : WebFluxConfigurer {
   }
 
   override fun addCorsMappings(registry: CorsRegistry) {
-    registry.addMapping("/api")
-    registry.addMapping("/api/count")
-    registry.addMapping("/api/**")
+    registry.addMapping("/api").allowedMethods("*")
+    registry.addMapping("/api/count").allowedMethods("*")
+    registry.addMapping("/api/**").allowedMethods("*")
   }
 
   override fun configureArgumentResolvers(configurer: ArgumentResolverConfigurer) {
