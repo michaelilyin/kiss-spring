@@ -12,8 +12,8 @@ const port = 18082;
 
 app.get("/index-api/events", async (req, res) => {
   const now = DateTime.local();
-  const timeMin = req.params.timeMin ?? now.startOf('day').toISO();
-  const timeMax = req.params.timeMax ?? now.plus({day: 6}).endOf('day').toISO();
+  const timeMin = req.query.timeMin as string ?? now.startOf('day').toISO();
+  const timeMax = req.query.timeMax as string ?? now.plus({day: 6}).endOf('day').toISO();
   const events = await listEventsBatch([
     'michael.s.ilyin@gmail.com',
     'rcq9te03ia04ip3os368iuvplo@group.calendar.google.com'
