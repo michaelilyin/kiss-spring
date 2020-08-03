@@ -1,8 +1,13 @@
 import express from "express";
 import {listEventsBatch} from './calendar';
 import {DateTime} from 'luxon';
+import cors from "cors";
 
 const app = express();
+app.use(cors({
+  origin: ['https://michaelilyin.ru', 'http://localhost:8081'],
+  methods: ['GET']
+}))
 const port = 18082;
 
 app.get("/index-api/events", async (req, res) => {
