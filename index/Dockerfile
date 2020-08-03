@@ -1,7 +1,7 @@
 FROM node:12 AS build
 # install node packages
 WORKDIR /opt/index
-ADD ./* .
+ADD ./* ./
 RUN npm set progress=false && npm config set depth 0
 RUN npm install
 RUN npm run build
