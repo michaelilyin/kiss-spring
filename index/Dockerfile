@@ -3,7 +3,7 @@ FROM node:12 AS build
 WORKDIR /opt/index
 ADD package.json .
 RUN npm set progress=false && npm config set depth 0
-RUN npm install --only=production
+RUN npm install
 RUN npm run build
 
 FROM node:12
