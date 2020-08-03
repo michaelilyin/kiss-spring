@@ -7,3 +7,5 @@ docker push michaelilyin/kiss-spring-demo-goods:latest
 
 docker push michaelilyin/hrh-items:latest
 docker push michaelilyin/hrh-houses:latest
+
+docker push michaelilyin/index-api:latest

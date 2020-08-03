@@ -124,6 +124,59 @@ spec:
   type: ClusterIP
 ---
 
+#####
+# Index API Service
+#####
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kiss-cloud
+  labels:
+    app: index-api
+  name: index-api
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: index-api
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      namespace: kiss-cloud
+      labels:
+        app: index-api
+    spec:
+      containers:
+        - image: michaelilyin/index-api:latest
+          imagePullPolicy: Always
+          name: kiss-cloud-index-api
+          env:
+            - name: GAPI_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: gapi.token
+                  name: index
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kiss-cloud
+  labels:
+    app: index-api
+  name: index-api
+spec:
+  ports:
+    - name: 18082-18082
+      port: 18082
+      protocol: TCP
+      targetPort: 18082
+  selector:
+    app: index-api
+  type: ClusterIP
+---
+
 # CLOUD INGRESS
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
@@ -153,6 +206,11 @@ spec:
             backend:
               serviceName: demo-shopping-list
               servicePort: 38081
+          - path: /(index-api)(/|$)(.*)
+            backend:
+              serviceName: index-api
+              servicePort: 18082
+
 
 ---
 

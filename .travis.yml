@@ -23,6 +23,7 @@ script:
   - docker build -t michaelilyin/kiss-spring-demo-goods:latest ./demo/goods
   - docker build -t michaelilyin/hrh-items:latest ./hrh/items
   - docker build -t michaelilyin/hrh-houses:latest ./hrh/houses
+  - docker build -t michaelilyin/index-api:latest ./index
 
 before_deploy:
   - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
