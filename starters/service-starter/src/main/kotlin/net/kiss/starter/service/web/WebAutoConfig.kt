@@ -26,6 +26,8 @@ class WebAutoConfig : WebFluxConfigurer {
     registry.addMapping("/api").allowedMethods("*")
     registry.addMapping("/api/count").allowedMethods("*")
     registry.addMapping("/api/**").allowedMethods("*")
+    registry.addMapping("/auth").allowedMethods("*")
+    registry.addMapping("/auth/**").allowedMethods("*")
   }
 
   override fun configureArgumentResolvers(configurer: ArgumentResolverConfigurer) {
